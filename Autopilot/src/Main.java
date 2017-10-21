@@ -32,6 +32,4 @@ public class Main implements Autopilot {
 		
 	}
 	
-	
-
 }

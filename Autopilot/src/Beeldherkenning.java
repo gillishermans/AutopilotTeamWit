@@ -15,14 +15,23 @@ import org.opencv.imgproc.Imgproc;
 
 
 public class Beeldherkenning {
-
+	
+	//Grootte van de afbeelding
 	private final static int WIDTH = 200;
 	private final static int HEIGHT = 200;
+	//Focal length van de camera
 	private static float focalLength = 0.01f;
+	//Size of the object -> de diagonaal van de kubus
+	// -> in een ideale situatie komt de diagonaal overeen met de diameter van de min enclosing circle
 	private static float objectSize = 2000f;
+	//min enclosing circle parameters
     private static float[] radius = new float[1];
 	private static Point center = new Point();
-	private static Point screenCenter = new Point(100,100);
+	//Het centrum van de afbeelding
+	private static Point screenCenter = new Point(WIDTH/2,HEIGHT/2);
+	//De lengte van de helft van het scherm in mm idpv pixels
+	//Om de hoek te berekenen van een object tegenover het midden van het scherm
+	private static double halfScreenLength = Math.tan(1.0471975512)*focalLength; 
 	
 	//Main functie om te testen
 	public static void main(String[] args) throws Exception{
@@ -81,6 +90,7 @@ public class Beeldherkenning {
         displayImage( Mat2BufferedImage(RGB_img));
         System.out.println(distanceToObject(2*radius[0]));
         System.out.println(horizontalAngle(center));
+        System.out.println(verticalAngle(center));
     }
 
 	//Bereken afstand van een object tot de camera
@@ -93,13 +103,15 @@ public class Beeldherkenning {
 	//Bereken de horizontale hoek tussen middelpunt van de afbeelding en het object
 	public static double horizontalAngle(Point center){
 		double distancePointCenter = Math.abs(center.x - screenCenter.x);
-		return Math.atan(distancePointCenter/focalLength);
+		double distance = (distancePointCenter/100) * halfScreenLength;
+		return Math.atan(distance/focalLength);
 	}
 	
 	//Bereken de verticale hoek tussen middelpunt van de afbeelding en het object
-	public double verticalAngle(Point center){
+	public static double verticalAngle(Point center){
 		double distancePointCenter = Math.abs(center.y - screenCenter.y);
-		return Math.atan(distancePointCenter/focalLength);
+		double distance = (distancePointCenter/100) * halfScreenLength;
+		return Math.atan(distance/focalLength);
 	}
 	
 	public static BufferedImage Mat2BufferedImage(Mat m){
