@@ -4,26 +4,15 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
+
 
 public class Beeldherkenning {
 
@@ -35,18 +24,19 @@ public class Beeldherkenning {
 	private static Point center = new Point();
 	private static Point screenCenter = new Point(100,100);
 	
+	//Main functie om te testen
 	public static void main(String[] args) throws Exception{
         imageRecognition(null);
       
 	}
 	
-	private static void imageRecognition(byte[] d) throws Exception{
+	public static void imageRecognition(byte[] data) throws Exception{
 	  //Laad de openCV library in
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
         
-      //Lees image in
+      //Lees image in (om te testen, anders komt data als input binnen
+        data = Files.readAllBytes(new File("C:\\Image\\pixels.txt").toPath());
       //Zet data = byte[] om in Mat
-        byte[] data = Files.readAllBytes(new File("C:\\Image\\pixels.txt").toPath());
         Mat flipped = new Mat(WIDTH, HEIGHT, CvType.CV_8UC3);
         flipped.put(0, 0, data);
         Mat image = new Mat();
@@ -131,7 +121,6 @@ public class Beeldherkenning {
 		}
 	//Display the window
 	public static void displayImage(Image img2){   
-	    //BufferedImage img=ImageIO.read(new File("/HelloOpenCV/lena.png"));
 	    ImageIcon icon=new ImageIcon(img2);
 	    JFrame frame=new JFrame();
 	    frame.setLayout(new FlowLayout());        
