@@ -1,0 +1,33 @@
+import api.AutopilotInputs;
+import api.AutopilotOutputs;
+
+public class Besturing {
+
+	public Besturing() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	private Beeldherkenning beeldherkenning = new Beeldherkenning();
+	
+	public AutopilotOutputs startBesturing(AutopilotInputs inputs){
+		
+		//Run beeldherkenning en bereken de afstand en hoeken
+		beeldherkenning.imageRecognition(inputs.getImage());
+		float distance = beeldherkenning.distanceToObject(beeldherkenning.getRadius()[0]);
+		double horizontalAngle = beeldherkenning.horizontalAngle(beeldherkenning.getCenter());	
+		double verticalAngle = beeldherkenning.verticalAngle(beeldherkenning.getCenter());
+		
+		//Bereken nieuwe outputs
+		
+		float thrust = 1.0f;
+		float leftWingInclination = 1.0f;
+		float rightWingInclination = 1.0f;
+		float horStabInclination = 1.0f;
+		float verStabInclination = 1.0f;
+		
+		AutopilotOutputs output = new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
+		
+		return output;
+	}
+
+}

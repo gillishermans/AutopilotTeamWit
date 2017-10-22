@@ -7,29 +7,26 @@ public class Main{
 		// TODO Auto-generated constructor stub
 	}
 	
-	private Beeldherkenning beelherkenning = new Beeldherkenning();
-	
 
 	public static AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
 		
 		//Lees config en start een timePassed
 		
-		
-		
-		
 		return null;
 	}
 
-	public static AutopilotOutputs timePassed(AutopilotInputs inputs) {
+	public static AutopilotOutputs timePassed(AutopilotInputs inputs){
 
 		//Start het besturingsalgoritme
+		Besturing besturing = new Besturing();
+		AutopilotOutputs output = besturing.startBesturing(inputs);
 		
-		AutopilotOutputs output = null;
 		return output;
 	}
 
 	public static void simulationEnded() {
-		// TODO Auto-generated method stub
+		
+		//Stop de simulatie
 		
 	}
 	

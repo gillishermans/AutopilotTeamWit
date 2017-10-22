@@ -33,13 +33,22 @@ public class Beeldherkenning {
 	//Om de hoek te berekenen van een object tegenover het midden van het scherm
 	private static double halfScreenLength = Math.tan(1.0471975512)*focalLength; 
 	
-	//Main functie om te testen
+	public float[] getRadius(){
+		return this.radius;
+	}
+	
+	public Point getCenter(){
+		return this.center;
+	}
+	
+	//MAIN OM TE TESTEN
 	public static void main(String[] args) throws Exception{
-        imageRecognition(null);
+        imageRecognitionTest(null);
       
 	}
 	
-	public static void imageRecognition(byte[] data) throws Exception{
+	//STATIC OM TE TESTEN
+	public static void imageRecognitionTest(byte[] data) throws Exception{
 	  //Laad de openCV library in
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
         
@@ -88,15 +97,67 @@ public class Beeldherkenning {
         Mat RGB_img = new Mat();
         Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
         displayImage( Mat2BufferedImage(RGB_img));
-        System.out.println(distanceToObject(2*radius[0]));
+        System.out.println(distanceToObject(radius[0]));
         System.out.println(horizontalAngle(center));
         System.out.println(verticalAngle(center));
     }
+	
+	//WORDT GEBRUIKT IN BESTURING
+	public void imageRecognition(byte[] data){
+		  //Laad de openCV library in
+	        System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+	        
+	      //Zet data = byte[] om in Mat
+	        Mat flipped = new Mat(WIDTH, HEIGHT, CvType.CV_8UC3);
+	        flipped.put(0, 0, data);
+	        Mat image = new Mat();
+	        Core.flip(flipped, image, 0);
+	        
+	      //Maak images aan
+	        Mat hsvImage = new Mat();
+	        Mat mask = new Mat();
+	        
+	        
+	      //convert the frame to HSV
+	        Imgproc.cvtColor(image, hsvImage, Imgproc.COLOR_RGB2HSV);
+	        
+	      //Zoek kleur tussen deze ranges (rood)
+	        Scalar minValues = new Scalar(0,100,100);
+	        Scalar maxValues = new Scalar(10,255,255);
+	        Core.inRange(hsvImage, minValues, maxValues, mask);
+	        
+	        List<MatOfPoint> contours = new ArrayList<>();
+	        Mat hierarchy = new Mat();
+
+	      //Zoek de contouren van de mask
+	        Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+	        if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+	        {
+	                
+	                for (int i = 0; i >= 0; i = (int) hierarchy.get(0, i)[0])
+	                {
+	                		//Teken de contouren in blauw
+	                        Imgproc.drawContours(image, contours, i, new Scalar(255, 0, 0));
+	                        //Bepaal minimal enclosing circle en teken hem op blurredImage
+	                        MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(i).toArray() );                            
+	                        Imgproc.minEnclosingCircle(contour2f, center, radius);
+	                        int radiusInt = Math.round(radius[0]);
+	                        Imgproc.circle(image, center, radiusInt, new Scalar( 255,0 , 0 ));
+	                }
+	        }
+	        
+	        displayImage( Mat2BufferedImage(mask));
+	        Mat RGB_img = new Mat();
+	        Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
+	        displayImage( Mat2BufferedImage(RGB_img));
+	        System.out.println(distanceToObject(radius[0]));
+	        System.out.println(horizontalAngle(center));
+	        System.out.println(verticalAngle(center));
+	    }
 
 	//Bereken afstand van een object tot de camera
 	public static float distanceToObject(float objectHeightOnSensor){
-		System.out.println(objectHeightOnSensor);
-		return objectSize / (objectHeightOnSensor * focalLength);
+		return objectSize / (2* objectHeightOnSensor * focalLength);
 		
 	}
 	
