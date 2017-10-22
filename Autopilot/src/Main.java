@@ -1,33 +1,34 @@
 import api.*;
 
 
-public class Main implements Autopilot {
+public class Main{
 
 	public Main() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	private Beeldherkenning beelherkenning = new Beeldherkenning();
+	
 
-	@Override
-	public AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
+	public static AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
 		
-		//Read config and start a timePassed
+		//Lees config en start een timePassed
+		
+		
+		
+		
+		return null;
+	}
+
+	public static AutopilotOutputs timePassed(AutopilotInputs inputs) {
+
+		//Start het besturingsalgoritme
 		
 		AutopilotOutputs output = null;
-		
 		return output;
 	}
 
-	@Override
-	public AutopilotOutputs timePassed(AutopilotInputs inputs) {
-
-		AutopilotOutputs output = null;
-		return output;
-	}
-
-	@Override
-	public void simulationEnded() {
+	public static void simulationEnded() {
 		// TODO Auto-generated method stub
 		
 	}

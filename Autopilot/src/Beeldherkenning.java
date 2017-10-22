@@ -43,7 +43,7 @@ public class Beeldherkenning {
 	  //Laad de openCV library in
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
         
-      //Lees image in (om te testen, anders komt data als input binnen
+      //Lees image in (om te testen, anders komt data als input binnen)
         data = Files.readAllBytes(new File("C:\\Image\\pixels.txt").toPath());
       //Zet data = byte[] om in Mat
         Mat flipped = new Mat(WIDTH, HEIGHT, CvType.CV_8UC3);
