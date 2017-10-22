@@ -162,15 +162,17 @@ public class Beeldherkenning {
 	}
 	
 	//Bereken de horizontale hoek tussen middelpunt van de afbeelding en het object
+	//Negatief is links en positief is rechts
 	public static double horizontalAngle(Point center){
-		double distancePointCenter = Math.abs(center.x - screenCenter.x);
+		double distancePointCenter = center.x - screenCenter.x;
 		double distance = (distancePointCenter/100) * halfScreenLength;
 		return Math.atan(distance/focalLength);
 	}
 	
 	//Bereken de verticale hoek tussen middelpunt van de afbeelding en het object
+	//Negatief is boven en positief is onder
 	public static double verticalAngle(Point center){
-		double distancePointCenter = Math.abs(center.y - screenCenter.y);
+		double distancePointCenter = center.y - screenCenter.y;
 		double distance = (distancePointCenter/100) * halfScreenLength;
 		return Math.atan(distance/focalLength);
 	}
