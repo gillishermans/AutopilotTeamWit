@@ -1,12 +1,14 @@
+import api.AutopilotConfig;
 import api.AutopilotInputs;
 import api.AutopilotOutputs;
 
 public class Besturing {
 
-	public Besturing() {
-		// TODO Auto-generated constructor stub
+	public Besturing(AutopilotConfig config) {
+		this.config = config;
 	}
 	
+	private AutopilotConfig config;
 	private Beeldherkenning beeldherkenning = new Beeldherkenning();
 	
 	public AutopilotOutputs startBesturing(AutopilotInputs inputs){

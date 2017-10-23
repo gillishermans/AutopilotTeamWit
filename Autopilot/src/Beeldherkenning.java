@@ -84,12 +84,12 @@ public class Beeldherkenning {
                 for (int i = 0; i >= 0; i = (int) hierarchy.get(0, i)[0])
                 {
                 		//Teken de contouren in blauw
-                        Imgproc.drawContours(image, contours, i, new Scalar(255, 0, 0));
+                        Imgproc.drawContours(image, contours, i, new Scalar(0, 0, 255));
                         //Bepaal minimal enclosing circle en teken hem op blurredImage
                         MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(i).toArray() );                            
                         Imgproc.minEnclosingCircle(contour2f, center, radius);
                         int radiusInt = Math.round(radius[0]);
-                        Imgproc.circle(image, center, radiusInt, new Scalar( 255,0 , 0 ));
+                        Imgproc.circle(image, center, radiusInt, new Scalar( 0,0 , 255 ));
                 }
         }
         
