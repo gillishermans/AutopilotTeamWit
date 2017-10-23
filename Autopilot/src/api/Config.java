@@ -1,10 +1,27 @@
-import api.AutopilotConfig;
+package api;
 
 public class Config implements AutopilotConfig {
 
-	public Config() {
-		
-	}
+	public Config(float gravity, float wingX, float tailSize, float engineMass, float wingMass, float tailMass,
+			float maxThrust, float maxAOA, float wingLiftSlope, float horStabLiftSlope, float verStabLiftSlope, 
+			float horAngleOfView, float verAngleOfView, int nbColumns, int nbRows) {
+
+		this.gravity = gravity;
+		this.wingX = wingX;
+		this.tailSize = tailSize;
+		this.engineMass = engineMass;
+		this.wingMass = wingMass;
+		this.tailMass = tailMass;
+		this.maxThrust = maxThrust;
+		this.maxAOA = maxAOA;
+		this.wingLiftSlope = wingLiftSlope;
+		this.horStabLiftSlope = horStabLiftSlope;
+		this.verStabLiftSlope = verStabLiftSlope;
+		this.horAngleOfView = horAngleOfView;
+		this.verAngleOfView = verAngleOfView;
+		this.nbColumns = nbColumns;
+		this.nbRows = nbRows;
+}
 	
 	private float gravity;
 	private float wingX;

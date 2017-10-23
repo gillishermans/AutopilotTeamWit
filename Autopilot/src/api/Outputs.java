@@ -1,4 +1,4 @@
-import api.AutopilotOutputs;
+package api;
 
 public class Outputs implements AutopilotOutputs {
 

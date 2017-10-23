@@ -1,6 +1,8 @@
+package autopilotLibrary;
 import api.AutopilotConfig;
 import api.AutopilotInputs;
 import api.AutopilotOutputs;
+import api.Outputs;
 
 public class Besturing {
 
