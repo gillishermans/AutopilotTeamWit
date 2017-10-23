@@ -1,9 +1,9 @@
 import api.*;
 
 
-public class Main{
+public class CommunicatieTestbed{
 
-	public Main() {
+	public CommunicatieTestbed() {
 		// TODO Auto-generated constructor stub
 	}
 	

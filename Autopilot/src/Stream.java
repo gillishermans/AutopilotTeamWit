@@ -25,7 +25,7 @@ public class Stream {
 		inputStream.close();
 		
 		//Start simulatie
-		AutopilotOutputs output = Main.simulationStarted(config,input);
+		AutopilotOutputs output = CommunicatieTestbed.simulationStarted(config,input);
 		
 		//Geef dataOuputStream terug
 		DataOutputStream outputStream = null;
@@ -41,7 +41,7 @@ public class Stream {
 		inputStream.close();
 		
 		//Start timePassed stap
-		AutopilotOutputs output = Main.timePassed(input);
+		AutopilotOutputs output = CommunicatieTestbed.timePassed(input);
 		
 		//Geef dataOuputStream terug
 		DataOutputStream outputStream = null;
@@ -53,7 +53,7 @@ public class Stream {
 	public static void simulationEnded(){
 		
 		//Start simulationEnded in Main
-		Main.simulationEnded();
+		CommunicatieTestbed.simulationEnded();
 		
 	}
 
