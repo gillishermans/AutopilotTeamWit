@@ -23,6 +23,9 @@ public class Besturing {
 		
 		//Bereken nieuwe outputs
 		
+		
+		
+		
 		float thrust = 1.0f;
 		float leftWingInclination = 1.0f;
 		float rightWingInclination = 1.0f;
