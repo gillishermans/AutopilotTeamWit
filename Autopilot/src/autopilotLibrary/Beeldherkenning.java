@@ -157,8 +157,8 @@ public class Beeldherkenning {
 	    }
 
 	//Bereken afstand van een object tot de camera
-	public static float distanceToObject(float objectHeightOnSensor){
-		return objectSize / (2* objectHeightOnSensor * focalLength);
+	public static float distanceToObject(float objectSizeOnSensor){
+		return objectSize / (4* objectSizeOnSensor * focalLength);
 		
 	}
 	
