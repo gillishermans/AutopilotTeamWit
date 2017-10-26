@@ -24,7 +24,7 @@ public class Beeldherkenning {
 	private static float focalLength = 0.01f;
 	//Size of the object -> de diagonaal van de kubus
 	// -> in een ideale situatie komt de diagonaal overeen met de diameter van de min enclosing circle
-	private static float objectSize = 2000f;
+	private static float objectSize = 2f;
 	//min enclosing circle parameters
     private static float[] radius = new float[1];
 	private static Point center = new Point();
@@ -70,8 +70,8 @@ public class Beeldherkenning {
         Imgproc.cvtColor(image, hsvImage, Imgproc.COLOR_RGB2HSV);
         
       //Zoek kleur tussen deze ranges (rood)
-        Scalar minValues = new Scalar(0,100,100);
-        Scalar maxValues = new Scalar(10,255,255);
+        Scalar minValues = new Scalar(0,255,38);
+        Scalar maxValues = new Scalar(0,255,255);
         Core.inRange(hsvImage, minValues, maxValues, mask);
         
         List<MatOfPoint> contours = new ArrayList<>();
@@ -101,6 +101,7 @@ public class Beeldherkenning {
         System.out.println(distanceToObject(radius[0]));
         System.out.println(horizontalAngle(center));
         System.out.println(verticalAngle(center));
+        
     }
 	
 	//WORDT GEBRUIKT IN BESTURING
@@ -123,8 +124,8 @@ public class Beeldherkenning {
 	        Imgproc.cvtColor(image, hsvImage, Imgproc.COLOR_RGB2HSV);
 	        
 	      //Zoek kleur tussen deze ranges (rood)
-	        Scalar minValues = new Scalar(0,100,100);
-	        Scalar maxValues = new Scalar(10,255,255);
+	        Scalar minValues = new Scalar(0,255,38);
+	        Scalar maxValues = new Scalar(0,255,255);
 	        Core.inRange(hsvImage, minValues, maxValues, mask);
 	        
 	        List<MatOfPoint> contours = new ArrayList<>();
@@ -158,7 +159,8 @@ public class Beeldherkenning {
 
 	//Bereken afstand van een object tot de camera
 	public static float distanceToObject(float objectSizeOnSensor){
-		return objectSize / (4* objectSizeOnSensor * focalLength);
+		float sizeOnSensorMM = (float) ((objectSizeOnSensor/100)* 2*halfScreenLength);
+		return (float) ((objectSize * focalLength )/sizeOnSensorMM );
 		
 	}
 	
