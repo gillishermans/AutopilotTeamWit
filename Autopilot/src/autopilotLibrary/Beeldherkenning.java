@@ -24,7 +24,7 @@ public class Beeldherkenning {
 	private static float focalLength = 0.01f;
 	//Size of the object -> de diagonaal van de kubus
 	// -> in een ideale situatie komt de diagonaal overeen met de diameter van de min enclosing circle
-	private static float objectSize = 2f;
+	private static float objectSize = 1f;
 	//min enclosing circle parameters
     private static float[] radius = new float[1];
 	private static Point center = new Point();
@@ -159,7 +159,7 @@ public class Beeldherkenning {
 
 	//Bereken afstand van een object tot de camera
 	public static float distanceToObject(float objectSizeOnSensor){
-		float sizeOnSensorMM = (float) ((objectSizeOnSensor/100)* 2*halfScreenLength);
+		float sizeOnSensorMM = (float) ((objectSizeOnSensor/100)*2* halfScreenLength);
 		return (float) ((objectSize * focalLength )/sizeOnSensorMM );
 		
 	}
@@ -168,7 +168,7 @@ public class Beeldherkenning {
 	//Negatief is links en positief is rechts
 	public static double horizontalAngle(Point center){
 		double distancePointCenter = center.x - screenCenter.x;
-		double distance = (distancePointCenter/100) * halfScreenLength;
+		double distance = (distancePointCenter/100) *  halfScreenLength;
 		return Math.atan(distance/focalLength);
 	}
 	
