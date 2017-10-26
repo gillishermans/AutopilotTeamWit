@@ -21,19 +21,19 @@ public class Besturing {
 		double horizontalAngle = beeldherkenning.horizontalAngle(beeldherkenning.getCenter());	
 		double verticalAngle = beeldherkenning.verticalAngle(beeldherkenning.getCenter());
 		
-		float thrust = 1.0f;
-		float leftWingInclination = 1.0f;
-		float rightWingInclination = 1.0f;
-		float horStabInclination = 1.0f;
-		float verStabInclination = 1.0f;
+		float thrust = 0.001f;
+		float leftWingInclination = 0.0f;
+		float rightWingInclination = 0.0f;
+		float horStabInclination = 0.0f;
+		float verStabInclination = 0.0f;
 		
 		if (verticalAngle>0){
-			leftWingInclination=1.0f;//Max;
-			rightWingInclination=1.0f;//Max;
+			leftWingInclination=0.0f;//Max;
+			rightWingInclination=0.0f;//Max;
 		}
 		else {
-			leftWingInclination =1.0f;//MIN;
-			rightWingInclination =1.0f;//MIN;
+			leftWingInclination =0.0f;//MIN;
+			rightWingInclination =0.0f;//MIN;
 		}
 		
 		
