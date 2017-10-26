@@ -110,7 +110,7 @@ public class Beeldherkenning {
 	        
 	      //Zet data = byte[] om in Mat
 	        Mat flipped = new Mat(WIDTH, HEIGHT, CvType.CV_8UC3);
-	        flipped.put(0, 0, data);
+	        flipped.put(0, 0, data); //geeft nog een error
 	        Mat image = new Mat();
 	        Core.flip(flipped, image, 0);
 	        
