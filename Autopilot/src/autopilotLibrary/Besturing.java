@@ -21,7 +21,7 @@ public class Besturing {
 		double horizontalAngle = beeldherkenning.horizontalAngle(beeldherkenning.getCenter());	
 		double verticalAngle = beeldherkenning.verticalAngle(beeldherkenning.getCenter());
 		
-		float thrust = 1.0f;
+		float thrust = 0.001f;
 		float leftWingInclination = 1.0f;
 		float rightWingInclination = 1.0f;
 		float horStabInclination = 1.0f;
