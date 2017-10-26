@@ -28,12 +28,12 @@ public class Besturing {
 		float verStabInclination = 1.0f;
 		
 		if (verticalAngle>0){
-			leftWingInclination=//Max;
-			rightWingInclination=//Max;
+			leftWingInclination=1.0f;//Max;
+			rightWingInclination=1.0f;//Max;
 		}
 		else {
-			leftWingInclination =//MIN;
-			rightWingInclination =//MIN;
+			leftWingInclination =1.0f;//MIN;
+			rightWingInclination =1.0f;//MIN;
 		}
 		
 		
