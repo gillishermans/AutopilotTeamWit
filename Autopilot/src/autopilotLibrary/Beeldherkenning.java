@@ -110,7 +110,7 @@ public class Beeldherkenning {
 	        
 	      //Zet data = byte[] om in Mat
 	        Mat flipped = new Mat(WIDTH, HEIGHT, CvType.CV_8UC3);
-	        flipped.put(0, 0, data);
+	        flipped.put(0, 0, data); //geeft nog een error
 	        Mat image = new Mat();
 	        Core.flip(flipped, image, 0);
 	        
@@ -157,8 +157,8 @@ public class Beeldherkenning {
 	    }
 
 	//Bereken afstand van een object tot de camera
-	public static float distanceToObject(float objectHeightOnSensor){
-		return objectSize / (2* objectHeightOnSensor * focalLength);
+	public static float distanceToObject(float objectSizeOnSensor){
+		return objectSize / (4* objectSizeOnSensor * focalLength);
 		
 	}
 	

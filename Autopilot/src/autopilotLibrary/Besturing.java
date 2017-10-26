@@ -21,17 +21,29 @@ public class Besturing {
 		double horizontalAngle = beeldherkenning.horizontalAngle(beeldherkenning.getCenter());	
 		double verticalAngle = beeldherkenning.verticalAngle(beeldherkenning.getCenter());
 		
-		//Bereken nieuwe outputs
-		
 		float thrust = 1.0f;
 		float leftWingInclination = 1.0f;
 		float rightWingInclination = 1.0f;
 		float horStabInclination = 1.0f;
 		float verStabInclination = 1.0f;
 		
+		if (verticalAngle>0){
+			leftWingInclination=1.0f;//Max;
+			rightWingInclination=1.0f;//Max;
+		}
+		else {
+			leftWingInclination =1.0f;//MIN;
+			rightWingInclination =1.0f;//MIN;
+		}
+		
+		
+		
 		AutopilotOutputs output = new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 		
 		return output;
 	}
-
+	
+	
+	
+	
 }
