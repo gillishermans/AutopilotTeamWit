@@ -147,10 +147,10 @@ public class Beeldherkenning {
 	                }
 	        }
 	        
-	        displayImage( Mat2BufferedImage(mask));
+	        //displayImage( Mat2BufferedImage(mask));
 	        Mat RGB_img = new Mat();
 	        Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
-	        displayImage( Mat2BufferedImage(RGB_img));
+	        //displayImage( Mat2BufferedImage(RGB_img));
 	        System.out.println(distanceToObject(radius[0]));
 	        System.out.println(horizontalAngle(center));
 	        System.out.println(verticalAngle(center));
