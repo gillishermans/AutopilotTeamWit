@@ -31,7 +31,7 @@ public class Beeldherkenning {
 	//Het centrum van de afbeelding
 	private static Point screenCenter = new Point(WIDTH/2,HEIGHT/2);
 	//De lengte van de helft van het scherm in mm idpv pixels
-	//Om de hoek te berekenen van een object tegenover het midden van het scherm
+	//Om de groottes op het projectievlak in mm om te zetten
 	private static double halfScreenLength = Math.tan(1.0471975512)*focalLength; 
 	
 	public float[] getRadius(){
