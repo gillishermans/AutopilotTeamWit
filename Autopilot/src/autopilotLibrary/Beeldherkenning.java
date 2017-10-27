@@ -14,12 +14,14 @@ import javax.swing.JLabel;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
+import api.AutopilotConfig;
+
 
 public class Beeldherkenning {
 	
 	//Grootte van de afbeelding
-	private final static int WIDTH = 200;
-	private final static int HEIGHT = 200;
+	private static int imageWidth = 200;
+	private static int imageHeight = 200;
 	//Focal length van de camera
 	private static float focalLength = 0.01f;
 	//Size of the object -> de diagonaal van de kubus
@@ -29,7 +31,7 @@ public class Beeldherkenning {
     private static float[] radius = new float[1];
 	private static Point center = new Point();
 	//Het centrum van de afbeelding
-	private static Point screenCenter = new Point(WIDTH/2,HEIGHT/2);
+	private static Point screenCenter = new Point(imageWidth/2,imageHeight/2);
 	//De lengte van de helft van het scherm in mm idpv pixels
 	//Om de groottes op het projectievlak in mm om te zetten
 	private static double halfScreenLength = Math.tan(1.0471975512)*focalLength; 
@@ -40,6 +42,11 @@ public class Beeldherkenning {
 	
 	public Point getCenter(){
 		return this.center;
+	}
+	
+	public Beeldherkenning(AutopilotConfig config){
+		this.imageWidth = config.getNbColumns();
+		this.imageHeight = config.getNbRows();
 	}
 	
 	//MAIN OM TE TESTEN
@@ -56,7 +63,7 @@ public class Beeldherkenning {
       //Lees image in (om te testen, anders komt data als input binnen)
         data = Files.readAllBytes(new File("C:\\Image\\pixels.txt").toPath());
       //Zet data = byte[] om in Mat
-        Mat flipped = new Mat(WIDTH, HEIGHT, CvType.CV_8UC3);
+        Mat flipped = new Mat(imageWidth, imageHeight, CvType.CV_8UC3);
         flipped.put(0, 0, data);
         Mat image = new Mat();
         Core.flip(flipped, image, 0);
@@ -110,7 +117,7 @@ public class Beeldherkenning {
 	        System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 	        
 	      //Zet data = byte[] om in Mat
-	        Mat flipped = new Mat(WIDTH, HEIGHT, CvType.CV_8UC3);
+	        Mat flipped = new Mat(imageWidth, imageHeight, CvType.CV_8UC3);
 	        flipped.put(0, 0, data); //geeft nog een error
 	        Mat image = new Mat();
 	        Core.flip(flipped, image, 0);
@@ -120,7 +127,7 @@ public class Beeldherkenning {
 	        Mat mask = new Mat();
 	        
 	        
-	      //convert the frame to HSV
+	      //Zet afbeelding om in HSV waarden
 	        Imgproc.cvtColor(image, hsvImage, Imgproc.COLOR_RGB2HSV);
 	        
 	      //Zoek kleur tussen deze ranges (rood)

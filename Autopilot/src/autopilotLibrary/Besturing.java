@@ -8,10 +8,11 @@ public class Besturing {
 
 	public Besturing(AutopilotConfig config) {
 		this.config = config;
+		this.beeldherkenning = new Beeldherkenning(config);
 	}
 	
 	private AutopilotConfig config;
-	private Beeldherkenning beeldherkenning = new Beeldherkenning();
+	private Beeldherkenning beeldherkenning;
 	
 	public AutopilotOutputs startBesturing(AutopilotInputs inputs){
 		
