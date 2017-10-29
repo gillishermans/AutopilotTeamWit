@@ -41,7 +41,7 @@ public class Besturing {
 		// AOA=> 1
 		// thrust moet versnelling in de z-richting, veroorzaakt door vleugels teniet doen
 		
-		thrust=(float) (-2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(100,2));
+		thrust=(float) (-2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1);//*Math.pow(100,2));
 		horStabInclination=0;
 		verStabInclination=0;
 		AutopilotOutputs output = new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
