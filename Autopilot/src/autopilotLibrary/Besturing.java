@@ -28,17 +28,22 @@ public class Besturing {
 		float horStabInclination = 0.0f;
 		float verStabInclination = 0.0f;
 		
-		if (verticalAngle>0){
-			leftWingInclination=0.0f;//Max;
-			rightWingInclination=0.0f;//Max;
+		if (horizontalAngle >=0 ){
+			 rightWingInclination=(float) (Math.PI/6.0);
+			 leftWingInclination=(float) (Math.PI/6.0);
 		}
-		else {
-			leftWingInclination =0.0f;//MIN;
-			rightWingInclination =0.0f;//MIN;
+		else{
+			 rightWingInclination=(float) -(Math.PI/6.0);
+			 leftWingInclination=(float) -(Math.PI/6.0);
 		}
 		
+		// Beginsnelheid initialiseren met 100
+		// AOA=> 1
+		// thrust moet versnelling in de z-richting, veroorzaakt door vleugels teniet doen
 		
-		
+		thrust=(float) (-2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(100,2));
+		horStabInclination=0;
+		verStabInclination=0;
 		AutopilotOutputs output = new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 		
 		return output;
