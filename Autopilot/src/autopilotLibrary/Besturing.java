@@ -21,6 +21,8 @@ public class Besturing {
 		float distance = beeldherkenning.distanceToObject(beeldherkenning.getRadius()[0]);
 		double horizontalAngle = beeldherkenning.horizontalAngle(beeldherkenning.getCenter());	
 		double verticalAngle = beeldherkenning.verticalAngle(beeldherkenning.getCenter());
+		System.out.print(verticalAngle);
+		
 		
 		float thrust = 0.00f;
 		float leftWingInclination = 0.0f;
@@ -28,13 +30,13 @@ public class Besturing {
 		float horStabInclination = 0.0f;
 		float verStabInclination = 0.0f;
 		
-		if (horizontalAngle >=0 ){
-			 rightWingInclination=(float) (Math.PI/6.0);
-			 leftWingInclination=(float) (Math.PI/6.0);
+		if (verticalAngle >=0 ){
+			 rightWingInclination=(float) (Math.PI/32.0);
+			 leftWingInclination=(float) (Math.PI/32.0);
 		}
 		else{
-			 rightWingInclination=(float) -(Math.PI/6.0);
-			 leftWingInclination=(float) -(Math.PI/6.0);
+			 rightWingInclination=(float) -(Math.PI/32.0);
+			 leftWingInclination=(float) -(Math.PI/32.0);
 		}
 		
 		// Beginsnelheid initialiseren met 100
