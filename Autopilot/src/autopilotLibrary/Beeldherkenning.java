@@ -105,9 +105,9 @@ public class Beeldherkenning {
         Mat RGB_img = new Mat();
         Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
         displayImage( Mat2BufferedImage(RGB_img));
-        System.out.println(distanceToObject(radius[0]));
-        System.out.println(horizontalAngle(center));
-        System.out.println(verticalAngle(center));
+       // System.out.println(distanceToObject(radius[0]));
+       // System.out.println(horizontalAngle(center));
+       // System.out.println(verticalAngle(center));
         
     }
 	
@@ -159,9 +159,9 @@ public class Beeldherkenning {
 	        Mat RGB_img = new Mat();
 	        Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
 	        //displayImage( Mat2BufferedImage(RGB_img));
-	        System.out.println(distanceToObject(radius[0]));
-	        System.out.println(horizontalAngle(center));
-	        System.out.println(verticalAngle(center));
+	       // System.out.println(distanceToObject(radius[0]));
+	       // System.out.println(horizontalAngle(center));
+	       // System.out.println(verticalAngle(center));
 	    }
 
 	//Bereken afstand van een object tot de camera
