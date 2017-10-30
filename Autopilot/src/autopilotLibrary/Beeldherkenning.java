@@ -29,9 +29,10 @@ public class Beeldherkenning {
 	private static float objectSize = 1f;
 	//min enclosing circle parameters
     private static float[] radius = new float[1];
-	private static Point center = new Point();
+	
 	//Het centrum van de afbeelding
 	private static Point screenCenter = new Point(imageWidth/2,imageHeight/2);
+	private static Point center = new Point(screenCenter.x,screenCenter.y);
 	//De lengte van de helft van het scherm in mm idpv pixels
 	//Om de groottes op het projectievlak in mm om te zetten
 	private static double halfScreenLength = Math.tan(1.0471975512)*focalLength; 
@@ -184,7 +185,7 @@ public class Beeldherkenning {
 	public static double verticalAngle(Point center){
 		double distancePointCenter = center.y - screenCenter.y;
 		double distance = (distancePointCenter/100) * halfScreenLength;
-		return Math.atan(distance/focalLength);
+		return -Math.atan(distance/focalLength);
 	}
 	
 	public static BufferedImage Mat2BufferedImage(Mat m){
