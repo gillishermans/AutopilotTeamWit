@@ -28,11 +28,16 @@ public class Beeldherkenning {
 	// -> in een ideale situatie komt de diagonaal overeen met de diameter van de min enclosing circle
 	private static float objectSize = 1f;
 	//min enclosing circle parameters
-    private static float[] radius = new float[1];
+    private static float[] radius = new float[10];
 	
 	//Het centrum van de afbeelding
 	private static Point screenCenter = new Point(imageWidth/2,imageHeight/2);
 	private static Point center = new Point(screenCenter.x,screenCenter.y);
+	
+	private static ArrayList<Point> centerArray = new ArrayList<Point>();
+	private static ArrayList<Float> radiusArray = new ArrayList<Float>();
+	private static ArrayList<double[]> colorArray = new ArrayList<double[]>();
+	
 	//De lengte van de helft van het scherm in mm idpv pixels
 	//Om de groottes op het projectievlak in mm om te zetten
 	private static double halfScreenLength = Math.tan(1.0471975512)*focalLength; 
@@ -45,15 +50,36 @@ public class Beeldherkenning {
 		return this.center;
 	}
 	
+	public ArrayList<Point> getCenterArray(){
+		return this.centerArray;
+	}
+	
+	public ArrayList<Float> getRadiusArray(){
+		return this.radiusArray;
+	}
+	
+	public ArrayList<double[]> getColorArray(){
+		return this.colorArray;
+	}
+	
+	
+	
+	
+	public static void addCircle(Point center,float radius){
+		centerArray.add(center);
+		radiusArray.add(radius);
+	}
+	
 	public Beeldherkenning(AutopilotConfig config){
 		this.imageWidth = config.getNbColumns();
 		this.imageHeight = config.getNbRows();
+		//this.centerArray.add(new Point(screenCenter.x,screenCenter.y));
 	}
 	
 	//MAIN OM TE TESTEN
 	public static void main(String[] args) throws Exception{
-        imageRecognitionTest(null);
-      
+		imageRecognitionTest(null);
+        
 	}
 	
 	//STATIC OM TE TESTEN
@@ -78,9 +104,15 @@ public class Beeldherkenning {
         Imgproc.cvtColor(image, hsvImage, Imgproc.COLOR_RGB2HSV);
         
       //Zoek kleur tussen deze ranges (rood)
-        Scalar minValues = new Scalar(0,255,38);
-        Scalar maxValues = new Scalar(0,255,255);
+//        Scalar minValues = new Scalar(0,255,38);
+//        Scalar maxValues = new Scalar(0,255,255);
+//        Core.inRange(hsvImage, minValues, maxValues, mask);
+        
+      //Zoek kleuren die niet wit zijn - kubussen
+        Scalar minValues = new Scalar(0,1,0);
+        Scalar maxValues = new Scalar(255,255,255);
         Core.inRange(hsvImage, minValues, maxValues, mask);
+        
         
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
@@ -95,13 +127,18 @@ public class Beeldherkenning {
                 		//Teken de contouren in blauw
                         Imgproc.drawContours(image, contours, i, new Scalar(0, 0, 255));
                         //Bepaal minimal enclosing circle en teken hem op blurredImage
-                        MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(i).toArray() );                            
+                        MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(i).toArray() ); 
+                        float[] radius = new float[1];
+    					Point center = new Point();
                         Imgproc.minEnclosingCircle(contour2f, center, radius);
                         int radiusInt = Math.round(radius[0]);
                         Imgproc.circle(image, center, radiusInt, new Scalar( 0,0 , 255 ));
+                        
+                        addCircle(center,radius[0]);  
+                        colorArray.add(hsvImage.get((int) center.y,(int) center.x));
                 }
         }
-        
+    
         displayImage( Mat2BufferedImage(mask));
         Mat RGB_img = new Mat();
         Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
@@ -109,6 +146,11 @@ public class Beeldherkenning {
        // System.out.println(distanceToObject(radius[0]));
        // System.out.println(horizontalAngle(center));
        // System.out.println(verticalAngle(center));
+        
+        
+         System.out.println(centerArray);
+         System.out.println(radiusArray);
+         System.out.println(colorArray);
         
     }
 	
@@ -132,8 +174,13 @@ public class Beeldherkenning {
 	        Imgproc.cvtColor(image, hsvImage, Imgproc.COLOR_RGB2HSV);
 	        
 	      //Zoek kleur tussen deze ranges (rood)
-	        Scalar minValues = new Scalar(0,255,38);
-	        Scalar maxValues = new Scalar(0,255,255);
+//	        Scalar minValues = new Scalar(0,255,38);
+//	        Scalar maxValues = new Scalar(0,255,255);
+//	        Core.inRange(hsvImage, minValues, maxValues, mask);
+	        
+	      //Zoek kleuren die niet wit zijn - kubussen
+	        Scalar minValues = new Scalar(0,1,0);
+	        Scalar maxValues = new Scalar(255,255,255);
 	        Core.inRange(hsvImage, minValues, maxValues, mask);
 	        
 	        List<MatOfPoint> contours = new ArrayList<>();
@@ -149,12 +196,19 @@ public class Beeldherkenning {
 	                		//Teken de contouren in blauw
 	                        Imgproc.drawContours(image, contours, i, new Scalar(255, 0, 0));
 	                        //Bepaal minimal enclosing circle en teken hem op blurredImage
-	                        MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(i).toArray() );                            
+	                        MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(i).toArray() ); 
+	                        float[] radius = new float[1];
+	    					Point center = new Point();
 	                        Imgproc.minEnclosingCircle(contour2f, center, radius);
 	                        int radiusInt = Math.round(radius[0]);
 	                        Imgproc.circle(image, center, radiusInt, new Scalar( 255,0 , 0 ));
+	                        
+	                        addCircle(center,radius[0]); 
+	                        colorArray.add(hsvImage.get((int) center.y,(int) center.x));
 	                }
 	        }
+	        
+
 	        
 	        //displayImage( Mat2BufferedImage(mask));
 	        Mat RGB_img = new Mat();
@@ -166,8 +220,9 @@ public class Beeldherkenning {
 	    }
 
 	//Bereken afstand van een object tot de camera
-	public static float distanceToObject(float objectSizeOnSensor){
-		float sizeOnSensorMM = (float) ((objectSizeOnSensor/100)*2* halfScreenLength);
+	public static float distanceToObject(Point Center,float radius){
+		
+		float sizeOnSensorMM = (float) ((radius/100)*2* halfScreenLength);
 		return (float) ((objectSize * focalLength )/sizeOnSensorMM );
 		
 	}
@@ -178,7 +233,7 @@ public class Beeldherkenning {
 		double distancePointCenter = center.x - screenCenter.x;
 		double distance = (distancePointCenter/100) *  halfScreenLength;
 		return Math.atan(distance/focalLength);
-	}
+	} 
 	
 	//Bereken de verticale hoek tussen middelpunt van de afbeelding en het object
 	//Negatief is boven en positief is onder

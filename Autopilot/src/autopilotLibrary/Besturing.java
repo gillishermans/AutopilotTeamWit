@@ -1,4 +1,8 @@
 package autopilotLibrary;
+import java.util.ArrayList;
+
+import org.opencv.core.Point;
+
 import api.AutopilotConfig;
 import api.AutopilotInputs;
 import api.AutopilotOutputs;
@@ -24,9 +28,21 @@ public class Besturing {
 		
 		//Run beeldherkenning en bereken de afstand en hoeken
 		beeldherkenning.imageRecognition(inputs.getImage());
-		float distance = beeldherkenning.distanceToObject(beeldherkenning.getRadius()[0]);
-		double horizontalAngle = beeldherkenning.horizontalAngle(beeldherkenning.getCenter());	
-		double verticalAngle = beeldherkenning.verticalAngle(beeldherkenning.getCenter());
+		
+		ArrayList<Point> centerArray = beeldherkenning.getCenterArray();
+		ArrayList<Float> radiusArray = beeldherkenning.getRadiusArray();
+		ArrayList<double[]> colorArray = beeldherkenning.getColorArray();
+		
+		float distance = 0f;
+		double horizontalAngle = 0f;
+		double verticalAngle = 0f;
+		
+		if(!centerArray.isEmpty()){
+			distance = beeldherkenning.distanceToObject(centerArray.get(0),radiusArray.get(0));
+			horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(0));	
+			verticalAngle = beeldherkenning.verticalAngle(centerArray.get(0));
+		}
+		
 		
 		
 	//DEMO 3	
@@ -67,15 +83,15 @@ public class Besturing {
 //		}
 		
 		//VERTICAAL
-		if (verticalAngle == -0f){
+		if (verticalAngle == 0f){
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
 			horStabInclination = 0f;
 		}
 		else if (verticalAngle > 0 ){
 			float ratio =(float) ((float) verticalAngle / (Math.PI/3));
-			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
-			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
+			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/4));
+			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/4));
 			//horStabInclination = (float) ((float) 2*ratio*(-Math.PI/30));
 		}
 		
@@ -87,8 +103,9 @@ public class Besturing {
 		}
 		
 		
+		
 		//HORIZONTAAL
-		if (horizontalAngle == -0f){
+		if (horizontalAngle == 0f){
 			verStabInclination=0;
 		}
 		else if (horizontalAngle > 0 ){
