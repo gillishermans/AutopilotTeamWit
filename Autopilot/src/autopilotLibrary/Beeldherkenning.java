@@ -159,6 +159,10 @@ public class Beeldherkenning {
 		  //Laad de openCV library in
 	        System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 	        
+	        centerArray = new ArrayList<Point>();
+	    	radiusArray = new ArrayList<Float>();
+	    	colorArray = new ArrayList<double[]>();
+	        
 	      //Zet data = byte[] om in Mat
 	        Mat flipped = new Mat(imageWidth, imageHeight, CvType.CV_8UC3);
 	        flipped.put(0, 0, data); //geeft nog een error

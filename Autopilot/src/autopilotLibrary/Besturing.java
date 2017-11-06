@@ -62,8 +62,8 @@ public class Besturing {
 		//Beweeg naar dichtstbijzijnde kubus
 		horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(shortestI));	
 		verticalAngle = beeldherkenning.verticalAngle(centerArray.get(shortestI));
-		
-		
+		System.out.println(horizontalAngle);
+		System.out.println(verticalAngle);
 		
 		
 		
