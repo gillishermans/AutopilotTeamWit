@@ -90,8 +90,8 @@ public class Besturing {
 		}
 		else if (verticalAngle > 0 ){
 			float ratio =(float) ((float) verticalAngle / (Math.PI/3));
-			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/4));
-			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/4));
+			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
+			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
 			//horStabInclination = (float) ((float) 2*ratio*(-Math.PI/30));
 		}
 		

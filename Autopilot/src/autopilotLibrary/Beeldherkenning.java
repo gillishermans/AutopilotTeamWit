@@ -245,7 +245,6 @@ public class Beeldherkenning {
 	
 	public static BufferedImage Mat2BufferedImage(Mat m){
 		// source: http://answers.opencv.org/question/10344/opencv-java-load-image-to-gui/
-		// Fastest code
 		// The output can be assigned either to a BufferedImage or to an Image
 
 		    int type = BufferedImage.TYPE_BYTE_GRAY;
