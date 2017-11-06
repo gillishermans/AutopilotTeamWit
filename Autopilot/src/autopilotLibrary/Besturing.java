@@ -52,11 +52,10 @@ public class Besturing {
 			horStabInclination = 0f;
 			System.out.println("hallo");
 			
-		}
-		else if (verticalAngle >0 ){
+		}else if (verticalAngle >0 ){
 			 rightWingInclination+=(float) (Math.PI/30.0);
 			 leftWingInclination+=(float) (Math.PI/30.0);
-			 
+			 horStabInclination = 0f;
 			 System.out.println("winginclination" + leftWingInclination);
 			 
 			 if (rightWingInclination > Math.PI/4) {
@@ -64,17 +63,17 @@ public class Besturing {
 				 leftWingInclination = (float) (Math.PI/4);
 				 horStabInclination = (float) (Math.PI/15);
 			 }
-		}
-		
-		else{
-			 rightWingInclination+=(float) -(Math.PI/150.0);
-			 leftWingInclination+=(float) -(Math.PI/150.0);
-			 System.out.println("horstabinclination" + horStabInclination);
-			 if (horStabInclination > 0) 
-				 horStabInclination -= Math.PI/720;
-			 if (rightWingInclination < -Math.PI/4) {
-				 rightWingInclination = (float) -(Math.PI/4);
-				 leftWingInclination = (float) -(Math.PI/4);
+		}else{
+			 rightWingInclination-=(float) (Math.PI/30.0);
+			 leftWingInclination-=(float) (Math.PI/30.0);
+			 System.out.println("????????????????????????????????????????????????????????????????????????????????");
+			 horStabInclination += Math.PI/1000f;
+			 if (horStabInclination > Math.PI/4f) 
+				 horStabInclination = (float) (Math.PI/4);
+			 
+			 if (rightWingInclination < 0f) {
+				 rightWingInclination = (float)(0);
+				 leftWingInclination = (float)(0);
 			 }
 			 
 		}
