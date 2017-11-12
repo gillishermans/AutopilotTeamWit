@@ -15,14 +15,13 @@ public class Besturing {
 	float rightWingInclination = 0.0f;
 	float horStabInclination = 0.0f;
 	float verStabInclination = 0.0f;
+	private AutopilotConfig config;
+	private Beeldherkenning beeldherkenning;
 	
 	public Besturing(AutopilotConfig config) {
 		this.config = config;
 		this.beeldherkenning = new Beeldherkenning(config);
 	}
-	
-	private AutopilotConfig config;
-	private Beeldherkenning beeldherkenning;
 	
 	public AutopilotOutputs startBesturing(AutopilotInputs inputs){
 		
@@ -31,19 +30,16 @@ public class Besturing {
 		
 		ArrayList<Point> centerArray = beeldherkenning.getCenterArray();
 		ArrayList<Float> radiusArray = beeldherkenning.getRadiusArray();
-		ArrayList<double[]> colorArray = beeldherkenning.getColorArray();
+	  //ArrayList<double[]> colorArray = beeldherkenning.getColorArray();
 		
-		//float distance = 0f;
-		double horizontalAngle = 0f;
-		double verticalAngle = 0f;
 		
+		//Geen kubus gevonden -> vlieg rechtdoor
 		if(centerArray.isEmpty()){
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
 			horStabInclination = 0f;
-			thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2));//*Math.pow(100,2));
-			AutopilotOutputs outputs = new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
-			return outputs;
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2));
+			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 		}
 		
 		//Zoek dichtsbijzijnde kubus
@@ -60,55 +56,13 @@ public class Besturing {
 		}
 		
 		//Beweeg naar dichtstbijzijnde kubus
-		horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(shortestI));	
-		verticalAngle = beeldherkenning.verticalAngle(centerArray.get(shortestI));
+		double horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(shortestI));	
+		double verticalAngle = beeldherkenning.verticalAngle(centerArray.get(shortestI));
 		System.out.println(horizontalAngle);
 		System.out.println(verticalAngle);
+				
 		
-		
-		
-		
-	//DEMO 3	
-		/*
-		if (verticalAngle == -0f || (verticalAngle < (Math.PI)/(180))&& verticalAngle > -(Math.PI)/(180)){
-			rightWingInclination = (float) (Math.PI/20);
-			leftWingInclination = (float) (Math.PI/20);
-			horStabInclination = 0f;
-			
-		}
-		else if (verticalAngle >0 ){
-			 rightWingInclination+=(float) (Math.PI/30.0);
-			 leftWingInclination+=(float) (Math.PI/30.0);
-			 
-			 System.out.println("winginclination" + leftWingInclination);
-			 
-			 if (rightWingInclination > Math.PI/4) {
-				 rightWingInclination = (float) (Math.PI/4);
-				 leftWingInclination = (float) (Math.PI/4);
-				 horStabInclination = (float) (Math.PI/15);
-			 }
-		}
-//		else if (verticalAngle < -(0.05*Math.PI)){
-//			rightWingInclination = (float) (Math.PI/20);
-//			leftWingInclination = (float) (Math.PI/20);
-//			horStabInclination = 0f;
-//		}
-		else{
-			 rightWingInclination+=(float) -(Math.PI/180.0);
-			 leftWingInclination+=(float) -(Math.PI/180.0);
-			 horStabInclination -= Math.PI/240;
-//			 System.out.println("horstabinclination" + horStabInclination);
-//			 if (horStabInclination > 0) 
-//				 horStabInclination -= Math.PI/720;
-//			 if (rightWingInclination < -Math.PI/4) {
-//				 rightWingInclination = (float) -(Math.PI/4);
-//				 leftWingInclination = (float) -(Math.PI/4);
-//			 }	 
-		}
-		*/
-		
-		
-		//VERTICAAL
+	//VERTICAAL
 		if (verticalAngle == 0f){
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
@@ -129,8 +83,7 @@ public class Besturing {
 		}
 		
 		
-		
-		//HORIZONTAAL
+	//HORIZONTAAL
 		if (horizontalAngle == 0f){
 			verStabInclination=0;
 		}
@@ -151,9 +104,7 @@ public class Besturing {
 		thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2));//*Math.pow(100,2));
 		//thrust = 100f;
 
-		AutopilotOutputs outputs = new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
-		
-		return outputs;
+		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 	}
 
 }
