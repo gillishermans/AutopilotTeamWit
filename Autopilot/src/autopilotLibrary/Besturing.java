@@ -87,7 +87,7 @@ public class Besturing {
 		if (horizontalAngle == 0f){
 			verStabInclination=0;
 		}
-		else if (horizontalAngle > 0 ){
+		else if (horizontalAngle > 0 ) {
 			verStabInclination= (float) -Math.PI/10; 
 		}
 		
