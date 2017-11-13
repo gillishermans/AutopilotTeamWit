@@ -3,10 +3,10 @@ import java.util.ArrayList;
 
 import org.opencv.core.Point;
 
-import api.AutopilotConfig;
-import api.AutopilotInputs;
-import api.AutopilotOutputs;
-import api.Outputs;
+import interfaces.AutopilotConfig;
+import interfaces.AutopilotInputs;
+import interfaces.AutopilotOutputs;
+import interfaces.Outputs;
 
 public class Besturing {
 
@@ -31,6 +31,7 @@ public class Besturing {
 		ArrayList<Point> centerArray = beeldherkenning.getCenterArray();
 		ArrayList<Float> radiusArray = beeldherkenning.getRadiusArray();
 	  //ArrayList<double[]> colorArray = beeldherkenning.getColorArray();
+		
 		
 		
 		//Geen kubus gevonden -> vlieg rechtdoor
@@ -58,8 +59,8 @@ public class Besturing {
 		//Beweeg naar dichtstbijzijnde kubus
 		double horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(shortestI));	
 		double verticalAngle = beeldherkenning.verticalAngle(centerArray.get(shortestI));
-		System.out.println(horizontalAngle);
-		System.out.println(verticalAngle);
+		//System.out.println(horizontalAngle);
+		//System.out.println(verticalAngle);
 				
 		
 	//VERTICAAL

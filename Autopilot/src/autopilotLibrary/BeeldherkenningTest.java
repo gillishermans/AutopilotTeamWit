@@ -13,7 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-import api.AutopilotConfig;
+
+import interfaces.AutopilotConfig;
 
 public class BeeldherkenningTest {
 
@@ -134,6 +135,7 @@ public class BeeldherkenningTest {
 	                        
 	                        addCircle(center,radius[0]);  
 	                        colorArray.add(hsvImage.get((int) center.y,(int) center.x));
+	                        
 	                }
 	        }
 	    
@@ -141,21 +143,21 @@ public class BeeldherkenningTest {
 	        Mat RGB_img = new Mat();
 	        Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
 	        displayImage( Mat2BufferedImage(RGB_img));
-	       // System.out.println(distanceToObject(radius[0]));
+	        System.out.println(distanceToObject(centerArray.get(0),radiusArray.get(0)));
 	       // System.out.println(horizontalAngle(center));
 	       // System.out.println(verticalAngle(center));
 	        
 	        
-	         System.out.println(centerArray);
-	         System.out.println(radiusArray);
-	         System.out.println(colorArray);
+	         //System.out.println(centerArray);
+	         //System.out.println(radiusArray);
+	         //System.out.println(colorArray);
 	        
 	    }
 		
 		//Bereken afstand van een object tot de camera
 		public static float distanceToObject(Point Center,float radius){
 			
-			float sizeOnSensorMM = (float) ((radius/100)*2* halfScreenLength);
+			float sizeOnSensorMM = (float) ((radius/100)* halfScreenLength);
 			return (float) ((objectSize * focalLength )/sizeOnSensorMM );
 			
 		}

@@ -1,4 +1,4 @@
-package api;
+package interfaces;
 
 public class Outputs implements AutopilotOutputs {
 

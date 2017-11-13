@@ -1,4 +1,4 @@
-package api;
+package interfaces;
 
 public interface Autopilot {
     AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs);

@@ -1,4 +1,4 @@
-package api;
+package interfaces;
 
 public class AutopilotOutputsReader {
     private static byte[] readByteArray(java.io.DataInputStream stream) throws java.io.IOException {

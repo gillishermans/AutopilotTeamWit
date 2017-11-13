@@ -1,8 +1,8 @@
 package autopilotLibrary;
-import api.*;
+import interfaces.*;
 
 
-public class CommunicatieTestbed{
+public class CommunicatieTestbed implements Autopilot{
 
 	public CommunicatieTestbed() {
 		// TODO Auto-generated constructor stub
@@ -10,7 +10,7 @@ public class CommunicatieTestbed{
 	
 	private static Besturing besturing;
 
-	public static AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
+	public AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
 		
 		//Lees config en start een timePassed
 		besturing = new Besturing(config);
@@ -19,7 +19,7 @@ public class CommunicatieTestbed{
 		return output;
 	}
 
-	public static AutopilotOutputs timePassed(AutopilotInputs inputs){
+	public AutopilotOutputs timePassed(AutopilotInputs inputs){
 
 		//Start het besturingsalgoritme
 		AutopilotOutputs output = besturing.startBesturing(inputs);
@@ -27,7 +27,7 @@ public class CommunicatieTestbed{
 		return output;
 	}
 
-	public static void simulationEnded() {
+	public void simulationEnded() {
 		
 		//Stop de simulatie
 		

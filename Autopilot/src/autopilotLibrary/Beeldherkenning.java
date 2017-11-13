@@ -1,4 +1,4 @@
-package autopilotLibrary;
+ package autopilotLibrary;
 
 import java.awt.FlowLayout;
 import java.awt.Image;
@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
-import api.AutopilotConfig;
+import interfaces.AutopilotConfig;
 
 
 public class Beeldherkenning {

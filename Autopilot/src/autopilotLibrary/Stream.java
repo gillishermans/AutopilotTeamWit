@@ -1,12 +1,12 @@
 package autopilotLibrary;
 import java.io.*;
 
-import api.AutopilotConfig;
-import api.AutopilotConfigReader;
-import api.AutopilotInputs;
-import api.AutopilotInputsReader;
-import api.AutopilotOutputs;
-import api.AutopilotOutputsWriter;
+import interfaces.AutopilotConfig;
+import interfaces.AutopilotConfigReader;
+import interfaces.AutopilotInputs;
+import interfaces.AutopilotInputsReader;
+import interfaces.AutopilotOutputs;
+import interfaces.AutopilotOutputsWriter;
 
 
 //Neemt een DataInputStream van Testbed aan, roept de main functie aan met de gegeven input
