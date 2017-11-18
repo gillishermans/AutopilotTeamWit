@@ -78,7 +78,17 @@ public class Beeldherkenning {
 	//WORDT GEBRUIKT IN BESTURING
 	public void imageRecognition(byte[] data){
 		  //Laad de openCV library in
-	        System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+	        
+			//String opencvpath = System.getProperty("user.dir") + "\\files\\";
+			//String libPath = System.getProperty("java.library.path");
+			//System.load(Core.NATIVE_LIBRARY_NAME + ".dll");
+			
+			//NORMAAL
+			//System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+			
+			//HUN TESTBED - PAS ZELF DIRECTORY AAN
+			System.load("C:\\Users\\gillis\\Documents\\OpenCV\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
+	        
 	        
 	        centerArray = new ArrayList<Point>();
 	    	radiusArray = new ArrayList<Float>();
