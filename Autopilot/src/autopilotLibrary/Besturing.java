@@ -95,7 +95,7 @@ public class Besturing {
 		
 		
 	//	NIEUW ALGORITME --------------------------------------------------------
-		
+
 		//Bewaar positie en tijd
 		getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
 		getTimeList().add(inputs.getElapsedTime());
@@ -111,7 +111,7 @@ public class Besturing {
 			
 			speed = Vector.norm(speedVector)/inputs.getElapsedTime();
 		}
-				
+
 		//HET ZOLTAN GILLIS ALGORITME
 		if(getTimeList().size()-1 == 1){
 			float minE = 99999;
@@ -127,8 +127,6 @@ public class Besturing {
 				}
 			}
 		}
-				
-		
 				
 	//VERTICAAL - NIEUWE FYSICA	
 		
