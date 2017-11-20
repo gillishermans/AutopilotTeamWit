@@ -9,7 +9,7 @@ public class AutopilotFactory {
 	}
 	
 	public static Autopilot createAutopilot(){
-		return (Autopilot) new CommunicatieTestbed();
+		return new CommunicatieTestbed();
 	}
 
 }

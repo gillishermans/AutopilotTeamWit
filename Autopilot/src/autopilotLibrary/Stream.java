@@ -17,45 +17,45 @@ public class Stream {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static DataOutputStream simulationStarted(java.io.DataInputStream configStream,java.io.DataInputStream inputStream) throws IOException{
-		
-		//Lees configStream en inputStream in
-		AutopilotConfig config = AutopilotConfigReader.read(configStream);
-		configStream.close();
-		AutopilotInputs input = AutopilotInputsReader.read(inputStream);
-		inputStream.close();
-		
-		//Start simulatie
-		AutopilotOutputs output = CommunicatieTestbed.simulationStarted(config,input);
-		
-		//Geef dataOuputStream terug
-		DataOutputStream outputStream = null;
-		AutopilotOutputsWriter.write(outputStream, output);
-		
-		return outputStream;
-	}
-	
-	public static DataOutputStream timePassed(java.io.DataInputStream inputStream) throws IOException{
-		
-		//Lees inputStream in
-		AutopilotInputs input = AutopilotInputsReader.read(inputStream);
-		inputStream.close();
-		
-		//Start timePassed stap
-		AutopilotOutputs output = CommunicatieTestbed.timePassed(input);
-		
-		//Geef dataOuputStream terug
-		DataOutputStream outputStream = null;
-		AutopilotOutputsWriter.write(outputStream, output);
-		
-		return outputStream;
-	}
-	
-	public static void simulationEnded(){
-		
-		//Start simulationEnded in Main
-		CommunicatieTestbed.simulationEnded();
-		
-	}
+//	public static DataOutputStream simulationStarted(java.io.DataInputStream configStream,java.io.DataInputStream inputStream) throws IOException{
+//		
+//		//Lees configStream en inputStream in
+//		AutopilotConfig config = AutopilotConfigReader.read(configStream);
+//		configStream.close();
+//		AutopilotInputs input = AutopilotInputsReader.read(inputStream);
+//		inputStream.close();
+//		
+//		//Start simulatie
+//		AutopilotOutputs output = CommunicatieTestbed.simulationStarted(config,input);
+//		
+//		//Geef dataOuputStream terug
+//		DataOutputStream outputStream = null;
+//		AutopilotOutputsWriter.write(outputStream, output);
+//		
+//		return outputStream;
+//	}
+//	
+//	public static DataOutputStream timePassed(java.io.DataInputStream inputStream) throws IOException{
+//		
+//		//Lees inputStream in
+//		AutopilotInputs input = AutopilotInputsReader.read(inputStream);
+//		inputStream.close();
+//		
+//		//Start timePassed stap
+//		AutopilotOutputs output = CommunicatieTestbed.timePassed(input);
+//		
+//		//Geef dataOuputStream terug
+//		DataOutputStream outputStream = null;
+//		AutopilotOutputsWriter.write(outputStream, output);
+//		
+//		return outputStream;
+//	}
+//	
+//	public static void simulationEnded(){
+//		
+//		//Start simulationEnded in Main
+//		CommunicatieTestbed.simulationEnded();
+//		
+//	}
 
 }

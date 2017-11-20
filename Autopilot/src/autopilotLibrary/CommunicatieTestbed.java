@@ -15,7 +15,6 @@ public class CommunicatieTestbed implements Autopilot{
 		//Lees config en start een timePassed
 		besturing = new Besturing(config);
 		AutopilotOutputs output = timePassed(inputs);
-		
 		return output;
 	}
 
@@ -23,7 +22,6 @@ public class CommunicatieTestbed implements Autopilot{
 
 		//Start het besturingsalgoritme
 		AutopilotOutputs output = besturing.startBesturing(inputs);
-		
 		return output;
 	}
 

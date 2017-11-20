@@ -157,7 +157,7 @@ public class BeeldherkenningTest {
 		//Bereken afstand van een object tot de camera
 		public static float distanceToObject(Point Center,float radius){
 			
-			float sizeOnSensorMM = (float) ((radius/100)* halfScreenLength);
+			float sizeOnSensorMM = (float) ((radius/100)*2* halfScreenLength);
 			return (float) ((objectSize * focalLength )/sizeOnSensorMM );
 			
 		}
