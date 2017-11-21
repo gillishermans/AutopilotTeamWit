@@ -87,8 +87,8 @@ public class Beeldherkenning {
 			//System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 			
 			//HUN TESTBED - PAS ZELF DIRECTORY AAN
-
-			System.load("D:\\Downloads\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
+			System.load("C:\\Users\\gillis\\Documents\\OpenCV\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
+			//System.load("D:\\Downloads\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
 
 
 	        centerArray = new ArrayList<Point>();
@@ -163,18 +163,18 @@ public class Beeldherkenning {
 	
 	//Bereken de horizontale hoek tussen middelpunt van de afbeelding en het object
 	//Negatief is links en positief is rechts
-	public double horizontalAngle(Point center){
+	public float horizontalAngle(Point center){
 		double distancePointCenter = center.x - screenCenter.x;
 		double distance = (distancePointCenter/100) *  halfScreenLength;
-		return Math.atan(distance/focalLength);
+		return (float) Math.atan(distance/focalLength);
 	} 
 	
 	//Bereken de verticale hoek tussen middelpunt van de afbeelding en het object
 	//Negatief is boven en positief is onder
-	public double verticalAngle(Point center){
+	public float verticalAngle(Point center){
 		double distancePointCenter = center.y - screenCenter.y;
 		double distance = (distancePointCenter/100) * halfScreenLength;
-		return -Math.atan(distance/focalLength);
+		return (float) -Math.atan(distance/focalLength);
 	}
 	
 	public static BufferedImage Mat2BufferedImage(Mat m){
