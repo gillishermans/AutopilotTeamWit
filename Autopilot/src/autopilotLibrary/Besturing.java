@@ -236,93 +236,93 @@ public class Besturing {
 		
 		//return new Outputs(thrust, leftWingInclination, rightWingInclination, horStabInclination, verStabInclination);
 		horStabInclination=inputs.getPitch();
-		thrust=(((float) 2*convertToWorld(getLiftForce(rightWingInclination, speedVector, config.getWingLiftSlope()),inputs).z+
-				convertToWorld(getLiftForce(horStabInclination, speedVector, config.getHorStabLiftSlope()),inputs).z)/totalMass)-0.6f;
+		//thrust=(((float) 2*convertToWorld(getLiftForce(rightWingInclination, speedVector, config.getWingLiftSlope()),inputs).z+
+				//convertToWorld(getLiftForce(horStabInclination, speedVector, config.getHorStabLiftSlope()),inputs).z)/totalMass)-0.6f;
+		return null;
 	}
 	
-private Vector3f getLiftForce(float theta, Vector3f speedVector,float liftforce) {
-		
-		Vector3f AttackVector = new Vector3f(0f,(float) Math.sin(theta),-(float)Math.cos(theta));
-		//Vector3f airspeed = this.getVelocityAirfoil();
-		Vector3f axis = new Vector3f(1,0,0) ;
-		//Vector3f Normal= new Vector3f(0,0,0);
-		Vector3f Normal=new Vector3f(0,0,0);
-		Vector3f.cross(axis, AttackVector,Normal); 
-		//Vector3f projectedAirspeed = Vector3f.sub(airspeed, Vector3f.cross(( fysica.mul(airspeed,axis),axis),null);
-		
-		
-		//dit moet nog aangepast worden wanneer x-as erbij komt 
-		
-		float angleOfAttack = (float) -Math.atan2(Vector3f.dot(speedVector,Normal), Vector3f.dot(speedVector,AttackVector));
-		//Vector3f proj = new Vector3f(0,0,projectedAirspeed.getZ());
-		Vector3f liftForce = (Vector3f) Normal.scale(angleOfAttack*liftforce*speedVector.length());
-		//System.out.println("Lift: " + liftForce);
-		return liftForce;
+//private Vector3f getLiftForce(float theta, Vector3f speedVector,float liftforce) {
+//		
+//		Vector3f AttackVector = new Vector3f(0f,(float) Math.sin(theta),-(float)Math.cos(theta));
+//		//Vector3f airspeed = this.getVelocityAirfoil();
+//		Vector3f axis = new Vector3f(1,0,0) ;
+//		//Vector3f Normal= new Vector3f(0,0,0);
+//		Vector3f Normal=new Vector3f(0,0,0);
+//		Vector3f.cross(axis, AttackVector,Normal); 
+//		//Vector3f projectedAirspeed = Vector3f.sub(airspeed, Vector3f.cross(( fysica.mul(airspeed,axis),axis),null);
+//		
+//		
+//		//dit moet nog aangepast worden wanneer x-as erbij komt 
+//		
+//		float angleOfAttack = (float) -Math.atan2(Vector3f.dot(speedVector,Normal), Vector3f.dot(speedVector,AttackVector));
+//		//Vector3f proj = new Vector3f(0,0,projectedAirspeed.getZ());
+//		Vector3f liftForce = (Vector3f) Normal.scale(angleOfAttack*liftforce*speedVector.length());
+//		//System.out.println("Lift: " + liftForce);
+//		return liftForce;
+//	}
+//
+//public Vector3f convertToWorld(Vector3f Drone_vector,AutopilotInputs inputs){
+//		
+//		float heading = inputs.getHeading();
+//		float pitch = inputs.getPitch();
+//		float roll = inputs.getRoll();
+//		
+//	
+//		Matrix3f conversionMatrix = this.Rotation_matrix_Roll(roll);
+//		Vector3f worldVector=new Vector3f();
+//		Matrix3f.mul(this.Rotation_matrix_Pitch(pitch), this.Rotation_matrix_Roll(roll), conversionMatrix);
+//		Matrix3f.mul(this.Rotation_matrix_Heading(heading), conversionMatrix, conversionMatrix);
+//		Matrix3f.transform(conversionMatrix,Drone_vector,worldVector);
+//		
+//		return worldVector;
+//	}
+//	
+//public Matrix3f Rotation_matrix_Pitch(float pitch){
+//		
+//		Matrix3f new_matrix = new Matrix3f();
+//		new_matrix.m00=(float) 1;
+//		new_matrix.m01=(float) 0;
+//		new_matrix.m02=(float) 0;
+//		new_matrix.m10=(float) 0;
+//		new_matrix.m11=(float) Math.cos(pitch);
+//		new_matrix.m12=(float) Math.sin(pitch);
+//		new_matrix.m20=(float) 0;
+//		new_matrix.m21=(float) -Math.sin(pitch);
+//		new_matrix.m22=(float) Math.cos(pitch);
+//		
+//		return new_matrix;
+//	}
+//	
+//	public Matrix3f Rotation_matrix_Heading(float heading){
+//		
+//		Matrix3f new_matrix = new Matrix3f();
+//		new_matrix.m00=(float) Math.cos(heading);
+//		new_matrix.m01=(float) 0;
+//		new_matrix.m02=(float) Math.sin(heading);
+//		new_matrix.m10=(float) 0;
+//		new_matrix.m11=(float) 1;
+//		new_matrix.m12=(float) 0;
+//		new_matrix.m20=(float) -Math.sin(heading);
+//		new_matrix.m21=(float) 0;
+//		new_matrix.m22=(float) Math.cos(heading);
+//		
+//		return new_matrix;
+//	}
+//	
+//	public Matrix3f Rotation_matrix_Roll(float roll){
+//		
+//		Matrix3f new_matrix = new Matrix3f();
+//		new_matrix.m00=(float) Math.cos(roll);
+//		new_matrix.m01=(float) -Math.sin(roll);
+//		new_matrix.m02=(float) 0;
+//		new_matrix.m10=(float) Math.sin(roll);
+//		new_matrix.m11=(float) Math.cos(roll);
+//		new_matrix.m12=(float) 0;
+//		new_matrix.m20=(float) 0;
+//		new_matrix.m21=(float) 0;
+//		new_matrix.m22=(float) 1;
+//		
+//		return new_matrix;
+//	}
+//
 	}
-
-public Vector3f convertToWorld(Vector3f Drone_vector,AutopilotInputs inputs){
-		
-		float heading = inputs.getHeading();
-		float pitch = inputs.getPitch();
-		float roll = inputs.getRoll();
-		
-	
-		Matrix3f conversionMatrix = this.Rotation_matrix_Roll(roll);
-		Vector3f worldVector=new Vector3f();
-		Matrix3f.mul(this.Rotation_matrix_Pitch(pitch), this.Rotation_matrix_Roll(roll), conversionMatrix);
-		Matrix3f.mul(this.Rotation_matrix_Heading(heading), conversionMatrix, conversionMatrix);
-		Matrix3f.transform(conversionMatrix,Drone_vector,worldVector);
-		
-		return worldVector;
-	}
-	
-public Matrix3f Rotation_matrix_Pitch(float pitch){
-		
-		Matrix3f new_matrix = new Matrix3f();
-		new_matrix.m00=(float) 1;
-		new_matrix.m01=(float) 0;
-		new_matrix.m02=(float) 0;
-		new_matrix.m10=(float) 0;
-		new_matrix.m11=(float) Math.cos(pitch);
-		new_matrix.m12=(float) Math.sin(pitch);
-		new_matrix.m20=(float) 0;
-		new_matrix.m21=(float) -Math.sin(pitch);
-		new_matrix.m22=(float) Math.cos(pitch);
-		
-		return new_matrix;
-	}
-	
-	public Matrix3f Rotation_matrix_Heading(float heading){
-		
-		Matrix3f new_matrix = new Matrix3f();
-		new_matrix.m00=(float) Math.cos(heading);
-		new_matrix.m01=(float) 0;
-		new_matrix.m02=(float) Math.sin(heading);
-		new_matrix.m10=(float) 0;
-		new_matrix.m11=(float) 1;
-		new_matrix.m12=(float) 0;
-		new_matrix.m20=(float) -Math.sin(heading);
-		new_matrix.m21=(float) 0;
-		new_matrix.m22=(float) Math.cos(heading);
-		
-		return new_matrix;
-	}
-	
-	public Matrix3f Rotation_matrix_Roll(float roll){
-		
-		Matrix3f new_matrix = new Matrix3f();
-		new_matrix.m00=(float) Math.cos(roll);
-		new_matrix.m01=(float) -Math.sin(roll);
-		new_matrix.m02=(float) 0;
-		new_matrix.m10=(float) Math.sin(roll);
-		new_matrix.m11=(float) Math.cos(roll);
-		new_matrix.m12=(float) 0;
-		new_matrix.m20=(float) 0;
-		new_matrix.m21=(float) 0;
-		new_matrix.m22=(float) 1;
-		
-		return new_matrix;
-	}
-
-	}
-
