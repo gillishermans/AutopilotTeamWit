@@ -71,6 +71,7 @@ public class Besturing {
 //			thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2));
 //			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 			
+			verticalAngle = -inputs.getPitch();
 			
 		}
 		else{
@@ -108,19 +109,18 @@ public class Besturing {
 		if(getPosList().size() <= 1) speedVector = new Vector(0,0,0);
 		else{
 			speedVector = Vector.min(getPosList().get(index),getPosList().get(index -1));
-			
-			speed = Vector.norm(speedVector)/inputs.getElapsedTime();
+			speedVector = Vector.scalarProd(speedVector, 1/inputs.getElapsedTime());
+			speed = Vector.norm(speedVector);
 		}
 
 		//HET ZOLTAN GILLIS ALGORITME
 		if(getPosList().size()-1 == 1){
 			float minE = 99999;
-			for(float theta = 0.0f; theta < Math.PI; theta += Math.PI/360){
-				float e = (float) Math.abs(((totalMass * -config.getGravity()) + 2*(Math.pow(speed,2) * -Math.atan2(speed * Math.cos(theta),speed * Math.sin(theta)) * config.getWingLiftSlope() * Math.cos(theta)))) ;
+			for(float theta = 0.0f; theta < Math.PI/4; theta += Math.PI/9999){
+				float e = (float) Math.abs(((config.getWingMass() * -config.getGravity()) + 2*(Math.pow(speed,2) * -Math.atan2(speed * Math.cos(theta),speed * Math.sin(theta)) * config.getWingLiftSlope() * Math.cos(theta)))) ;
 				System.out.println(2*(Math.pow(speed,2) * -Math.atan2(speed * Math.cos(theta),speed * Math.sin(theta)) * config.getWingLiftSlope() * Math.cos(theta)));
 				System.out.println("hoek " + theta);
 				System.out.println("ERROR= " +e);
-				System.out.println("speed" + speed);
 				if(e < minE){
 					minE = e;
 					rechtdoorHoek = theta;  
@@ -128,82 +128,107 @@ public class Besturing {
 			}
 			System.out.println("MINE " + minE);
 			System.out.println("RDhoek " + rechtdoorHoek);
-			System.out.println("speed" + speed);
 		}
 				
 	//VERTICAAL - NIEUWE FYSICA	
-		
-			
-
 		//Benadering hoeken van vleugels om rechtdoor te vliegen
-		float rechtRange = (float) ((Math.PI)/180);
+				float rechtRange = (float) ((Math.PI)/180);
+				boolean turning = false;
+				
+			if(turning != true){	
+
 		
-		//verticalAngle = inputs.getPitch();
+		
+		
 		System.out.println("speed" + speed);
 		System.out.println("VertAngle" + verticalAngle);
 		//Tussen -2 en 2 graden -> redelijk rechtdoor
 		if ( -rechtRange < verticalAngle && verticalAngle < rechtRange){
-			rechtdoorHoek = (float) (Math.PI/20);
+			rechtdoorHoek = (float) (Math.PI/7 );
 			rightWingInclination = (float) (rechtdoorHoek);
 			leftWingInclination = (float) (rechtdoorHoek);
-			horStabInclination = (float) -Math.PI/90;
+			horStabInclination = (float) inputs.getPitch();
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination - inputs.getPitch())*this.config.getWingLiftSlope()*-Math.atan2(speed * Math.cos(rightWingInclination),speed * Math.sin(rightWingInclination))*Math.pow(speedVector.z,2));
+
 		}
-		
+	
 		else if (verticalAngle > rechtRange ){
 			float ratio =(float) ((float) verticalAngle / (Math.PI/3)); 
-			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
-			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
-			horStabInclination = (float) ((float) 2*ratio*(-Math.PI/30));
+			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/7));
+			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/7));
+			//horStabInclination = (float) ((float) 2*ratio*(-Math.PI/30));
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination - inputs.getPitch())*this.config.getWingLiftSlope()*-Math.atan2(speed * Math.cos(rightWingInclination),speed * Math.sin(rightWingInclination))*Math.pow(speedVector.z,2));
+			thrust += inputs.getPitch() * thrust;
 		}
-		else{
-			float ratio =(float) ((float) verticalAngle / (Math.PI/3));
+		
+		else {
+			float ratio =(float) ((float) verticalAngle / (Math.PI/4));
 			rightWingInclination = (float) ((float) -2*ratio*(Math.PI/3));
 			leftWingInclination = (float) ((float) -2*ratio*(Math.PI/3));
 			//horStabInclination = (float) ((float) ratio*(Math.PI/1000));
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination - inputs.getPitch())*this.config.getWingLiftSlope()*-Math.atan2(speed * Math.cos(rightWingInclination),speed * Math.sin(rightWingInclination))*Math.pow(speedVector.z,2));
+
+		}
+		
+		//Pitch te hoog
+		if (inputs.getPitch() > Math.PI/6){
+			//rightWingInclination = (float) (rechtdoorHoek);
+			//leftWingInclination = (float) (rechtdoorHoek);
+			horStabInclination = (float) ( Math.PI/6);
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination - inputs.getPitch())*this.config.getWingLiftSlope()*-Math.atan2(speed * Math.cos(rightWingInclination),speed * Math.sin(rightWingInclination))*Math.pow(speedVector.z,2));
+		}
+		//Pitch te laag
+		if (inputs.getPitch() < -Math.PI/6){
+			//rightWingInclination = (float) (rechtdoorHoek);
+			//leftWingInclination = (float) (rechtdoorHoek);
+			horStabInclination = (float) (- Math.PI/6);
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination - inputs.getPitch())*this.config.getWingLiftSlope()*-Math.atan2(speed * Math.cos(rightWingInclination),speed * Math.sin(rightWingInclination))*Math.pow(speedVector.z,2));
+		}
+		
+		System.out.println("INCL" + rightWingInclination);
+		
+		}
+		
+	//HORIZONTAAL - NIEUWE FYSICA
+		
+		int turnCount = 0;
+		int turn = 0;
+		
+		if (-rechtRange < horizontalAngle && horizontalAngle < rechtRange) turn = 0;
+		else if (horizontalAngle > 0) turn = 1;
+		else if (horizontalAngle < 0) turn = 2;
+
+		
+		if(inputs.getRoll() > Math.PI/5 && inputs.getRoll() < Math.PI/4){
+			rightWingInclination = 0;
+			leftWingInclination =  0;
+		}
+		if(turning == true);
+		else if(turn ==0) {
+			verStabInclination=0;
+		}
+		else if (turn == 1) {
+			rightWingInclination = -rightWingInclination;
+			leftWingInclination =  leftWingInclination;
+			//verStabInclination= (float) Math.PI/10;
+			turnCount ++;
+			turning = true;
+		}
+		else if (turn == 2){
+			rightWingInclination = (float) rightWingInclination;
+			leftWingInclination = (float) -leftWingInclination;
+			//verStabInclination= (float) -Math.PI/10;
+			turnCount ++;
+			turning = true;
 		}
 		
 		
-		
-
-//	//VERTICAAL
-//		if (verticalAngle == 0f){
-//			rightWingInclination = (float) (Math.PI/20);
-//			leftWingInclination = (float) (Math.PI/20);
-//			horStabInclination = 0f;
-//		}
-//		else if (verticalAngle > 0 ){
-//			float ratio =(float) ((float) verticalAngle / (Math.PI/3));
-//			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
-//			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/6));
-//			//horStabInclination = (float) ((float) 2*ratio*(-Math.PI/30));
-//		}
-//		
-//		else{
-//			float ratio =(float) ((float) verticalAngle / (Math.PI/3));
-//			rightWingInclination = (float) ((float) 2*ratio*(Math.PI/4));
-//			leftWingInclination = (float) ((float) 2*ratio*(Math.PI/4));
-//			//horStabInclination = (float) ((float) ratio*(Math.PI/1000));
-//		}
-		
-		
-//	//HORIZONTAAL
-//		if (horizontalAngle == 0f){
-//			verStabInclination=0;
-//		}
-//		else if (horizontalAngle > 0 ) {
-//			verStabInclination= (float) -Math.PI/10; 
-//		}
-//		
-//		else{
-//			verStabInclination= (float) Math.PI/10; 
-//		}
 		
 		
 		// Beginsnelheid initialiseren met 100
 		// AOA=> 1
 		// thrust moet versnelling in de z-richting, veroorzaakt door vleugels teniet doen
-		thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(10,2));//*Math.pow(100,2));
-		//thrust = 100f;
+		//if(inputs.getPitch() > 0) thrust += (float) (thrust * 0.05);
 		
 		
 		

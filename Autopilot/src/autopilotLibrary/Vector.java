@@ -2,9 +2,9 @@ package autopilotLibrary;
 
 public class Vector {
 
-	private float x;
-	private float y;
-	private float z;
+	public float x;
+	public float y;
+	public float z;
 	
 	
 	public Vector(float x,float y,float z) {
