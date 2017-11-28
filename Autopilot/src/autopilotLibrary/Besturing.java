@@ -1,4 +1,7 @@
 package autopilotLibrary;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.opencv.core.Point;
@@ -31,16 +34,29 @@ public class Besturing {
 	
 	private float time = 0;
 	
-	private PIDController pidHor = new PIDController(2f,2,0.1f);
-	private PIDController pidRoll = new PIDController(1,2,0);
+	private PIDController pidHor = new PIDController(5f,5,0.2f,(float) Math.PI/6, (float)- Math.PI/6);
+	private PIDController pidRoll = new PIDController(2f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
+	private PIDController pidVer = new PIDController(1,1,0,(float) Math.PI/6, (float) -Math.PI/6);
+	private PIDController pidX = new PIDController(0.2f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
+	
+//	private FileWriter fw;
+//	private BufferedWriter bw;
+//	private boolean first = true;
 	
 	public Besturing(AutopilotConfig config) {
 		this.config = config;
 		this.beeldherkenning = new Beeldherkenning(config);
 		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
+//		try {
+//			fw = new FileWriter("output.txt");
+//			bw = new BufferedWriter(fw);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
-	public AutopilotOutputs startBesturing(AutopilotInputs inputs){
+	public AutopilotOutputs startBesturing(AutopilotInputs inputs) {
 		
 	
 	//BEELDHERKENNING -------------------------------------------------------------------------	
@@ -61,13 +77,146 @@ public class Besturing {
 			leftWingInclination = (float) (Math.PI/20);
 			horStabInclination = 0f;
 			float vel = 0;
+			float goal = 0;
 			float outputHor = 0;
 			if (inputs.getElapsedTime() == 0) {
-				outputHor = 1.2f;
+				outputHor = (float) (Math.PI/6);
 			}
 			else {
 				vel = (lastY-inputs.getY())/inputs.getElapsedTime();
-				outputHor = -pidHor.getOutput(0,vel, inputs.getElapsedTime())/20;
+				//Rechtdoor vliegen
+				if (goal == 0) {
+					outputHor = -pidHor.getOutput(goal,vel, inputs.getElapsedTime())/20;
+					//System.out.println("Output: " + outputHor);
+				}
+				//Met een hoek vliegen (Verticaal)
+				else {
+					outputHor = -pidVer.getOutput(goal, vel, inputs.getElapsedTime())/30;
+					if (Math.abs(outputHor) > Math.PI/3) {
+						if (outputHor > 0) outputHor = (float) (Math.PI/3);
+						else outputHor = (float) (-Math.PI/6);
+					}
+					//System.out.println("Output: " + outputHor);
+				}
+//				if (Math.abs(outputHor) > config.getMaxAOA()) {       //Met AOA (werkt nog niet)
+//					if (outputHor > 0) {
+//						outputHor =  config.getMaxAOA()+(float) Math.PI/160;
+//						System.out.println("MaxAOA");
+//					} else {
+//						outputHor =  config.getMaxAOA()-(float) Math.PI/160;
+//					}
+//				}
+//				System.out.println("Output: " + outputHor);
+			}
+			//System.out.println("Test: " + (lastY-inputs.getY()));
+			//float output = pid.getOutput(0,vel, inputs.getElapsedTime());
+			
+			lastY = inputs.getY();
+			
+			rightWingInclination = outputHor;
+			leftWingInclination = outputHor;
+			verStabInclination = 0;
+			
+			
+			// Draaien
+//			verStabInclination = 0.2f;
+//			
+//			
+			time += inputs.getElapsedTime();
+//			float outputRoll = 0;
+//			if (time > 2 ) {
+//				verStabInclination = 0;
+//				vel = (lastX-inputs.getX())/inputs.getElapsedTime();
+//				//float outputX = -pidX.getOutput(0, vel, inputs.getElapsedTime())/2500;
+//				outputRoll = pidRoll.getOutput(0,inputs.getRoll(), inputs.getElapsedTime());
+//				rightWingInclination = outputRoll;
+//				//System.out.println("Output: " + outputX);
+//				//verStabInclination = outputX;
+//			}
+//			lastX = inputs.getY();
+			
+			//Naar file schrijven om makkelijker te analyseren
+			//FileWriter fw;
+//			try {
+//				//fw = new FileWriter("output.txt");
+//				//BufferedWriter bw = new BufferedWriter(fw);
+//				if (first) {
+//					bw.append(Float.toString(-vel) + "\n");
+//					bw.newLine();
+//					if (time > 7) {
+//						bw.close();
+//						fw.close();
+//						first = false;
+//						System.out.println("File Closed");
+//					}
+//				}
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			
+			
+			
+			
+			//Thrust & return
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2));
+			//System.out.println("Thrust: " + thrust);
+			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
+			
+			
+	}
+		
+		//Kubus in zicht
+		else{
+
+			//Zoek dichtsbijzijnde kubus
+			ArrayList<Float> distanceArray = new ArrayList<Float>();
+			float shortest = beeldherkenning.distanceToObject(centerArray.get(0),radiusArray.get(0));
+			int shortestI = 0;
+			for(int i =0;i < centerArray.size();i++){
+				float distance = beeldherkenning.distanceToObject(centerArray.get(i),radiusArray.get(i));
+				distanceArray.add(distance);
+				if(distance < shortest){
+					shortest = distance;
+					shortestI = i;
+				}
+			}
+			
+			
+			//Beweeg naar dichtstbijzijnde kubus
+			horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(shortestI));	
+			verticalAngle = beeldherkenning.verticalAngle(centerArray.get(shortestI));
+			
+			
+			rightWingInclination = (float) (Math.PI/20);
+			leftWingInclination = (float) (Math.PI/20);
+			horStabInclination = 0f;
+			float vel = 0;
+			//float goal = 3;
+			float outputHor = 0;
+			if (inputs.getElapsedTime() == 0) {
+				outputHor = (float) (Math.PI/20);
+			}
+			else {
+				vel = (lastY-inputs.getY())/inputs.getElapsedTime();
+				
+				outputHor = pidVer.getOutput(0, verticalAngle, inputs.getElapsedTime());
+				if (Math.abs(outputHor) > Math.PI/3) {
+					System.out.println("Te grote Error");
+					if (outputHor > 0) outputHor = (float) (Math.PI/3);
+					else outputHor = (float) (-Math.PI/3);
+				}
+				System.out.println("Output1: " + outputHor);
+		
+//				if (Math.abs(outputHor) > config.getMaxAOA()) {       //Met AOA (werkt nog niet)
+//					if (outputHor > 0) {
+//						outputHor =  config.getMaxAOA()+(float) Math.PI/160;
+//						System.out.println("MaxAOA");
+//					} else {
+//						outputHor =  config.getMaxAOA()-(float) Math.PI/160;
+//					}
+//				}
+//				System.out.println("Output: " + outputHor);
 			}
 			//System.out.println("Test: " + (lastY-inputs.getY()));
 			//float output = pid.getOutput(0,vel, inputs.getElapsedTime());
@@ -94,66 +243,46 @@ public class Besturing {
 			
 			thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2));
 			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
-//			
-//			
-	}
-//		else{
-//
-//			//Zoek dichtsbijzijnde kubus
-//			ArrayList<Float> distanceArray = new ArrayList<Float>();
-//			float shortest = beeldherkenning.distanceToObject(centerArray.get(0),radiusArray.get(0));
-//			int shortestI = 0;
-//			for(int i =0;i < centerArray.size();i++){
-//				float distance = beeldherkenning.distanceToObject(centerArray.get(i),radiusArray.get(i));
-//				distanceArray.add(distance);
-//				if(distance < shortest){
-//					shortest = distance;
-//					shortestI = i;
-//				}
-//			}
-//			
-//			//Beweeg naar dichtstbijzijnde kubus
-//			horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(shortestI));	
-//			verticalAngle = beeldherkenning.verticalAngle(centerArray.get(shortestI));
-//			//System.out.println(horizontalAngle);
-//			//System.out.println(verticalAngle);
-//		}
-//		
+			
+			//System.out.println(horizontalAngle);
+			//System.out.println(verticalAngle);
+		}
+		
 	//	NIEUW ALGORITME --------------------------------------------------------
 		
 		//Bewaar positie en tijd
-		getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
-		
-				
-		//Benader snelheid
-		int index = getPosList().size() -1;
-		Vector speedVector = null;
-		float speed = 0.0f;
-		if(getPosList().size() <= 1) speedVector = new Vector(0,0,0);
-		else{
-			speedVector = Vector.min(getPosList().get(index),getPosList().get(index -1));
-			
-			speed = Vector.norm(speedVector)/inputs.getElapsedTime();
-		}
-
-		//HET ZOLTAN GILLIS ALGORITME
-		if(getPosList().size()-1 == 1){
-			float minE = 99999;
-			for(float theta = 0.0f; theta < Math.PI; theta += Math.PI/360){
-				float e = (float) Math.abs(((totalMass * -config.getGravity()) + 2*(Math.pow(speed,2) * -Math.atan2(speed * Math.cos(theta),speed * Math.sin(theta)) * config.getWingLiftSlope() * Math.cos(theta)))) ;
-				System.out.println(2*(Math.pow(speed,2) * -Math.atan2(speed * Math.cos(theta),speed * Math.sin(theta)) * config.getWingLiftSlope() * Math.cos(theta)));
-				System.out.println("hoek " + theta);
-				System.out.println("ERROR= " +e);
-				System.out.println("speed" + speed);
-				if(e < minE){
-					minE = e;
-					rechtdoorHoek = theta;  
-				}
-			}
-			System.out.println("MINE " + minE);
-			System.out.println("RDhoek " + rechtdoorHoek);
-			System.out.println("speed" + speed);
-		}
+//		getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
+//		
+//				
+//		//Benader snelheid
+//		int index = getPosList().size() -1;
+//		Vector speedVector = null;
+//		float speed = 0.0f;
+//		if(getPosList().size() <= 1) speedVector = new Vector(0,0,0);
+//		else{
+//			speedVector = Vector.min(getPosList().get(index),getPosList().get(index -1));
+//			
+//			speed = Vector.norm(speedVector)/inputs.getElapsedTime();
+//		}
+//
+//		//HET ZOLTAN GILLIS ALGORITME
+//		if(getPosList().size()-1 == 1){
+//			float minE = 99999;
+//			for(float theta = 0.0f; theta < Math.PI; theta += Math.PI/360){
+//				float e = (float) Math.abs(((totalMass * -config.getGravity()) + 2*(Math.pow(speed,2) * -Math.atan2(speed * Math.cos(theta),speed * Math.sin(theta)) * config.getWingLiftSlope() * Math.cos(theta)))) ;
+//				System.out.println(2*(Math.pow(speed,2) * -Math.atan2(speed * Math.cos(theta),speed * Math.sin(theta)) * config.getWingLiftSlope() * Math.cos(theta)));
+//				System.out.println("hoek " + theta);
+//				System.out.println("ERROR= " +e);
+//				System.out.println("speed" + speed);
+//				if(e < minE){
+//					minE = e;
+//					rechtdoorHoek = theta;  
+//				}
+//			}
+//			System.out.println("MINE " + minE);
+//			System.out.println("RDhoek " + rechtdoorHoek);
+//			System.out.println("speed" + speed);
+//		}
 				
 	//VERTICAAL - NIEUWE FYSICA	
 		
@@ -235,10 +364,10 @@ public class Besturing {
 		
 		
 		//return new Outputs(thrust, leftWingInclination, rightWingInclination, horStabInclination, verStabInclination);
-		horStabInclination=inputs.getPitch();
+		//horStabInclination=inputs.getPitch();
 		//thrust=(((float) 2*convertToWorld(getLiftForce(rightWingInclination, speedVector, config.getWingLiftSlope()),inputs).z+
 				//convertToWorld(getLiftForce(horStabInclination, speedVector, config.getHorStabLiftSlope()),inputs).z)/totalMass)-0.6f;
-		return null;
+		//return null;
 	}
 	
 //private Vector3f getLiftForce(float theta, Vector3f speedVector,float liftforce) {
