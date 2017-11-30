@@ -35,10 +35,10 @@ public class Besturing {
 	private float time = 0;
 	
 	private PIDController pidHor = new PIDController(5f,5,0.2f,(float) Math.PI/6, (float)- Math.PI/6);
-	private PIDController pidRoll = new PIDController(2f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
+	private PIDController pidRoll = new PIDController(1.5f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	private PIDController pidVer = new PIDController(1,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	private PIDController pidX = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidHeading = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
+	private PIDController pidHeading = new PIDController(0.2f,0.5f,50f,(float) Math.PI/6, (float) -Math.PI/6);
 	private PIDController pidTrust = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	
 	private FileWriter fw;
@@ -119,6 +119,8 @@ public class Besturing {
 			verStabInclination = 0;
 			
 			
+			
+			
 			// Draaien
 //			if (time > 2) verStabInclination = -0.2f;
 ////			
@@ -156,7 +158,7 @@ public class Besturing {
 //				
 //			}
 //			System.out.println(time);
-//			lastX = inputs.getZ();
+			lastX = inputs.getZ();
 			
 			
 			
@@ -192,7 +194,7 @@ public class Besturing {
 			
 			
 			//Thrust & return
-			thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+1;
+			thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+15;
 			//System.out.println("Thrust: " + thrust);
 			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 			
@@ -201,20 +203,20 @@ public class Besturing {
 		
 		//Kubus in zicht
 		else{
-			if (inputs.getElapsedTime() == 0) {
-				int index = getPosList().size() -1;
-				Vector speedVector = null;
-				
-			}
+			getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
+			time += inputs.getElapsedTime();
+			
+			
 			int index = getPosList().size() -1;
 			Vector speedVector = null;
 			float speed = 0.0f;
 			if(getPosList().size() <= 1) {speedVector = new Vector(0,0,0); speed = 10f;}
 			else{
 				speedVector = Vector.min(getPosList().get(index),getPosList().get(index -1));
-				
-				speed = Vector.norm(speedVector)/inputs.getElapsedTime();
+				speedVector = Vector.scalarProd(speedVector, 1/inputs.getElapsedTime());
+				speed = Vector.norm(speedVector);
 			}
+			
 
 			
 			//Zoek dichtsbijzijnde kubus
@@ -254,7 +256,7 @@ public class Besturing {
 					if (outputHor > 0) outputHor = (float) (Math.PI/3);
 					else outputHor = (float) (-Math.PI/3);
 				}
-				System.out.println("Output1: " + outputHor);
+				//System.out.println("Output1: " + outputHor);
 		
 //				if (Math.abs(outputHor) > config.getMaxAOA()) {       //Met AOA (werkt nog niet)
 //					if (outputHor > 0) {
@@ -274,18 +276,27 @@ public class Besturing {
 			
 			rightWingInclination = outputHor;
 			leftWingInclination = outputHor;
+			System.out.print(horizontalAngle);
 			float outputAngle = pidHeading.getOutput(0, horizontalAngle, inputs.getElapsedTime());
+//			//System.out.print(outputAngle + " ");
 			if (horizontalAngle > 0) {
 				verStabInclination = -outputAngle;
 			}
 			else {
-				verStabInclination = outputAngle;
+				verStabInclination = -outputAngle;
 			}
-			
+			System.out.println(" " + verStabInclination);
+			if (time > 10) {
+				System.out.println("Roll: " + inputs.getRoll());
+				float outputRoll = pidRoll.getOutput(0,inputs.getRoll(), inputs.getElapsedTime())*2;
+				rightWingInclination = outputRoll;
+				if (inputs.getElapsedTime() == 0) rightWingInclination = (float) Math.PI/20;
+			}
 
 			if (inputs.getElapsedTime() == 0) {
 				verStabInclination = 0;
 			}
+			System.out.println(verStabInclination);
 			//verStabInclination = 0.2f;
 			
 			
@@ -301,11 +312,12 @@ public class Besturing {
 
 			//System.out.println("Hor: " + outputHor + " Roll: " + outputRoll);
 			//System.out.println("  Vel: " + vel);
-			System.out.println("Thrust:" + (float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+10);
-			thrust=pidTrust.getOutput(10, speed, inputs.getElapsedTime());
-			System.out.println("Thrust1: " + thrust);
+			//System.out.println("Thrust:" + (float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+10);
+			thrust=pidTrust.getOutput(15, speed, inputs.getElapsedTime());
+			System.out.println("Speed: " + speed);
+			System.out.println("Thrust1: " + speed);
 			if (inputs.getElapsedTime() == 0) thrust = 80;
-			//thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+10;
+			//thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+15;
 			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 			
 			//System.out.println(horizontalAngle);
