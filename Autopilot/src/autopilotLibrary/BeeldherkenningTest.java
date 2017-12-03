@@ -144,8 +144,8 @@ public class BeeldherkenningTest {
 	        Imgproc.cvtColor(image,RGB_img, Imgproc.COLOR_BGR2RGB);
 	        displayImage( Mat2BufferedImage(RGB_img));
 	        System.out.println(distanceToObject(centerArray.get(0),radiusArray.get(0)));
-	       // System.out.println(horizontalAngle(center));
-	       // System.out.println(verticalAngle(center));
+	        System.out.println(horizontalAngle(centerArray.get(0)));
+	        System.out.println(verticalAngle(centerArray.get(0)));
 	        
 	        
 	         //System.out.println(centerArray);
