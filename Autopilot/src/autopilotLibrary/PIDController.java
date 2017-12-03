@@ -7,20 +7,26 @@ public class PIDController {
 	private float errorSum = 0; 
 	private float lastError = 0;
 	
+	private float maxOutput, minOutput;
 	
 	
-	public PIDController(float kp, float ki, float kd) {
+	
+	public PIDController(float kp, float ki, float kd, float max, float min) {
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;
+		this.maxOutput = max;
+		this.minOutput = min;
 	}
 	
 	public float getOutput(float goal, float actual, float timePassed) {
 		float error = goal - actual;
 		errorSum += error * timePassed;
 		float dError = Math.abs((error-lastError) / timePassed);
-		
+		//System.out.println("dError: " + dError + " Error: " + error);
 		float output = kp * error + ki * errorSum + kd * dError;
+		//if (output > getMaxOutput()) output = getMaxOutput();
+		//if (output < getMinOutput()) output = getMinOutput();
 		//System.out.println("Error: " + error + " errorSum: " + errorSum + " dError: " + dError + " actual: " + actual + " output: " + output);
 		lastError = error;
 		return output;
@@ -50,6 +56,22 @@ public class PIDController {
 	
 	public float getKd() {
 		return this.kd;
+	}
+	
+	public void setMaxOutput(float max) {
+		this.maxOutput = max;
+	}
+	
+	public float getMaxOutput() {
+		return this.maxOutput;
+	}
+	
+	public void setMinOutput(float min) {
+		this.minOutput = min;
+	}
+	
+	public float getMinOutput() {
+		return this.minOutput;
 	}
 	
 }
