@@ -38,7 +38,7 @@ public class Besturing {
 	private PIDController pidRoll = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	private PIDController pidVer = new PIDController(1,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	private PIDController pidX = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidHeading = new PIDController(1.0f,0.1f,0f,(float) Math.PI/8, (float) -Math.PI/8);
+	private PIDController pidHeading = new PIDController(1.0f,1f,0f,(float) Math.PI/8, (float) -Math.PI/8);
 	private PIDController pidTrust = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	
 	private FileWriter fw;
