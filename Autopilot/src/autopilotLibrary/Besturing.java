@@ -254,10 +254,10 @@ public class Besturing {
 				vel = (lastY-inputs.getY())/inputs.getElapsedTime();
 				
 				outputHor = pidVer.getOutput(0, verticalAngle, inputs.getElapsedTime());
-				if (Math.abs(outputHor) > Math.PI/3) {
+				if (Math.abs(outputHor) > Math.PI/4) {
 					System.out.println("Te grote Error");
-					if (outputHor > 0) outputHor = (float) (Math.PI/3);
-					else outputHor = (float) (-Math.PI/3);
+					if (outputHor > 0) outputHor = (float) (Math.PI/4);
+					else outputHor = (float) (-Math.PI/4);
 				}
 				//System.out.println("Output1: " + outputHor);
 		
