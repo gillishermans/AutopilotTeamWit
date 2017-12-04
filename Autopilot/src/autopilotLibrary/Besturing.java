@@ -89,7 +89,6 @@ public class Besturing {
 				//Rechtdoor vliegen
 				if (goal == 0) {
 					outputHor = -pidHor.getOutput(goal,vel, inputs.getElapsedTime())/20;
-					//System.out.println("Output: " + outputHor);
 				}
 			}
 			
@@ -111,31 +110,41 @@ public class Besturing {
 			
 			
 			// Draaien
-			//if (time > 2) verStabInclination = 0.0f;
-		
-//			if (time > 1 && time <=3) {
-//				verStabInclination = 0;
-//				float outputRoll = pidRoll.getOutput((float) Math.PI/18, inputs.getRoll(), inputs.getElapsedTime())/10;
-//				System.out.println("Roll: " + outputRoll + " Incl: " + outputHor);
-//				rightWingInclination = rightWingInclination + outputRoll;
-//				leftWingInclination = leftWingInclination - outputRoll;
-//				
+			
+//			if (time > 2) {
+//				float outputHeading = pidHeading1.getOutput((float) Math.PI/180, inputs.getHeading(), inputs.getElapsedTime())/20;
+//				System.out.println("Output: " + outputHeading + " Inclination: " + rightWingInclination +" " + leftWingInclination);
+//				rightWingInclination = rightWingInclination + outputHeading;
+//				leftWingInclination = leftWingInclination - outputHeading;
+//				verStabInclination = outputHeading;
 //			}
-//			if (time > 3 && time <= 9) {
-//				verStabInclination = 0f;
-//				float outputRoll = pidRoll.getOutput(0, inputs.getRoll(), inputs.getElapsedTime())/10;
-//				//System.out.println("Roll: " + outputRoll + " Incl: " + outputHor);
-//				rightWingInclination = rightWingInclination + outputRoll;
-//				leftWingInclination = leftWingInclination - outputRoll;
-//				//verStabInclination = 0.2f;
-//			}
-//			if (time > 9) {
-//				verStabInclination = 0;
-//				float outputRoll = pidRoll.getOutput(-(float) Math.PI/18, inputs.getRoll(), inputs.getElapsedTime())/10;
-//				System.out.println("Roll: " + outputRoll + " Incl: " + outputHor);
-//				rightWingInclination = rightWingInclination + outputRoll;
-//				leftWingInclination = leftWingInclination - outputRoll;
-//			}
+			
+			
+			
+			
+			if (time > 1 && time <=3) {
+				verStabInclination = 0;
+				float outputRoll = pidRoll.getOutput((float) Math.PI/18, inputs.getRoll(), inputs.getElapsedTime())/10;
+				System.out.println("Roll: " + outputRoll + " Incl: " + outputHor);
+				rightWingInclination = rightWingInclination + outputRoll;
+				leftWingInclination = leftWingInclination - outputRoll;
+				
+			}
+			if (time > 3 && time <= 9) {
+				verStabInclination = 0f;
+				float outputRoll = pidRoll.getOutput(0, inputs.getRoll(), inputs.getElapsedTime())/10;
+				//System.out.println("Roll: " + outputRoll + " Incl: " + outputHor);
+				rightWingInclination = rightWingInclination + outputRoll;
+				leftWingInclination = leftWingInclination - outputRoll;
+				//verStabInclination = 0.2f;
+			}
+			if (time > 9) {
+				verStabInclination = 0;
+				float outputRoll = pidRoll.getOutput(-(float) Math.PI/18, inputs.getRoll(), inputs.getElapsedTime())/10;
+				System.out.println("Roll: " + outputRoll + " Incl: " + outputHor);
+				rightWingInclination = rightWingInclination + outputRoll;
+				leftWingInclination = leftWingInclination - outputRoll;
+			}
 //			if (time > 11) verStabInclination = -0.2f;
 //			time += inputs.getElapsedTime();
 //			float outputRoll = 0;
@@ -178,24 +187,24 @@ public class Besturing {
 			/////////////////////////////////////////////////////////////////////
 			
 			//Naar file schrijven om makkelijker te analyseren
-//			float velZ = 0;
+//			float velY = 0;
 //			if (inputs.getElapsedTime() != 0) {
-//				velZ = (lastZ-inputs.getZ())/inputs.getElapsedTime();
+//				velY = (lastY-inputs.getY())/inputs.getElapsedTime();
 //			}
-//			this.lastZ = inputs.getZ();
+//			this.lastY = inputs.getY();
 //			//FileWriter fw;
 //			try {
 //				//fw = new FileWriter("outputZ.txt");
 //				//BufferedWriter bw = new BufferedWriter(fw);
 //				if (first) {
-//					System.out.println(velZ);
-//					bw.append(Float.toString(velZ) + "\n");
+//					//System.out.println(velY);
+//					bw.append(Float.toString(velY) + "\n");
 //					bw.newLine();
 //					if (time > 7) {
 //						bw.close();
 //						fw.close();
 //						first = false;
-//						System.out.println("File Closed");
+//						//System.out.println("File Closed");
 //					}
 //				}
 //			} catch (IOException e) {
@@ -205,7 +214,7 @@ public class Besturing {
 			
 			/////////////////////////////////////////////////////////////////////
 			getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
-			//time += inputs.getElapsedTime();
+			time += inputs.getElapsedTime();
 			
 			
 			int index = getPosList().size() -1;
@@ -345,7 +354,7 @@ public class Besturing {
 			//verStabInclination = 0.2f;
 			
 			
-//			time += inputs.getElapsedTime();
+			time += inputs.getElapsedTime();
 //			float outputRoll = 0;
 //			if (time > 5) {
 //				verStabInclination = 0;
