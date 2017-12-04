@@ -105,10 +105,7 @@ public class Besturing {
 				leftWingInclination= leftWingInclination - outputRoll;
 				System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
 			}
-			
-			
-			
-			
+						
 			// Draaien
 			//if (time > 2) verStabInclination = 0.0f;
 		
@@ -305,10 +302,10 @@ public class Besturing {
 			rightWingInclination = outputHor;
 			leftWingInclination = outputHor;
 			//System.out.print(horizontalAngle);
-			if (Math.abs(horizontalAngle) > Math.abs(Math.PI/90)) {
-				float outputAngle = pidHeading.getOutput(0, horizontalAngle, inputs.getElapsedTime())/45;
-				rightWingInclination = rightWingInclination + outputAngle;
-				leftWingInclination = leftWingInclination - outputAngle;
+			if (Math.abs(horizontalAngle)>Math.PI/90) {
+			float outputAngle = pidHeading.getOutput(0, horizontalAngle, inputs.getElapsedTime())/45;
+			rightWingInclination = rightWingInclination + outputAngle;
+			leftWingInclination = leftWingInclination - outputAngle;
 			}
 
 //			//System.out.print(outputAngle + " ");
@@ -352,7 +349,7 @@ public class Besturing {
 			System.out.println("reqSpeed: " + reqSpeed);
 			System.out.println("Speed: " + speed);
 			//System.out.println("Thrust1: " + speed);
-			if (inputs.getElapsedTime() == 0) thrust = 80;
+			if (inputs.getElapsedTime() == 0) { thrust = 80;}
 			//thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+15;
 			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 			
