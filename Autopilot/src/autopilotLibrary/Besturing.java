@@ -267,8 +267,8 @@ public class Besturing {
 				rightWingInclination = (float) (Math.PI/20);
 				leftWingInclination = (float) (Math.PI/20);
 				thrust = 80f;
-				horStabInclination = 0.0f;
-				verStabInclination = 0.0f;
+				horStabInclination = 0f;
+				verStabInclination = 0f;
 			}
 			
 			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
