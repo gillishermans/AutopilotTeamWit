@@ -99,9 +99,10 @@ public class Besturing {
 			leftWingInclination = outputHor;
 			verStabInclination = 0;
 //			if (inputs.getElapsedTime() != 0 ) {
-//				float outputRoll = pidRoll.getOutput(0,inputs.getRoll(), inputs.getElapsedTime());
+//				float outputRoll = pidRoll.getOutput(0,inputs.getRoll(), inputs.getElapsedTime())/10;
 //				rightWingInclination = rightWingInclination + outputRoll;
-//				leftWingInclination= leftWingInclination - outputHor;
+//				leftWingInclination= leftWingInclination + outputHor;
+//				System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
 //			}
 			
 			
@@ -221,7 +222,7 @@ public class Besturing {
 			thrust=pidTrust.getOutput(15, speed, inputs.getElapsedTime());
 			if (inputs.getElapsedTime()==0) thrust = 80f;
 			//System.out.println("Thrust: " + thrust);
-			System.out.println("Kubus is niet in zicht");
+			//System.out.println("Kubus is niet in zicht");
 			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 			
 			
@@ -303,14 +304,12 @@ public class Besturing {
 			rightWingInclination = outputHor;
 			leftWingInclination = outputHor;
 			//System.out.print(horizontalAngle);
-			if (time > 1) { float outputAngle = pidHeading.getOutput(0, horizontalAngle, inputs.getElapsedTime())/45;
-			//System.out.println("Angle: " + outputAngle);
-			//float outputRoll = pidRoll.getOutput(0, inputs.getRoll(), inputs.getElapsedTime())/10;
-			//System.out.println("Roll: " + outputRoll + " Incl: " + outputHor);
+			if (horizontalAngle > Math.PI/90 && horizontalAngle < -Math.PI/90) {
+				float outputAngle = pidHeading.getOutput(0, horizontalAngle, inputs.getElapsedTime())/45;
 				rightWingInclination = rightWingInclination + outputAngle;
 				leftWingInclination = leftWingInclination - outputAngle;
-				//System.out.println("Roll: " + inputs.getRoll() + " Output: " + outputAngle);
 			}
+
 //			//System.out.print(outputAngle + " ");
 //			if (horizontalAngle > 0) {
 //				verStabInclination = -outputAngle;
@@ -566,4 +565,4 @@ public class Besturing {
 //		return new_matrix;
 //	}
 //
-	}
+}
