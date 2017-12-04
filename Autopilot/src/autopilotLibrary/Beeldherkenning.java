@@ -87,9 +87,10 @@ public class Beeldherkenning {
 			//System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 			
 			//HUN TESTBED - PAS ZELF DIRECTORY AAN
-			System.load("C:\\Users\\Midas\\Documents\\P&O\\opencv-3.3.1-vc14\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
+			//System.load("C:\\Users\\Gillis\\Documents\\P&O\\opencv-3.3.1-vc14\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
 			//C:\Users\Midas\Documents\P&O\opencv-3.3.1-vc14\opencv\build\java\x64
 			//System.load("D:\\Downloads\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
+			System.load("C:\\Users\\gillis\\Documents\\OpenCV\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
 
 
 	        centerArray = new ArrayList<Point>();

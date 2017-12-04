@@ -38,7 +38,7 @@ public class Besturing {
 	private PIDController pidRoll = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	private PIDController pidVer = new PIDController(1,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	private PIDController pidX = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidHeading = new PIDController(1.5f,0.5f,0f,(float) Math.PI/6, (float) -Math.PI/6);
+	private PIDController pidHeading = new PIDController(1.0f,0.1f,0f,(float) Math.PI/8, (float) -Math.PI/8);
 	private PIDController pidTrust = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
 	
 	private FileWriter fw;
@@ -233,7 +233,6 @@ public class Besturing {
 			getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
 			time += inputs.getElapsedTime();
 			
-			
 			int index = getPosList().size() -1;
 			Vector speedVector = null;
 			float speed = 0.0f;
@@ -347,8 +346,11 @@ public class Besturing {
 			//System.out.println("Hor: " + outputHor + " Roll: " + outputRoll);
 			//System.out.println("  Vel: " + vel);
 			//System.out.println("Thrust:" + (float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+10);
-			thrust=pidTrust.getOutput(15, speed, inputs.getElapsedTime());
-			//System.out.println("Speed: " + speed);
+			
+			float reqSpeed = totalMass * 17.12f ;
+			thrust=pidTrust.getOutput(reqSpeed, speed, inputs.getElapsedTime());
+			System.out.println("reqSpeed: " + reqSpeed);
+			System.out.println("Speed: " + speed);
 			//System.out.println("Thrust1: " + speed);
 			if (inputs.getElapsedTime() == 0) thrust = 80;
 			//thrust=(float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+15;
