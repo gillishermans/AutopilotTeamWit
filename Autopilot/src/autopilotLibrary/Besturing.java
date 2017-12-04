@@ -98,12 +98,13 @@ public class Besturing {
 			rightWingInclination = outputHor;
 			leftWingInclination = outputHor;
 			verStabInclination = 0;
-//			if (inputs.getElapsedTime() != 0 ) {
-//				float outputRoll = pidRoll.getOutput(0,inputs.getRoll(), inputs.getElapsedTime())/10;
-//				rightWingInclination = rightWingInclination + outputRoll;
-//				leftWingInclination= leftWingInclination + outputHor;
-//				System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
-//			}
+			
+			if (inputs.getElapsedTime() != 0 ) {
+				float outputRoll = pidRoll.getOutput(0,inputs.getRoll(), inputs.getElapsedTime())/10;
+				rightWingInclination = rightWingInclination + outputRoll;
+				leftWingInclination= leftWingInclination - outputRoll;
+				System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
+			}
 			
 			
 			
