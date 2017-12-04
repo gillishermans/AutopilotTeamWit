@@ -305,7 +305,7 @@ public class Besturing {
 			rightWingInclination = outputHor;
 			leftWingInclination = outputHor;
 			//System.out.print(horizontalAngle);
-			if (horizontalAngle > Math.PI/90 && horizontalAngle < -Math.PI/90) {
+			if (Math.abs(horizontalAngle) > Math.abs(Math.PI/90)) {
 				float outputAngle = pidHeading.getOutput(0, horizontalAngle, inputs.getElapsedTime())/45;
 				rightWingInclination = rightWingInclination + outputAngle;
 				leftWingInclination = leftWingInclination - outputAngle;
