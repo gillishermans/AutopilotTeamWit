@@ -346,7 +346,7 @@ public class Besturing {
 			//System.out.println("  Vel: " + vel);
 			//System.out.println("Thrust:" + (float) Math.abs(2*Math.sin(rightWingInclination)*this.config.getWingLiftSlope()*1*Math.pow(9,2))+10);
 			
-			float reqSpeed = totalMass * 17.12f ;
+			float reqSpeed = totalMass * 17.142f ;
 			thrust=pidTrust.getOutput(reqSpeed, speed, inputs.getElapsedTime());
 			System.out.println("reqSpeed: " + reqSpeed);
 			System.out.println("Speed: " + speed);
