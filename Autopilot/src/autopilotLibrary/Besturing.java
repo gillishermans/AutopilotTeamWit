@@ -215,7 +215,6 @@ public class Besturing {
 				if (outputHor > 0) outputHor = (float) (Math.PI/4);
 				else outputHor = (float) (-Math.PI/4);
 			}
-	
 
 		
 			lastY = inputs.getY();
@@ -257,8 +256,7 @@ public class Besturing {
 			thrust=pidTrust.getOutput(reqSpeed, speed, inputs.getElapsedTime());
 			System.out.println("reqSpeed: " + reqSpeed);
 			System.out.println("Speed: " + speed);//System.out.println("Thrust1: " + speed);
-
-
+			
 
 			System.out.println("thr " + thrust + "left " + leftWingInclination + "right " + rightWingInclination + "hor " + horStabInclination + "ver " + verStabInclination);
 
@@ -270,7 +268,7 @@ public class Besturing {
 				horStabInclination = 0f;
 				verStabInclination = 0f;
 			}
-			
+			  
 			return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 		}		
 	}
