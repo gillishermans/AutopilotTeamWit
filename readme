@@ -1,0 +1,8 @@
+Autopilot kan gebruikt worden als externe library van een testbed, en vervolgens dit testbed te runnen.
+Autopilot moet dus eerst geëxporteerd worden als runnable jar AutopilotLibrary.jar. 
+
+Bij het gebruik van de AutopilotLibrary met het ProvidedTestbed moet de externe locatie van "opencv_java330.dll" manueel
+worden aangegeven in de code. Dit blijkt onvermijdelijk. Dit moet in de klasse Beeldherkenning en gebeurt als volgt:
+  System.load("locatie van OpenCv\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
+  
+Het normale commando System.load(Core.NATIVE_LIBRARY_NAME) werkt niet bij het gebruik van het ProvidedTestbed. 
