@@ -32,6 +32,10 @@ public class PIDController {
 		return output;
 	}
 	
+	public void reset() {
+		errorSum = 0;
+	}
+	
 	//getters & setters
 	
 	public void setKp(float kp) {
