@@ -47,13 +47,16 @@ public class Besturing {
 	private FileWriter fw;
 	private BufferedWriter bw;
 	private boolean first = true;
+	private boolean resetHeading = false;
+	private boolean resetStabilization = false;
+	private boolean reset1; //magweg
 	
 	public Besturing(AutopilotConfig config) {
 		this.config = config;
 		this.beeldherkenning = new Beeldherkenning(config);
 		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
 //		try {
-//			fw = new FileWriter("outputZ.txt");
+//			fw = new FileWriter("outputroll.txt");
 //			bw = new BufferedWriter(fw);
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
@@ -113,9 +116,11 @@ public class Besturing {
 			leftWingInclination = outputHor;
 			verStabInclination = 0;
 			float outputRoll = 0;
+		
 			
-			if (getTime() != 0 ) {
-				outputRoll = pidRoll.getOutput(0,inputs.getRoll(), getTime())/10;
+			if (inputs.getElapsedTime() !=0 ) {
+//				
+				outputRoll = pidRoll.getOutput(0,inputs.getRoll(), getTime())/20;
 				rightWingInclination = rightWingInclination + outputRoll;
 				leftWingInclination= leftWingInclination - outputRoll;
 				//System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
@@ -129,7 +134,7 @@ public class Besturing {
 			
 			//Naar file schrijven om makkelijker te analyseren
 //			float velY = 0;
-//			if (getTime() != 0) {
+//			if (inputs.getElapsedTime() != 0) {
 //				velY = (lastY-inputs.getY())/getTime();
 //			}
 //			this.lastY = inputs.getY();
@@ -137,15 +142,16 @@ public class Besturing {
 //			try {
 //				//fw = new FileWriter("outputZ.txt");
 //				//BufferedWriter bw = new BufferedWriter(fw);
-//				if (first) {
-//					//System.out.println(velY);
-//					bw.append(Float.toString(velY) + "\n");
+//				if (first && inputs.getElapsedTime() >= 10) {
+//					//System.out.println(vel);
+//					float tijd = inputs.getElapsedTime() -10;
+//					bw.append(Float.toString(inputs.getRoll()) + " " + tijd + "\n");
 //					bw.newLine();
-//					if (time > 7) {
+//					if (inputs.getElapsedTime() > 20) {
 //						bw.close();
 //						fw.close();
 //						first = false;
-//						//System.out.println("File Closed");
+//						System.out.println("File Closed");
 //					}
 //				}
 //			} catch (IOException e) {
@@ -199,13 +205,19 @@ public class Besturing {
 			
 //------HORIZONTAAL--------------------------------------------------------------------------------------------------
 			
-			float maxRoll = (float) (Math.PI/8)*(1-inputs.getPitch());
-			
-			if((Math.abs(horizontalAngle) < Math.abs(Math.PI/90))){ 
+			//float maxRoll = (float) (Math.PI/8)*(1-inputs.getPitch());
+			float maxRoll = (float) (Math.PI/15);
+			if((Math.abs(horizontalAngle) < Math.abs(Math.PI/90))) {
+				if (resetHeading) {
+					pidHeading.reset();
+					pidRoll2.reset();
+					resetHeading = false;
+					System.out.println("Reset Heading");
+				}
 				float outputRoll = pidRoll.getOutput(0,inputs.getRoll(), getTime())/2;
 				rightWingInclination = rightWingInclination + outputRoll;
 				leftWingInclination= leftWingInclination - outputRoll;
-				
+				resetStabilization = true;
 //				float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime())/20;
 //				horStabInclination = outputPitch;
 			}
@@ -216,20 +228,26 @@ public class Besturing {
 //				else verStabInclination = verStabInclination + outputAngle;
 //			}
 			else {
+				if (resetStabilization) {
+					pidRoll.reset();
+					resetStabilization = false;
+					System.out.println("Reset Stab");
+				}
 				if (Math.abs(inputs.getRoll()) < Math.abs(maxRoll)) {
 					float outputAngle = pidHeading.getOutput(0, horizontalAngle, getTime())/10;
 					rightWingInclination = rightWingInclination + outputAngle;
 					leftWingInclination = leftWingInclination - outputAngle;
 				}
 				else { 
-					System.out.println("Roll te groot");
+					//System.out.println("Roll te groot");
 					float goal;
 					if (inputs.getRoll() > 0)  goal = (float) maxRoll;
 					else                       goal = -(float) maxRoll;
-					float outputRoll = pidRoll.getOutput(goal, inputs.getRoll(), getTime())/2;
+					float outputRoll = pidRoll2.getOutput(goal, inputs.getRoll(), getTime())/2;
 					rightWingInclination = rightWingInclination + outputRoll;
 					leftWingInclination= leftWingInclination - outputRoll;	
-				}				 
+				}
+				resetHeading = true;
 			}
 		}
 		
