@@ -49,7 +49,6 @@ public class Besturing {
 	private boolean first = true;
 	private boolean resetHeading = false;
 	private boolean resetStabilization = false;
-	private boolean reset1; //magweg
 	
 	public Besturing(AutopilotConfig config) {
 		this.config = config;
@@ -206,7 +205,8 @@ public class Besturing {
 //------HORIZONTAAL--------------------------------------------------------------------------------------------------
 			
 			//float maxRoll = (float) (Math.PI/8)*(1-inputs.getPitch());
-			float maxRoll = (float) (Math.PI/15);
+			//float maxRoll = (float) (Math.PI/15);
+			float maxRoll = (float) (Math.PI/4);
 			if((Math.abs(horizontalAngle) < Math.abs(Math.PI/90))) {
 				if (resetHeading) {
 					pidHeading.reset();
