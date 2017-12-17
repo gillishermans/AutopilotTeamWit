@@ -7,16 +7,17 @@ public class PIDController {
 	private float errorSum = 0; 
 	private float lastError = 0;
 	
-	private float maxOutput, minOutput;
+	private float maxOutput, minOutput, division;
 	
 	
 	
-	public PIDController(float kp, float ki, float kd, float max, float min) {
+	public PIDController(float kp, float ki, float kd, float max, float min, float division) {
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;
 		this.maxOutput = max;
 		this.minOutput = min;
+		this.division = division;
 	}
 	
 	public float getOutput(float goal, float actual, float timePassed) {
@@ -29,7 +30,8 @@ public class PIDController {
 		//if (output < getMinOutput()) output = getMinOutput();
 		//System.out.println("Error: " + error + " errorSum: " + errorSum + " dError: " + dError + " actual: " + actual + " output: " + output);
 		lastError = error;
-		return output;
+		float outputDiv = output/division;
+		return outputDiv;
 	}
 	
 	public void reset() {

@@ -35,18 +35,21 @@ public class Besturing {
 	
 	private float time = 0;
 	
-	private PIDController pidHor = new PIDController(5f,5,0f,(float) Math.PI/6, (float)- Math.PI/6);
-	private PIDController pidRoll = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidRoll2 = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidPitch = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidVer = new PIDController(1,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidX = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
-	private PIDController pidHeading = new PIDController(1.0f,1f,0f,(float) Math.PI/8, (float) -Math.PI/8);
-	private PIDController pidTrust = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6);
+	private PIDController pidVelY = new PIDController(5f,5,0f,(float) Math.PI/6, (float)- Math.PI/6, 20);
+	private PIDController pidVer = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 1);
+	private PIDController pidRoll = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6 ,20);
+	private PIDController pidHor = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 2);
+	private PIDController pidRoll2 = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 2);
+//	private PIDController pidPitch = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 1);
+//	private PIDController pidVer1 = new PIDController(1,1,0,(float) Math.PI/6, (float) -Math.PI/6, 2);
+//	private PIDController pidX = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 1);
+	private PIDController pidHeading = new PIDController(1.0f,1f,0f,(float) Math.PI/8, (float) -Math.PI/8, 10);
+	private PIDController pidTrust = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 1);
 	
-	private FileWriter fw;
-	private BufferedWriter bw;
-	private boolean first = true;
+//	private FileWriter fw;
+//	private BufferedWriter bw;
+//	private boolean first = true;
+	
 	private boolean resetHeading = false;
 	private boolean resetStabilization = false;
 	
@@ -97,29 +100,29 @@ public class Besturing {
 			horStabInclination = 0f;
 			float vel = 0;
 			float goal = 0;
-			float outputHor = 0;
+			float outputVelY = 0;
 			if (getTime() == 0) {
-				outputHor = (float) (Math.PI/6);
+				outputVelY = (float) (Math.PI/6);
 			}
 			else {
 				vel = (lastY-inputs.getY())/getTime();
 				//Rechtdoor vliegen
 				if (goal == 0) {
-					outputHor = -pidHor.getOutput(goal,vel, getTime())/20;
+					outputVelY = -pidVelY.getOutput(goal,vel, getTime());
 				}
 			}
 			
 			lastY = inputs.getY();
 			
-			rightWingInclination = outputHor;
-			leftWingInclination = outputHor;
+			rightWingInclination = outputVelY;
+			leftWingInclination = outputVelY;
 			verStabInclination = 0;
 			float outputRoll = 0;
 		
 			
 			if (inputs.getElapsedTime() !=0 ) {
 //				
-				outputRoll = pidRoll.getOutput(0,inputs.getRoll(), getTime())/20;
+				outputRoll = pidRoll.getOutput(0,inputs.getRoll(), getTime());
 				rightWingInclination = rightWingInclination + outputRoll;
 				leftWingInclination= leftWingInclination - outputRoll;
 				//System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
@@ -185,22 +188,23 @@ public class Besturing {
 			
 			float vel = 0;
 			//float goal = 3;
-			float outputHor = 0;
+			float outputVer = 0;
 			vel = (lastY-inputs.getY())/getTime();
 				
-			outputHor = pidVer.getOutput(0, verticalAngle, getTime());
-			if (Math.abs(outputHor) > Math.PI/2) {
+			outputVer = pidVer.getOutput(0, verticalAngle, getTime());
+			System.out.println(outputVer + " " + Math.PI/6);
+			if (Math.abs(outputVer) > Math.PI/2) {
 				System.out.println("Te grote Error");
-				if (outputHor > 0) outputHor = (float) (Math.PI/2);
-				else outputHor = (float) (-Math.PI/2);
+				if (outputVer > 0) outputVer = (float) (Math.PI/2);
+				else outputVer = (float) (-Math.PI/2);
 			}
 	
 
 		
 			lastY = inputs.getY();
 			
-			rightWingInclination = outputHor;
-			leftWingInclination = outputHor;
+			rightWingInclination = outputVer;
+			leftWingInclination = outputVer;
 			
 //------HORIZONTAAL--------------------------------------------------------------------------------------------------
 			
@@ -214,9 +218,9 @@ public class Besturing {
 					resetHeading = false;
 					System.out.println("Reset Heading");
 				}
-				float outputRoll = pidRoll.getOutput(0,inputs.getRoll(), getTime())/2;
-				rightWingInclination = rightWingInclination + outputRoll;
-				leftWingInclination= leftWingInclination - outputRoll;
+				float outputHor = pidHor.getOutput(0,inputs.getRoll(), getTime());
+				rightWingInclination = rightWingInclination + outputHor;
+				leftWingInclination= leftWingInclination - outputHor;
 				resetStabilization = true;
 //				float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime())/20;
 //				horStabInclination = outputPitch;
@@ -229,12 +233,12 @@ public class Besturing {
 //			}
 			else {
 				if (resetStabilization) {
-					pidRoll.reset();
+					pidHor.reset();
 					resetStabilization = false;
 					System.out.println("Reset Stab");
 				}
 				if (Math.abs(inputs.getRoll()) < Math.abs(maxRoll)) {
-					float outputAngle = pidHeading.getOutput(0, horizontalAngle, getTime())/10;
+					float outputAngle = pidHeading.getOutput(0, horizontalAngle, getTime());
 					rightWingInclination = rightWingInclination + outputAngle;
 					leftWingInclination = leftWingInclination - outputAngle;
 				}
@@ -243,7 +247,7 @@ public class Besturing {
 					float goal;
 					if (inputs.getRoll() > 0)  goal = (float) maxRoll;
 					else                       goal = -(float) maxRoll;
-					float outputRoll = pidRoll2.getOutput(goal, inputs.getRoll(), getTime())/2;
+					float outputRoll = pidRoll2.getOutput(goal, inputs.getRoll(), getTime());
 					rightWingInclination = rightWingInclination + outputRoll;
 					leftWingInclination= leftWingInclination - outputRoll;	
 				}
@@ -253,7 +257,7 @@ public class Besturing {
 		
 		//Speed hangt af van massa
 		float reqSpeed = totalMass * 17.142f ;
-		thrust=pidTrust.getOutput(reqSpeed, speed, getTime());
+		thrust = pidTrust.getOutput(reqSpeed, speed, getTime());
 
 		
 		//In de eerste stap geven we standaard waarden door
