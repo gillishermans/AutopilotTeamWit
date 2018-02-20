@@ -35,7 +35,7 @@ public class Besturing {
 	
 	private float time = 0;
 	
-	private PIDController pidVelY = new PIDController(5f,5,0f,(float) Math.PI/6, (float)- Math.PI/6, 20);
+	private PIDController pidVelY = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 20);
 	private PIDController pidVer = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 1);
 	private PIDController pidRoll = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6 ,20);
 	private PIDController pidHor = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 2);
@@ -44,7 +44,7 @@ public class Besturing {
 //	private PIDController pidVer1 = new PIDController(1,1,0,(float) Math.PI/6, (float) -Math.PI/6, 2);
 //	private PIDController pidX = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 1);
 	private PIDController pidHeading = new PIDController(1.0f,1f,0f,(float) Math.PI/8, (float) -Math.PI/8, 10);
-	private PIDController pidTrust = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 1);
+	private PIDController pidTrust = new PIDController(5f,5,0,(float) Math.PI/6, (float) -Math.PI/6, 1);
 	
 //	private FileWriter fw;
 //	private BufferedWriter bw;
@@ -93,6 +93,7 @@ public class Besturing {
 			speed = Vector.norm(speedVector);
 		}
 		
+		
 		//Geen kubus gevonden -> vlieg rechtdoor
 		if(centerArray.isEmpty()){
 			rightWingInclination = (float) (Math.PI/20);
@@ -116,6 +117,11 @@ public class Besturing {
 			
 			rightWingInclination = outputVelY;
 			leftWingInclination = outputVelY;
+			
+			float aoa = (float) (getAngleOfAttack(speedVector,rightWingInclination) * 180 / Math.PI);
+			
+			System.out.println(outputVelY);
+			
 			verStabInclination = 0;
 			float outputRoll = 0;
 		
@@ -257,7 +263,9 @@ public class Besturing {
 		
 		//Speed hangt af van massa
 		float reqSpeed = totalMass * 17.142f ;
-		thrust = pidTrust.getOutput(reqSpeed, speed, getTime());
+		thrust = pidTrust.getOutput(55.5f, speed, getTime());
+		
+		//System.out.println(thrust);
 
 		
 		//In de eerste stap geven we standaard waarden door
@@ -268,7 +276,8 @@ public class Besturing {
 			horStabInclination = 0f;
 			verStabInclination = 0f;
 		}
-		
+		//System.out.println(thrust);
+		horStabInclination = (float) (Math.PI/20);
 		//System.out.println("thr " + thrust + "left " + leftWingInclination + "right " + rightWingInclination + "hor " + horStabInclination + "ver " + verStabInclination);
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 		
@@ -284,6 +293,32 @@ public class Besturing {
 	
 	public float getTime() {
 		return this.time;
+	}
+	
+	public float getAngleOfAttack(Vector speed, float incl) {
+		
+		Vector vector = new Vector(0,0,0);
+		
+		Vector normal = vector.crossProd(this.getAxisVector(),this.getAttackVector(incl));
+		Vector airspeed = speed;
+		Vector axis = this.getAxisVector();
+//		
+		Vector projectedAirspeed = airspeed;
+//		
+		float angleOfAttack = (float) -Math.atan2(vector.scalairProd(projectedAirspeed,normal), 
+				vector.scalairProd(projectedAirspeed,this.getAttackVector(incl)));
+		
+		return angleOfAttack;
+	}
+	
+	public Vector getAxisVector() {
+		return new Vector(1,0,0);
+	}
+	
+	public Vector getAttackVector(float incl) {
+		return new Vector((float) Math.sin(0),
+				          (float) Math.sin(incl),
+				          (float)-Math.cos(incl));
 	}
 	
 	
