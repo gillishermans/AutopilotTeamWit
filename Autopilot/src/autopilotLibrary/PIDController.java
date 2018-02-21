@@ -31,7 +31,16 @@ public class PIDController {
 		//System.out.println("Error: " + error + " errorSum: " + errorSum + " dError: " + dError + " actual: " + actual + " output: " + output);
 		lastError = error;
 		float outputDiv = output/division;
-		return outputDiv;
+		if (outputDiv > this.maxOutput) {
+			output = this.maxOutput;
+			System.out.println("Max");
+		}
+		if (outputDiv < this.minOutput) {
+			output = this.minOutput;
+			System.out.println("Min");
+		}
+		else output = outputDiv;
+		return output;
 	}
 	
 	public void reset() {
