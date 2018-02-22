@@ -29,14 +29,16 @@ public class Besturing {
 		return this.posList;
 	}
 	
+	private float maxAOA = (float) Math.PI/12; 
+	
 	private float lastX = 0;
 	private float lastY = 0;
 	private float lastZ = 0;
 	
 	private float time = 0;
 	
-	private PIDController pidVelY = new PIDController(10f,10f,0f,(float) Math.PI/0.5f, (float)- Math.PI/0.5f, 20);
-	private PIDController pidVer = new PIDController(10f,10,0f,(float) Math.PI/0.5f, (float)- Math.PI/0.5f, 1);
+	private PIDController pidVelY = new PIDController(10f,10f,0f,(float) Math.PI/6f, (float)- Math.PI/6f, 20);
+	private PIDController pidVer = new PIDController(10f,10,0f,(float) Math.PI/6f, (float)- Math.PI/6f, 1);
 	private PIDController pidRoll = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6 ,20);
 	private PIDController pidHor = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 2);
 	private PIDController pidRoll2 = new PIDController(1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 2);
@@ -101,7 +103,7 @@ public class Besturing {
 			leftWingInclination = (float) (Math.PI/20);
 			horStabInclination = 0f;
 			float vel = 0;
-			float goal = -3;
+			float goal = 3;
 			float outputVelY = 0;
 			if (getTime() == 0) {
 				outputVelY = (float) (Math.PI/6);
@@ -109,8 +111,10 @@ public class Besturing {
 			else {
 				vel = (lastY-inputs.getY())/getTime();
 				//Rechtdoor vliegen
-				if (goal == 0) {
-					outputVelY = -pidVelY.getOutput(goal,vel, getTime());
+				outputVelY = -pidVelY.getOutput(-goal,vel, getTime());
+				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) > maxAOA) {
+					outputVelY = 9 * outputVelY / 10;
+					System.out.println("max AoA");
 				}
 			}
 			
@@ -135,6 +139,10 @@ public class Besturing {
 					first = false;
 				}
 				float outputPitch = pidPitch.getOutput((float) Math.PI/60, inputs.getPitch(), getTime());
+				while (Math.abs(getAngleOfAttack(speedVector,outputPitch)) > maxAOA) {
+					System.out.println("Max AOA Hor");
+					outputPitch = 9 * outputPitch / 10;
+				}
 				horStabInclination = -outputPitch;
 				//rightWingInclination = outputPitch;
 				//leftWingInclination = outputPitch;
