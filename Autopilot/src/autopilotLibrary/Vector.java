@@ -31,8 +31,20 @@ public class Vector {
 				           a.x*b.y - b.x*a.y);
 	}
 	
+	public Vector product(float s, Vector v) {
+		return new Vector(s * v.x, s*v.y, s*v.z);
+	}
+	
 	public float scalairProd(Vector a, Vector b) {
 		return a.x*b.x + a.y*b.y + a.z*b.z;
+	}
+	
+	public Vector sum(Vector a, Vector b) {
+		return new Vector(a.x + b.x, a.y + b.y, a.z + b.y);
+	}
+	
+	public float lengthSquared(Vector a) {
+		return a.x*a.x + a.y*a.y + a.z*a.z;
 	}
 
 }

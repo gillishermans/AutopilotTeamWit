@@ -29,7 +29,7 @@ public class Besturing {
 		return this.posList;
 	}
 	
-	private float maxAOA = (float) Math.PI/12; 
+	private float maxAOA = (float) Math.PI/18f; 
 	
 	private float lastX = 0;
 	private float lastY = 0;
@@ -51,6 +51,10 @@ public class Besturing {
 //	private FileWriter fw;
 //	private BufferedWriter bw;
 	private boolean first = true;
+	int k = 5;
+	
+	private float lastInclRight = 0;
+	private float lastInclHor = 0;
 	
 	
 	private boolean resetHeading = false;
@@ -83,6 +87,8 @@ public class Besturing {
 		float horizontalAngle = 0;	
 		float verticalAngle = 0;
 		
+		int j = 0;
+		
 		getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
 		//time += inputs.getTime();
 		
@@ -99,6 +105,7 @@ public class Besturing {
 		//System.out.println(speedVector.y);
 		//Geen kubus gevonden -> vlieg rechtdoor
 		if(centerArray.isEmpty()){
+			k = 3;
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
 			horStabInclination = 0f;
@@ -106,18 +113,23 @@ public class Besturing {
 			float goal = 3;
 			float outputVelY = 0;
 			if (getTime() == 0) {
-				outputVelY = (float) (Math.PI/6);
+				outputVelY = (float) (0);
 			}
 			else {
 				vel = (lastY-inputs.getY())/getTime();
 				//Rechtdoor vliegen
 				outputVelY = -pidVelY.getOutput(-goal,vel, getTime());
-				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) > maxAOA) {
-					outputVelY = 9 * outputVelY / 10;
-					System.out.println("max AoA");
-				}
+				//System.out.println("AoA: " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI));
+//				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) >= maxAOA) {
+//					outputVelY = (outputVelY +  2 *lastInclRight) / 3;
+//					System.out.println("Vleugel "+ j + ": " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI) + " " + outputVelY*360/(2*Math.PI));
+//					j++;
+//				}
 			}
 			
+			j = 0;
+			
+			lastInclRight = outputVelY;
 			lastY = inputs.getY();
 			
 			rightWingInclination = outputVelY;
@@ -126,27 +138,30 @@ public class Besturing {
 			
 			//horStabInclination = outputVelY*10;
 			
-			float aoa = (float) (getAngleOfAttack(speedVector,rightWingInclination) * 180 / Math.PI);
+			//float aoa = (float) (getAngleOfAttack(speedVector,rightWingInclination) * 180 / Math.PI);
 			
 			//System.out.println(inputs.getElapsedTime());
 			
 			verStabInclination = 0;
 			float outputRoll = 0;
 			horStabInclination = 0;
-			if (inputs.getElapsedTime() > 0.5) {
-				if (first) {
-					System.out.println("Pitch");
-					first = false;
-				}
-				float outputPitch = pidPitch.getOutput((float) Math.PI/60, inputs.getPitch(), getTime());
-				while (Math.abs(getAngleOfAttack(speedVector,outputPitch)) > maxAOA) {
-					System.out.println("Max AOA Hor");
-					outputPitch = 9 * outputPitch / 10;
-				}
-				horStabInclination = -outputPitch;
-				//rightWingInclination = outputPitch;
-				//leftWingInclination = outputPitch;
-			}
+			float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+//			float aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
+//			System.out.println("AOA: "+ aoa*360/(2*Math.PI) + " " + -outputPitch*360/(2*Math.PI));
+//			while (Math.abs(aoa) >= maxAOA) {
+//				System.out.println("HorStab: " + -outputPitch*360/(2*Math.PI) + " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+//				outputPitch = (2 * lastInclHor + outputPitch) /3;
+//				System.out.println("HorStab1 " + j + ": " + -outputPitch*360/(2*Math.PI)+ " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+//				aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
+//				j++;
+//			}
+			horStabInclination = -outputPitch;
+			//System.out.println(-outputPitch*360/(2*Math.PI)  +" "+ getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+				
+			lastInclHor = horStabInclination;
+			//rightWingInclination = outputPitch;
+			//leftWingInclination = outputPitch;
+	
 			
 			
 //			if (inputs.getElapsedTime() !=0 ) {
@@ -194,6 +209,7 @@ public class Besturing {
 		
 		//Kubus in zicht
 		else{
+			k = 3;
 			//System.out.println("Kubus is in zicht");
 			
 			//Zoek dichtsbijzijnde kubus
@@ -221,12 +237,13 @@ public class Besturing {
 			vel = (lastY-inputs.getY())/getTime();
 				
 			outputVer = pidVer.getOutput(0, verticalAngle, getTime());
-			System.out.println(outputVer + " " + Math.PI/6);
-			if (Math.abs(outputVer) > Math.PI/2) {
-				System.out.println("Te grote Error");
-				if (outputVer > 0) outputVer = (float) (Math.PI/2);
-				else outputVer = (float) (-Math.PI/2);
-			}
+//			System.out.println(speedVector.x + ", " + speedVector.y + ", " + speedVector.z);
+//			while (Math.abs(getAngleOfAttack(speedVector,outputVer)) >= maxAOA) {
+//				outputVer = (outputVer +  2 *lastInclRight) / 3;
+//				System.out.println("Vleugel "+ j + ": " + getAngleOfAttack(speedVector,outputVer)*360/(2*Math.PI) + " " + outputVer*360/(2*Math.PI));
+//			}
+//			
+//			lastInclRight = outputVer;
 	
 
 		
@@ -300,10 +317,11 @@ public class Besturing {
 			verStabInclination = 0f;
 		}
 		
-		System.out.println(thrust);
+		//System.out.println(thrust);
 		//thrust = 7000;
 		//horStabInclination = (float) (Math.PI/20);
 		//System.out.println("thr " + thrust + "left " + leftWingInclination + "right " + rightWingInclination + "hor " + horStabInclination + "ver " + verStabInclination);
+		System.out.println("HorSTAB " + k + ": " + getAngleOfAttack(speedVector,rightWingInclination)*360/(2*Math.PI));
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
 		
 	}
@@ -328,8 +346,7 @@ public class Besturing {
 		Vector airspeed = speed;
 		Vector axis = this.getAxisVector();
 //		
-		Vector projectedAirspeed = airspeed;
-//		
+		Vector projectedAirspeed = 	vector.sum(airspeed, vector.product(-1*vector.scalairProd(axis, airspeed)/vector.lengthSquared(axis),axis));	
 		float angleOfAttack = (float) -Math.atan2(vector.scalairProd(projectedAirspeed,normal), 
 				vector.scalairProd(projectedAirspeed,this.getAttackVector(incl)));
 		
