@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import org.opencv.core.Point;
 
 import interfaces.AutopilotConfig;
-import interfaces.AutopilotInputs_v2;
+import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
 
@@ -64,6 +64,7 @@ public class Besturing {
 		this.config = config;
 		this.beeldherkenning = new Beeldherkenning(config);
 		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
+		System.out.println("Hey");
 //		try {
 //			fw = new FileWriter("outputroll.txt");
 //			bw = new BufferedWriter(fw);
@@ -73,7 +74,7 @@ public class Besturing {
 //		}
 	}
 	
-	public AutopilotOutputs startBesturing(AutopilotInputs_v2 inputs) {
+	public AutopilotOutputs startBesturing(AutopilotInputs inputs) {
 		setTime(inputs);
 	
 	//BEELDHERKENNING -------------------------------------------------------------------------	
@@ -120,11 +121,11 @@ public class Besturing {
 				//Rechtdoor vliegen
 				outputVelY = -pidVelY.getOutput(-goal,vel, getTime());
 				//System.out.println("AoA: " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI));
-				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) >= maxAOA) {
-					outputVelY = (outputVelY +  2 *lastInclRight) / 3;
-					System.out.println("Vleugel "+ j + ": " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI) + " " + outputVelY*360/(2*Math.PI));
-					j++;
-				}
+//				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) >= maxAOA) {
+//					outputVelY = (outputVelY +  2 *lastInclRight) / 3;
+//					System.out.println("Vleugel "+ j + ": " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI) + " " + outputVelY*360/(2*Math.PI));
+//					j++;
+//				}
 			}
 			
 			j = 0;
@@ -148,13 +149,13 @@ public class Besturing {
 			float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
 			float aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
 			System.out.println("AOA: "+ aoa*360/(2*Math.PI) + " " + -outputPitch*360/(2*Math.PI));
-			while (Math.abs(aoa) >= maxAOA) {
-				System.out.println("HorStab: " + -outputPitch*360/(2*Math.PI) + " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-				outputPitch = (2 * lastInclHor + outputPitch) /3;
-				System.out.println("HorStab1 " + j + ": " + -outputPitch*360/(2*Math.PI)+ " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-				aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
-				j++;
-			}
+//			while (Math.abs(aoa) >= maxAOA) {
+//				System.out.println("HorStab: " + -outputPitch*360/(2*Math.PI) + " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+//				outputPitch = (2 * lastInclHor + outputPitch) /3;
+//				System.out.println("HorStab1 " + j + ": " + -outputPitch*360/(2*Math.PI)+ " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+//				aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
+//				j++;
+//			}
 			horStabInclination = -outputPitch;
 			//System.out.println(-outputPitch*360/(2*Math.PI)  +" "+ getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
 				
@@ -317,6 +318,19 @@ public class Besturing {
 			verStabInclination = 0f;
 		}
 		
+		System.out.println(speedVector.z);
+		
+		leftWingInclination = (float) Math.PI/20;
+		rightWingInclination = leftWingInclination;
+		
+		if (speedVector.z > -50) {
+			System.out.println("Onder 50");
+			leftWingInclination = (float) -Math.PI/20;
+			rightWingInclination = leftWingInclination;
+		}
+		
+		thrust = 2000;
+		
 		//System.out.println(thrust);
 		//thrust = 7000;
 		//horStabInclination = (float) (Math.PI/20);
@@ -326,7 +340,7 @@ public class Besturing {
 		
 	}
 	
-	public void setTime(AutopilotInputs_v2 inputs) {
+	public void setTime(AutopilotInputs inputs) {
 		double time1 = inputs.getElapsedTime();
 		float elapTime = (float)(time1 - lastLoopTime);
 		lastLoopTime = (float) time1;
