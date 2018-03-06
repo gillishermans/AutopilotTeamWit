@@ -4,7 +4,9 @@ public class Config implements AutopilotConfig {
 
 	public Config(float gravity, float wingX, float tailSize, float engineMass, float wingMass, float tailMass,
 			float maxThrust, float maxAOA, float wingLiftSlope, float horStabLiftSlope, float verStabLiftSlope, 
-			float horAngleOfView, float verAngleOfView, int nbColumns, int nbRows) {
+			float horAngleOfView, float verAngleOfView, int nbColumns, int nbRows, String droneID, float wheelY,
+			float frontWheelZ, float rearWheelZ, float rearWheelX, float tyreSlope, float dampSlope, float tyreRadius,
+			float rMax, float fcMax) {
 
 		this.gravity = gravity;
 		this.wingX = wingX;
@@ -21,6 +23,16 @@ public class Config implements AutopilotConfig {
 		this.verAngleOfView = verAngleOfView;
 		this.nbColumns = nbColumns;
 		this.nbRows = nbRows;
+		this.droneID = droneID;
+		this.wheelY = wheelY;
+		this.frontWheelZ = frontWheelZ;
+		this.rearWheelZ = rearWheelZ;
+		this.rearWheelX = rearWheelX;
+		this.tyreSlope = tyreSlope;
+		this.dampSlope = dampSlope;
+		this.tyreRadius = tyreRadius;
+		this.rMax = rMax;
+		this.fcMax = fcMax;
 }
 	
 	private float gravity;
@@ -38,6 +50,17 @@ public class Config implements AutopilotConfig {
 	private float verAngleOfView;
 	private int nbColumns;
 	private int nbRows;
+	private String droneID;
+	private float wheelY;
+	private float frontWheelZ;
+	private float rearWheelZ;
+	private float rearWheelX;
+	private float tyreSlope;
+	private float dampSlope;
+	private float tyreRadius;
+	private float rMax;
+	private float fcMax;
+	
 
 	@Override
 	public float getGravity() {
@@ -127,6 +150,66 @@ public class Config implements AutopilotConfig {
 	public int getNbRows() {
 		// TODO Auto-generated method stub
 		return nbRows;
+	}
+
+	@Override
+	public String getDroneID() {
+		// TODO Auto-generated method stub
+		return droneID;
+	}
+
+	@Override
+	public float getWheelY() {
+		// TODO Auto-generated method stub
+		return wheelY;
+	}
+
+	@Override
+	public float getFrontWheelZ() {
+		// TODO Auto-generated method stub
+		return frontWheelZ;
+	}
+
+	@Override
+	public float getRearWheelZ() {
+		// TODO Auto-generated method stub
+		return rearWheelZ;
+	}
+
+	@Override
+	public float getRearWheelX() {
+		// TODO Auto-generated method stub
+		return rearWheelX;
+	}
+
+	@Override
+	public float getTyreSlope() {
+		// TODO Auto-generated method stub
+		return tyreSlope;
+	}
+
+	@Override
+	public float getDampSlope() {
+		// TODO Auto-generated method stub
+		return dampSlope;
+	}
+
+	@Override
+	public float getTyreRadius() {
+		// TODO Auto-generated method stub
+		return tyreRadius;
+	}
+
+	@Override
+	public float getRMax() {
+		// TODO Auto-generated method stub
+		return rMax;
+	}
+
+	@Override
+	public float getFcMax() {
+		// TODO Auto-generated method stub
+		return fcMax;
 	}
 
 }

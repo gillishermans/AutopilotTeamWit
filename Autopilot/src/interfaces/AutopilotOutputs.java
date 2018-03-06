@@ -1,9 +1,12 @@
 package interfaces;
 
 public interface AutopilotOutputs {
-    float getThrust();
+	float getThrust();
     float getLeftWingInclination();
     float getRightWingInclination();
     float getHorStabInclination();
     float getVerStabInclination();
+    float getFrontBrakeForce();
+    float getLeftBrakeForce();
+    float getRightBrakeForce();
 }

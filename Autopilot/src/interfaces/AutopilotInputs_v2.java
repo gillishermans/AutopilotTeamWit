@@ -1,7 +1,7 @@
 package interfaces;
 
-public interface AutopilotInputs {
-    byte[] getImage();
+public interface AutopilotInputs_v2 {
+	byte[] getImage();
     float getX();
     float getY();
     float getZ();

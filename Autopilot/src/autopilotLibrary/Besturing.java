@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import org.opencv.core.Point;
 
 import interfaces.AutopilotConfig;
-import interfaces.AutopilotInputs;
+import interfaces.AutopilotInputs_v2;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
 
@@ -73,7 +73,7 @@ public class Besturing {
 //		}
 	}
 	
-	public AutopilotOutputs startBesturing(AutopilotInputs inputs) {
+	public AutopilotOutputs startBesturing(AutopilotInputs_v2 inputs) {
 		setTime(inputs);
 	
 	//BEELDHERKENNING -------------------------------------------------------------------------	
@@ -104,7 +104,7 @@ public class Besturing {
 		
 		//System.out.println(speedVector.y);
 		//Geen kubus gevonden -> vlieg rechtdoor
-		if(centerArray.isEmpty()){
+		if(centerArray.isEmpty()) {
 			k = 3;
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
@@ -120,11 +120,11 @@ public class Besturing {
 				//Rechtdoor vliegen
 				outputVelY = -pidVelY.getOutput(-goal,vel, getTime());
 				//System.out.println("AoA: " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI));
-//				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) >= maxAOA) {
-//					outputVelY = (outputVelY +  2 *lastInclRight) / 3;
-//					System.out.println("Vleugel "+ j + ": " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI) + " " + outputVelY*360/(2*Math.PI));
-//					j++;
-//				}
+				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) >= maxAOA) {
+					outputVelY = (outputVelY +  2 *lastInclRight) / 3;
+					System.out.println("Vleugel "+ j + ": " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI) + " " + outputVelY*360/(2*Math.PI));
+					j++;
+				}
 			}
 			
 			j = 0;
@@ -146,15 +146,15 @@ public class Besturing {
 			float outputRoll = 0;
 			horStabInclination = 0;
 			float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
-//			float aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
-//			System.out.println("AOA: "+ aoa*360/(2*Math.PI) + " " + -outputPitch*360/(2*Math.PI));
-//			while (Math.abs(aoa) >= maxAOA) {
-//				System.out.println("HorStab: " + -outputPitch*360/(2*Math.PI) + " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-//				outputPitch = (2 * lastInclHor + outputPitch) /3;
-//				System.out.println("HorStab1 " + j + ": " + -outputPitch*360/(2*Math.PI)+ " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-//				aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
-//				j++;
-//			}
+			float aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
+			System.out.println("AOA: "+ aoa*360/(2*Math.PI) + " " + -outputPitch*360/(2*Math.PI));
+			while (Math.abs(aoa) >= maxAOA) {
+				System.out.println("HorStab: " + -outputPitch*360/(2*Math.PI) + " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+				outputPitch = (2 * lastInclHor + outputPitch) /3;
+				System.out.println("HorStab1 " + j + ": " + -outputPitch*360/(2*Math.PI)+ " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+				aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
+				j++;
+			}
 			horStabInclination = -outputPitch;
 			//System.out.println(-outputPitch*360/(2*Math.PI)  +" "+ getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
 				
@@ -322,11 +322,11 @@ public class Besturing {
 		//horStabInclination = (float) (Math.PI/20);
 		//System.out.println("thr " + thrust + "left " + leftWingInclination + "right " + rightWingInclination + "hor " + horStabInclination + "ver " + verStabInclination);
 		System.out.println("HorSTAB " + k + ": " + getAngleOfAttack(speedVector,rightWingInclination)*360/(2*Math.PI));
-		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination);
+		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, 0, 0, 0);
 		
 	}
 	
-	public void setTime(AutopilotInputs inputs) {
+	public void setTime(AutopilotInputs_v2 inputs) {
 		double time1 = inputs.getElapsedTime();
 		float elapTime = (float)(time1 - lastLoopTime);
 		lastLoopTime = (float) time1;
