@@ -111,7 +111,7 @@ public class Besturing {
 			leftWingInclination = (float) (Math.PI/20);
 			horStabInclination = 0f;
 			float vel = 0;
-			float goal = 3;
+			float goal = 0;
 			float outputVelY = 0;
 			if (getTime() == 0) {
 				outputVelY = (float) (0);
@@ -318,18 +318,18 @@ public class Besturing {
 			verStabInclination = 0f;
 		}
 		
-		System.out.println(speedVector.z);
-		
-		leftWingInclination = (float) Math.PI/20;
-		rightWingInclination = leftWingInclination;
-		
-		if (speedVector.z > -50) {
-			System.out.println("Onder 50");
-			leftWingInclination = (float) -Math.PI/20;
+		if ( inputs.getY()< 10f  && inputs.getElapsedTime()< 30f) {
+			leftWingInclination = (float) Math.PI/20;
 			rightWingInclination = leftWingInclination;
+			
+			if (speedVector.z > -40) {
+				System.out.println("Onder 40");
+				leftWingInclination = (float) -Math.PI/60;
+				rightWingInclination = leftWingInclination;
+			}
+			
+			thrust = 2000;
 		}
-		
-		thrust = 2000;
 		
 		//System.out.println(thrust);
 		//thrust = 7000;
