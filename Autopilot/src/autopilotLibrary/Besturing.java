@@ -34,7 +34,7 @@ public class Besturing {
 	private float lastX = 0;
 	private float lastY = 0;
 	private float lastZ = 0;
-	
+	private float goalYspeed=0;
 	private float time = 0;
 	
 	private PIDController pidVelY = new PIDController(10f,10f,0f,(float) Math.PI/6f, (float)- Math.PI/6f, 20);
@@ -59,6 +59,7 @@ public class Besturing {
 	
 	private boolean resetHeading = false;
 	private boolean resetStabilization = false;
+	private boolean landingSequence;
 	
 	public Besturing(AutopilotConfig config) {
 		this.config = config;
@@ -111,7 +112,6 @@ public class Besturing {
 			leftWingInclination = (float) (Math.PI/20);
 			horStabInclination = 0f;
 			float vel = 0;
-			float goal = 0;
 			float outputVelY = 0;
 			if (getTime() == 0) {
 				outputVelY = (float) (0);
@@ -119,7 +119,7 @@ public class Besturing {
 			else {
 				vel = (lastY-inputs.getY())/getTime();
 				//Rechtdoor vliegen
-				outputVelY = -pidVelY.getOutput(-goal,vel, getTime());
+				outputVelY = -pidVelY.getOutput(goalYspeed,vel, getTime());
 				//System.out.println("AoA: " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI));
 //				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) >= maxAOA) {
 //					outputVelY = (outputVelY +  2 *lastInclRight) / 3;
@@ -330,6 +330,15 @@ public class Besturing {
 			
 			thrust = 2000;
 		}
+		if (inputs.getElapsedTime() > 40 ) {
+			landingSequence =true;
+		}
+		if (landingSequence) {
+			pidVelY.reset();
+			pidPitch.reset();
+			goalYspeed=-2;
+		}
+		
 		
 		//System.out.println(thrust);
 		//thrust = 7000;
