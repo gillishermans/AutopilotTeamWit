@@ -3,8 +3,8 @@ import java.io.*;
 
 import interfaces.AutopilotConfig;
 import interfaces.AutopilotConfigReader;
-import interfaces.AutopilotInputs;
-import interfaces.AutopilotInputsReader;
+import interfaces.AutopilotInputs_v2;
+import interfaces.AutopilotInputs_v2Reader;
 import interfaces.AutopilotOutputs;
 import interfaces.AutopilotOutputsWriter;
 
