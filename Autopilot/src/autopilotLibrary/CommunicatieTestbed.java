@@ -10,7 +10,7 @@ public class CommunicatieTestbed implements Autopilot{
 	
 	private static Besturing besturing;
 
-	public AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs_v2 inputs) {
+	public AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
 		
 		//Lees config en start een timePassed
 		besturing = new Besturing(config);
@@ -18,7 +18,7 @@ public class CommunicatieTestbed implements Autopilot{
 		return output;
 	}
 
-	public AutopilotOutputs timePassed(AutopilotInputs_v2 inputs){
+	public AutopilotOutputs timePassed(AutopilotInputs inputs){
 
 		//Start het besturingsalgoritme
 		AutopilotOutputs output = besturing.startBesturing(inputs);

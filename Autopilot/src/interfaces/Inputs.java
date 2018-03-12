@@ -1,6 +1,6 @@
 package interfaces;
 
-public class Inputs implements AutopilotInputs_v2 {
+public class Inputs implements AutopilotInputs {
 
 	public Inputs (byte[] image, float x, float y, float z, float heading, float pitch, float roll, float elapsedTime) {
 		this.image = image;
