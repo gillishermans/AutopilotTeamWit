@@ -84,13 +84,13 @@ public class Beeldherkenning {
 			//System.load(Core.NATIVE_LIBRARY_NAME + ".dll");
 			
 			//NORMAAL
-			//System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+			//System.loadLibrary( "opencv-330.dylib" );
 			
 			//HUN TESTBED - PAS ZELF DIRECTORY AAN
 			//System.load("C:\\Users\\Gillis\\Documents\\P&O\\opencv-3.3.1-vc14\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
 			//C:\Users\Midas\Documents\P&O\opencv-3.3.1-vc14\opencv\build\java\x64
 			//System.load("D:\\Downloads\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
-			System.load("C:\\Users\\Midas\\Documents\\P&O\\opencv-3.3.1-vc14\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
+			System.load("/Users/jan/Documents/Semester_6_ingenieurswetenschappen/PENO_4_SEM_2/java/libopencv-330.dylib");
 
 
 	        centerArray = new ArrayList<Point>();
