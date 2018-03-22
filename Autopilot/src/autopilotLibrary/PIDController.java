@@ -26,18 +26,15 @@ public class PIDController {
 		float dError = Math.abs((error-lastError) / timePassed);
 		//System.out.println("dError: " + dError + " Error: " + error);
 		float output = kp * error + ki * errorSum + kd * dError;
-		//if (output > getMaxOutput()) output = getMaxOutput();
-		//if (output < getMinOutput()) output = getMinOutput();
-		//System.out.println("Error: " + error + " errorSum: " + errorSum + " dError: " + dError + " actual: " + actual + " output: " + output);
 		lastError = error;
 		float outputDiv = output/division;
 		if (outputDiv > this.maxOutput) {
 			output = this.maxOutput;
-			System.out.println("Max");
+			//System.out.println("Max");
 		}
 		if (outputDiv < this.minOutput) {
 			output = this.minOutput;
-			System.out.println("Min");
+			//System.out.println("Min");
 		}
 		else output = outputDiv;
 		return output;

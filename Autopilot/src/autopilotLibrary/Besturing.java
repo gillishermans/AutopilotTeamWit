@@ -86,7 +86,6 @@ public class Besturing {
 			break;
 		}
 		return outputs;
-	
 	}
 	
 	public void setTime(AutopilotInputs inputs) {

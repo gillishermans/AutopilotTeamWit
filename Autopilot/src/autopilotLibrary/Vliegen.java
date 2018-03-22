@@ -25,7 +25,7 @@ public class Vliegen {
 	private float rightWingInclination,leftWingInclination,thrust,horStabInclination,verStabInclination;
 	private float leftBrakeForce,rightBrakeForce,frontBrakeForce;
 	
-	private PIDController pidVelY = new PIDController(1f,1f,0f,(float) Math.PI/6f, (float)- Math.PI/6f, 20);
+	private PIDController pidVelY = new PIDController(1f,1f,0f,(float) Math.PI/10f, (float)- Math.PI/10f, 20);
 	private PIDController pidVer = new PIDController(1f,1,0f,(float) Math.PI/6f, (float)- Math.PI/6f, 1);
 	private PIDController pidRoll = new PIDController(4f,1,1.5f,(float) Math.PI/60, (float) -Math.PI/60 ,20);
 	private PIDController pidStab = new PIDController(3,1,1,(float) Math.PI/6, -(float) Math.PI/6,20);
@@ -38,6 +38,9 @@ public class Vliegen {
 	
 	private boolean resetHeading = false;
 	private boolean resetStabilization = false;
+	
+	private float lastLoopTime = 0;
+	private float time = 0;
 	
 	private float lastInclRight = 0;
 	private float lastInclHor = 0;
@@ -70,6 +73,7 @@ public class Vliegen {
 	}
 	
 	public AutopilotOutputs vliegen(AutopilotInputs inputs) {
+		setTime(inputs);
 		float horizontalAngle = 0;	
 		float verticalAngle = 0;
 		beeldherkenning.imageRecognition(inputs.getImage());
@@ -106,7 +110,7 @@ public class Vliegen {
 			else {
 				vel = (lastY-inputs.getY())/getTime();
 				//Rechtdoor vliegen
-				outputVelY = -pidVelY.getOutput(goalYspeed,vel, getTime());
+				//outputVelY = -pidVelY.getOutput(goalYspeed,vel, getTime());
 				//System.out.println("AoA: " + getAngleOfAttack(speedVector,outputVelY)*360/(2*Math.PI));
 //				while (Math.abs(getAngleOfAttack(speedVector,outputVelY)) >= maxAOA) {
 //					outputVelY = (outputVelY +  2 *lastInclRight) / 3;
@@ -129,11 +133,11 @@ public class Vliegen {
 			
 			//System.out.println(inputs.getElapsedTime());
 			
-			verStabInclination = 0;
-			float outputRoll = 0;
-			horStabInclination = 0;
-			float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
-			float aoa = aoaController.getAngleOfAttack(speedVector,Math.abs(outputPitch));
+//			verStabInclination = 0;
+//			float outputRoll = 0;
+//			horStabInclination = 0;
+//			float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+//			float aoa = aoaController.getAngleOfAttack(speedVector,Math.abs(outputPitch));
 			//System.out.println("AOA: "+ aoa*360/(2*Math.PI) + " " + -outputPitch*360/(2*Math.PI));
 //			while (Math.abs(aoa) >= maxAOA) {
 //				System.out.println("HorStab: " + -outputPitch*360/(2*Math.PI) + " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
@@ -142,12 +146,12 @@ public class Vliegen {
 //				aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
 //				j++;
 //			}
-			horStabInclination = -outputPitch;
-			//System.out.println(-outputPitch*360/(2*Math.PI)  +" "+ getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-				
-			lastInclHor = horStabInclination;
-			//rightWingInclination = outputPitch;
-			//leftWingInclination = outputPitch;
+//			horStabInclination = -outputPitch;
+//			//System.out.println(-outputPitch*360/(2*Math.PI)  +" "+ getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
+//				
+//			lastInclHor = horStabInclination;
+//			//rightWingInclination = outputPitch;
+//			//leftWingInclination = outputPitch;
 	
 			
 			
@@ -159,7 +163,7 @@ public class Vliegen {
 //				//System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
 //			}
 						
-			lastX = inputs.getZ();
+			//lastX = inputs.getZ();
 			
 			
 			
@@ -222,7 +226,7 @@ public class Vliegen {
 			//float goal = 3;
 			float outputVer = 0;
 			vel = (lastY-inputs.getY())/getTime();
-				
+			
 			outputVer = pidVer.getOutput(0, verticalAngle, getTime());
 //			System.out.println(speedVector.x + ", " + speedVector.y + ", " + speedVector.z);
 //			while (Math.abs(getAngleOfAttack(speedVector,outputVer)) >= maxAOA) {
@@ -288,7 +292,7 @@ public class Vliegen {
 			}
 		}
 		//float reqSpeed = totalMass * 17.142f ;
-		thrust = pidTrust.getOutput(65f, speed, getTime());
+		
 		
 		frontBrakeForce = 0;
 		rightBrakeForce = 0;
@@ -300,7 +304,7 @@ public class Vliegen {
 		
 		switch(phase) {
 		case INIT: //eerste stap, standaard waarden doorgeven
-			//System.out.println("INIT");
+			System.out.println("INIT");
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
 			thrust = 80f;
@@ -337,16 +341,22 @@ public class Vliegen {
 			break;
 		case STABILISEREN:
 			thrust = pidTrust.getOutput(65f, speed, getTime());
-			float outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
+			System.out.println(thrust);
+			if (thrust > 2000) {
+				thrust = 2000;
+			}
+			float outputVelY = pidVelY.getOutput(0,speedVector.y, getTime());
+			//System.out.print(toDegrees(outputVelY) + " ");
 			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
-			leftWingInclination = -outputVelY;
-			rightWingInclination = -outputVelY;
+			//System.out.println(toDegrees(outputVelY) + " " + getTime());
+			leftWingInclination = outputVelY;
+			rightWingInclination = outputVelY;
 			float outputPitch1 = pidPitch.getOutput(0, inputs.getPitch(), getTime());
 			outputPitch1 = aoaController.aoaController(outputPitch1, (float) Math.PI/20);
 			horStabInclination = -outputPitch1;
 			//System.out.println("Pitch: " + horStabInclination*360/(2*Math.PI));
 			verStabInclination = 0f;
-			if (inputs.getZ() < -1000) {
+			if (inputs.getZ() < -30000) {
 				System.out.println("KUBUS");
 				//System.out.println(inputs.getZ());
 				phase = Phase.KUBUS;
@@ -498,8 +508,15 @@ public class Vliegen {
 		return (float) (r*360/(2*Math.PI));
 	}
 	
+	public void setTime(AutopilotInputs inputs) {
+		double time1 = inputs.getElapsedTime();
+		float elapTime = (float)(time1 - lastLoopTime);
+		lastLoopTime = (float) time1;
+		this.time = elapTime;
+	}
+	
 	public float getTime() {
-		return besturing.getTime();
+		return time;
 	}
 	
 }
