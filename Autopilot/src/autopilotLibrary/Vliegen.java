@@ -72,9 +72,10 @@ public class Vliegen {
 	private boolean left = false;
 	private boolean forward = true;
 	
-	private float x = 0;
-	private float y = 40;
-	private float z = -2000;
+	private float x;
+	private float y;
+	private float z;
+	private int index = 0;
 	
 	private float interval = 90;
 	
@@ -117,7 +118,7 @@ public class Vliegen {
 			speed = Vector.norm(speedVector);
 		}
 		//Geen kubus gevonden -> vlieg rechtdoor
-		if(centerArray.isEmpty() || inputs.getZ() > -1850) {
+		if(centerArray.isEmpty() || inputs.getZ() > -1750) {
 			if (phase == Phase.KUBUS) {
 				pidVelY.reset();
 				pidPitch.reset();
@@ -189,7 +190,6 @@ public class Vliegen {
 		
 		//Kubus in zicht
 		else {
-			System.out.println("KUBUS IS IN ZICHT!!!!");
 			k = 3;
 			//System.out.println("Kubus is in zicht");
 			if (phase == Phase.POSITIE) {
@@ -351,6 +351,7 @@ public class Vliegen {
 				System.out.println("POSITIE");
 				//System.out.println(inputs.getZ());
 				phase = Phase.POSITIE;
+				setNextPos();
 			}
 			break;
 		case LANDEN:
@@ -390,6 +391,10 @@ public class Vliegen {
 			}
 			break;
 		case POSITIE:
+			if (distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)) < 0.5) {
+				setNextPos();
+				pos = true;
+			}
 			if (pos) {
 				if (z < inputs.getZ()) forward = true;
 				else				   forward = false;
@@ -402,7 +407,7 @@ public class Vliegen {
 			float maxRoll = (float) Math.PI/8;
 			thrust = pidTrust.getOutput(65,speed,getTime());
 			float heading = calculateHeading(inputs);
-			System.out.println(toDegrees(heading));
+			//System.out.println(toDegrees(heading));
 			//heading = (float) (Math.PI/9.5);
 			//System.out.println("HEADING: " + toDegrees(inputs.getHeading()) + " Required: " + toDegrees(heading));
 			//System.out.println("HEADING: " + toDegrees(heading));
@@ -513,17 +518,24 @@ public class Vliegen {
 		
 	}
 	
-	public Vector getNextPos() {
-		return null;
+	public void setNextPos() {
+		if (index < path.getX().length) {
+			this.x = path.getX()[index];
+			this.y = path.getY()[index];
+			this.z = path.getZ()[index];
+			this.index = this.index + 1;
+			System.out.println("VOLGENDE KUBUS OP: " + x + " " + y + " " + z + " " + index);
+		}
+		else phase = Phase.GEENKUBUS;
 	}
 	
 	public float distance(Vector v1, Vector v2) {
 		float x1 = (float) (Math.pow(v1.x - v2.x, 2));
 		float y1 = (float) (Math.pow(v1.y - v2.y, 2));
 		float z1 = (float) (Math.pow(v1.z - v2.z, 2));
-		System.out.println(x1 + " " + y1 + " " + z1);
+		//System.out.println(x1 + " " + y1 + " " + z1);
 		float total = Math.abs(x1 + y1 + z1);
-		System.out.println(total);
+		//System.out.println(total);
 		return (float) Math.sqrt(total);
 	}
 	
@@ -535,9 +547,9 @@ public class Vliegen {
 		float c = -x + currX;
 		float a = (float) Math.sqrt((b*b) + (c*c));
 		float cos = ((a*a) + (b*b) - (c*c)) / (2*a*b);
-		System.out.println(cos);
+		//System.out.println(cos);
 		if (cos > 1) cos = -(1-cos);
-		System.out.println("A: " + a + "B: " + b + "C: " + c);
+		//System.out.println("A: " + a + "B: " + b + "C: " + c);
 		//System.out.println("Heading: " + toDegrees(inputs.getHeading()) + " X: " + currX + " Z: " + currZ + " A: " + a + " B: " + b + " C: " + c + " " + cos + " " +toDegrees((float) Math.acos(cos)) + " " + toDegrees(inputs.getHeading() - (float) Math.acos(cos)));
 		if (left) return (float) (Math.acos(cos));
 		else      return -(float) Math.acos(cos);
