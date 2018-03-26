@@ -118,13 +118,13 @@ public class Vliegen {
 			speed = Vector.norm(speedVector);
 		}
 		//Geen kubus gevonden -> vlieg rechtdoor
-		if(centerArray.isEmpty() || inputs.getZ() > -1750) {
-			if (phase == Phase.KUBUS) {
-				pidVelY.reset();
-				pidPitch.reset();
-				phase = Phase.GEENKUBUS;
-				System.out.println("GEEN KUBUS");
-			}
+		if(centerArray.isEmpty() || inputs.getZ() > z+250) {
+//			if (phase == Phase.KUBUS) {
+//				pidVelY.reset();
+//				pidPitch.reset();
+//				phase = Phase.GEENKUBUS;
+//				System.out.println("GEEN KUBUS");
+//			}
 			k = 3;
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
@@ -391,10 +391,6 @@ public class Vliegen {
 			}
 			break;
 		case POSITIE:
-			if (distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)) < 0.5) {
-				setNextPos();
-				pos = true;
-			}
 			if (pos) {
 				if (z < inputs.getZ()) forward = true;
 				else				   forward = false;
@@ -403,7 +399,6 @@ public class Vliegen {
 				pos = false;
 				System.out.println(forward);
 			}
-			float goal = (float) Math.PI/10;
 			float maxRoll = (float) Math.PI/8;
 			thrust = pidTrust.getOutput(65,speed,getTime());
 			float heading = calculateHeading(inputs);
@@ -467,8 +462,19 @@ public class Vliegen {
 			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
 			break;
 		case KUBUS:
+			if (distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)) < 5) {
+				setNextPos();
+				pos = true;
+				phase = Phase.POSITIE;
+				System.out.println("POSITIE");
+				pidVerImage.reset();
+				pidHorImage.reset();
+				pidRollImage.reset();
+				pidHeadingImage.reset();
+				//interval = 90;
+			}
+			System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
 			thrust = pidTrust.getOutput(65f, speed, getTime());
-			if (inputs.getZ() < 2000) phase = Phase.KUBUS;
 			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
 			break;
 		case GEENKUBUS:
