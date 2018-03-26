@@ -10,11 +10,14 @@ import interfaces.AutopilotConfig;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
+import interfaces.Path;
 
 public class Besturing {
 	
 	private Vliegen vliegen;
 	private Taxi taxi;
+	
+	private Path path;
 
 	private float thrust = 0.00f;
 	private float leftWingInclination = 0.0f;
@@ -59,11 +62,8 @@ public class Besturing {
 	int k = 5;
 	
 	
-	public Besturing(AutopilotConfig config) {
-		this.config = config;
-		this.beeldherkenning = new Beeldherkenning(config);
-		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
-		this.vliegen = new Vliegen(this, beeldherkenning);
+	public Besturing() {
+		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
 //		try {
 //			fw = new FileWriter("outputroll.txt");
@@ -72,6 +72,13 @@ public class Besturing {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+	}
+	
+	public void setConfig(AutopilotConfig config) {
+		this.config = config;
+		this.beeldherkenning = new Beeldherkenning(config);
+		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
+		vliegen.setBeeldherkenning(beeldherkenning);
 	}
 	
 	public AutopilotOutputs startBesturing(AutopilotInputs inputs) {
@@ -98,6 +105,11 @@ public class Besturing {
 	
 	public float getTime() {
 		return this.time;
+	}
+	
+	public void setPath(Path path) {
+		this.path = path;
+		vliegen.setPath(path);
 	}
 	
 }

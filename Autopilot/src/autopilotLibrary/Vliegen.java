@@ -7,9 +7,11 @@ import org.opencv.core.Point;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
+import interfaces.Path;
 
 public class Vliegen {
 	
+	private Path path;
 	private Besturing besturing;
 	private Beeldherkenning beeldherkenning;
 	private AOAController aoaController = new AOAController();
@@ -26,15 +28,19 @@ public class Vliegen {
 	private float leftBrakeForce,rightBrakeForce,frontBrakeForce;
 	
 	private PIDController pidVelY = new PIDController(1f,1f,0f,(float) Math.PI/10f, (float)- Math.PI/10f, 20);
-	private PIDController pidVer = new PIDController(1f,1,0f,(float) Math.PI/6f, (float)- Math.PI/6f, 1);
-	private PIDController pidRoll = new PIDController(4f,1,1.5f,(float) Math.PI/60, (float) -Math.PI/60 ,20);
-	private PIDController pidStab = new PIDController(3,1,1,(float) Math.PI/6, -(float) Math.PI/6,20);
-	private PIDController pidHor = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 2);
-	private PIDController pidRoll2 = new PIDController(1f,1,1.5f,(float) Math.PI/6, (float) -Math.PI/6, 2);
 	private PIDController pidPitch = new PIDController(4f,0.5f,0.5f,(float) Math.PI/6f, (float) -Math.PI/6f, 1);
 //	private PIDController pidX = new PIDController(0.1f,1,0,(float) Math.PI/6, (float) -Math.PI/6, 1);
-	private PIDController pidHeading = new PIDController(0.5f,1f,0.5f,(float) Math.PI/1, (float) -Math.PI/1, 10);
 	private PIDController pidTrust = new PIDController(5f,5,1,2000, 0, 0.1f);
+	
+	//PID's VLIEGEN NAAR POSITIE
+	private PIDController pidRoll = new PIDController(4f,1,1.5f,(float) Math.PI/60, (float) -Math.PI/60 ,20);
+	private PIDController pidStab = new PIDController(3,1,1,(float) Math.PI/6, -(float) Math.PI/6,20);
+	private PIDController pidHeading = new PIDController(0.5f,1f,0.5f,(float) Math.PI/1, (float) -Math.PI/1, 10);
+	//PID's VLIEGEN OBV BEELDHERKENNING
+	private PIDController pidVerImage = new PIDController(1f,1,0f,(float) Math.PI/6f, (float)- Math.PI/6f, 1);
+	private PIDController pidHorImage = new PIDController(1f,1,0f,(float) Math.PI/6, (float)- Math.PI/6, 1);
+	private PIDController pidRollImage = new PIDController(1f,1,1.5f,(float) Math.PI/6, (float) -Math.PI/6, 1);
+	private PIDController pidHeadingImage = new PIDController(0.5f,1f,0.5f,(float) Math.PI/1, (float) -Math.PI/1, 10);
 	
 	private boolean resetHeading = false;
 	private boolean resetStabilization = false;
@@ -47,7 +53,7 @@ public class Vliegen {
 	
 	private Phase phase = Phase.INIT;
 	private enum Phase {
-		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,ROLL
+		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,ROLL,POSITIE
 	}
 	
 	private boolean first = true;
@@ -62,14 +68,28 @@ public class Vliegen {
 	private boolean landen = false;
 	private float timeLanden = 0;
 	
-	private float x = -50;
+	private boolean pos = true;
+	private boolean left = false;
+	private boolean forward = true;
+	
+	private float x = 280;
 	private float y = 40;
 	private float z = -2000;
 	
+	private float interval = 90;
 	
-	public Vliegen(Besturing besturing, Beeldherkenning beeldherkenning) {
+	
+	public Vliegen(Besturing besturing) {
 		this.besturing = besturing;
+		//this.beeldherkenning = beeldherkenning;
+	}
+	
+	public void setBeeldherkenning(Beeldherkenning beeldherkenning) {
 		this.beeldherkenning = beeldherkenning;
+	}
+	
+	public void setPath(Path path) {
+		this.path = path;
 	}
 	
 	public AutopilotOutputs vliegen(AutopilotInputs inputs) {
@@ -97,7 +117,13 @@ public class Vliegen {
 			speed = Vector.norm(speedVector);
 		}
 		//Geen kubus gevonden -> vlieg rechtdoor
-		if(centerArray.isEmpty()) {
+		if(centerArray.isEmpty() || inputs.getZ() > -1850) {
+			if (phase == Phase.KUBUS) {
+				pidVelY.reset();
+				pidPitch.reset();
+				phase = Phase.GEENKUBUS;
+				System.out.println("GEEN KUBUS");
+			}
 			k = 3;
 			rightWingInclination = (float) (Math.PI/20);
 			leftWingInclination = (float) (Math.PI/20);
@@ -127,43 +153,6 @@ public class Vliegen {
 			leftWingInclination = outputVelY;
 			
 			
-			//horStabInclination = outputVelY*10;
-			
-			//float aoa = (float) (getAngleOfAttack(speedVector,rightWingInclination) * 180 / Math.PI);
-			
-			//System.out.println(inputs.getElapsedTime());
-			
-//			verStabInclination = 0;
-//			float outputRoll = 0;
-//			horStabInclination = 0;
-//			float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
-//			float aoa = aoaController.getAngleOfAttack(speedVector,Math.abs(outputPitch));
-			//System.out.println("AOA: "+ aoa*360/(2*Math.PI) + " " + -outputPitch*360/(2*Math.PI));
-//			while (Math.abs(aoa) >= maxAOA) {
-//				System.out.println("HorStab: " + -outputPitch*360/(2*Math.PI) + " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-//				outputPitch = (2 * lastInclHor + outputPitch) /3;
-//				System.out.println("HorStab1 " + j + ": " + -outputPitch*360/(2*Math.PI)+ " " + getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-//				aoa = getAngleOfAttack(speedVector,Math.abs(outputPitch));
-//				j++;
-//			}
-//			horStabInclination = -outputPitch;
-//			//System.out.println(-outputPitch*360/(2*Math.PI)  +" "+ getAngleOfAttack(speedVector,-outputPitch)*360/(2*Math.PI));
-//				
-//			lastInclHor = horStabInclination;
-//			//rightWingInclination = outputPitch;
-//			//leftWingInclination = outputPitch;
-	
-			
-			
-//			if (inputs.getElapsedTime() !=0 ) {
-////				
-//				outputRoll = pidRoll.getOutput(0,inputs.getRoll(), getTime());
-//				rightWingInclination = rightWingInclination + outputRoll;
-//				leftWingInclination= leftWingInclination - outputRoll;
-//				//System.out.println("Roll: " + inputs.getRoll() + " outputRoll: " + outputRoll);
-//			}
-						
-			//lastX = inputs.getZ();
 			
 			
 			
@@ -199,10 +188,14 @@ public class Vliegen {
 	}
 		
 		//Kubus in zicht
-		else{
+		else {
+			
 			k = 3;
 			//System.out.println("Kubus is in zicht");
-			
+			if (phase == Phase.POSITIE) {
+				phase = Phase.KUBUS;
+				System.out.println("KUBUS");
+			}
 			//Zoek dichtsbijzijnde kubus
 			ArrayList<Float> distanceArray = new ArrayList<Float>();
 			float shortest = beeldherkenning.distanceToObject(centerArray.get(0),radiusArray.get(0));
@@ -219,15 +212,16 @@ public class Vliegen {
 			//Beweeg naar dichtstbijzijnde kubus
 			horizontalAngle = beeldherkenning.horizontalAngle(centerArray.get(shortestI));	
 			verticalAngle = beeldherkenning.verticalAngle(centerArray.get(shortestI));
+			//System.out.println(horizontalAngle);
 
 //------VERTICAAL---------------------------------------------------------------------------------------------------			
 			
-			float vel = 0;
-			//float goal = 3;
 			float outputVer = 0;
-			vel = (lastY-inputs.getY())/getTime();
+
 			
-			outputVer = pidVer.getOutput(0, verticalAngle, getTime());
+			outputVer = pidVerImage.getOutput(0, verticalAngle, getTime());
+			//System.out.println(outputVer);
+			outputVer = aoaController.aoaController(outputVer, (float) Math.PI/20);
 //			System.out.println(speedVector.x + ", " + speedVector.y + ", " + speedVector.z);
 //			while (Math.abs(getAngleOfAttack(speedVector,outputVer)) >= maxAOA) {
 //				outputVer = (outputVer +  2 *lastInclRight) / 3;
@@ -248,16 +242,15 @@ public class Vliegen {
 			//float maxRoll = (float) (Math.PI/8)*(1-inputs.getPitch());
 			//float maxRoll = (float) (Math.PI/15);
 			float maxRoll = (float) (Math.PI/4);
+			float outputHor = 0;
 			if((Math.abs(horizontalAngle) < Math.abs(Math.PI/90))) {
 				if (resetHeading) {
-					pidHeading.reset();
-					pidRoll2.reset();
+					pidHeadingImage.reset();
+					pidRollImage.reset();
 					resetHeading = false;
 					System.out.println("Reset Heading");
 				}
-				float outputHor = pidHor.getOutput(0,inputs.getRoll(), getTime());
-				rightWingInclination = rightWingInclination + outputHor;
-				leftWingInclination= leftWingInclination - outputHor;
+				outputHor = pidHorImage.getOutput(0,inputs.getRoll(), getTime());
 				resetStabilization = true;
 //				float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime())/20;
 //				horStabInclination = outputPitch;
@@ -270,26 +263,28 @@ public class Vliegen {
 //			}
 			else {
 				if (resetStabilization) {
-					pidHor.reset();
+					pidHorImage.reset();
 					resetStabilization = false;
 					System.out.println("Reset Stab");
 				}
 				if (Math.abs(inputs.getRoll()) < Math.abs(maxRoll)) {
-					float outputAngle = pidHeading.getOutput(0, horizontalAngle, getTime());
-					rightWingInclination = rightWingInclination + outputAngle;
-					leftWingInclination = leftWingInclination - outputAngle;
+					outputHor = pidHeadingImage.getOutput(0, horizontalAngle, getTime());
 				}
 				else { 
 					//System.out.println("Roll te groot");
 					float goal;
 					if (inputs.getRoll() > 0)  goal = (float) maxRoll;
 					else                       goal = -(float) maxRoll;
-					float outputRoll = pidRoll2.getOutput(goal, inputs.getRoll(), getTime());
-					rightWingInclination = rightWingInclination + outputRoll;
-					leftWingInclination= leftWingInclination - outputRoll;	
+					outputHor = pidRollImage.getOutput(goal, inputs.getRoll(), getTime());	
 				}
 				resetHeading = true;
 			}
+			outputHor = aoaController.aoaRollController(-outputVer, outputHor, (float) Math.PI / 20);
+			leftWingInclination = outputVer - outputHor;
+			rightWingInclination = outputVer + outputHor;
+			float outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+			outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
+			horStabInclination = -outputPitch;
 		}
 		//float reqSpeed = totalMass * 17.142f ;
 		
@@ -341,10 +336,6 @@ public class Vliegen {
 			break;
 		case STABILISEREN:
 			thrust = pidTrust.getOutput(65f, speed, getTime());
-			System.out.println(thrust);
-			if (thrust > 2000) {
-				thrust = 2000;
-			}
 			float outputVelY = pidVelY.getOutput(0,speedVector.y, getTime());
 			//System.out.print(toDegrees(outputVelY) + " ");
 			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
@@ -356,10 +347,10 @@ public class Vliegen {
 			horStabInclination = -outputPitch1;
 			//System.out.println("Pitch: " + horStabInclination*360/(2*Math.PI));
 			verStabInclination = 0f;
-			if (inputs.getZ() < -30000) {
-				System.out.println("KUBUS");
+			if (inputs.getZ() < -1000) {
+				System.out.println("POSITIE");
 				//System.out.println(inputs.getZ());
-				phase = Phase.KUBUS;
+				phase = Phase.POSITIE;
 			}
 			break;
 		case LANDEN:
@@ -398,19 +389,37 @@ public class Vliegen {
 				first = true;
 			}
 			break;
-		case KUBUS:
+		case POSITIE:
+			if (pos) {
+				if (z < inputs.getZ()) forward = true;
+				else				   forward = false;
+				if (x > inputs.getX()) left = false;
+				else                   left = true;
+				pos = false;
+				System.out.println(forward);
+			}
 			float goal = (float) Math.PI/10;
 			float maxRoll = (float) Math.PI/8;
 			thrust = pidTrust.getOutput(65,speed,getTime());
 			float heading = calculateHeading(inputs);
-			heading = (float) (Math.PI/9);
-			System.out.println("HEADING: " + toDegrees(inputs.getHeading()) + " Required: " + toDegrees(heading));
+			System.out.println(toDegrees(heading));
+			//heading = (float) (Math.PI/9.5);
+			//System.out.println("HEADING: " + toDegrees(inputs.getHeading()) + " Required: " + toDegrees(heading));
 			//System.out.println("HEADING: " + toDegrees(heading));
 			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
 			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
 			//System.out.println("MIN: " + toDegrees(heading - inputs.getHeading()));
-			if (Math.abs(heading - Math.abs(inputs.getHeading())) < (float) Math.PI/360) {
+			if (Math.abs(heading - inputs.getHeading()) < (float) Math.PI/interval) {
 				//System.out.println("DEGREE: " + toDegrees((float) (Math.PI/20 - inputs.getHeading())));
+				if (interval < 360) {
+					interval = interval + 1;
+					//System.out.println(interval);
+				}
+//				if (Math.abs(inputs.getRoll()) > maxRoll) {
+//					System.out.print("  Yoooowwww");
+//					if (inputs.getRoll() > 0) outputRoll = pidRoll.getOutput(maxRoll, inputs.getRoll(), getTime());
+//					else                      outputRoll = pidRoll.getOutput(-maxRoll, inputs.getRoll(), getTime());
+//				}
 				outputRoll = pidStab.getOutput(0,inputs.getRoll(),getTime());
 //				if (inputs.getRoll() > 0) System.out.print("GROTER ");
 //				else System.out.print("KLEINER ");
@@ -420,29 +429,42 @@ public class Vliegen {
 					System.out.println("Stab");
 				}
 			} else {
-				first = true;
-				if (inputs.getRoll() > maxRoll) {
-					outputRoll = pidRoll.getOutput(0, inputs.getRoll(), getTime());
+				if (!first) {
+					first = true;
+					//System.out.println("Verder");
+					pidHeading.reset();
+				}
+				if (Math.abs(inputs.getRoll()) > maxRoll) {
+					if (inputs.getRoll() > 0) outputRoll = pidRoll.getOutput(maxRoll, inputs.getRoll(), getTime());
+					else                      outputRoll = pidRoll.getOutput(-maxRoll, inputs.getRoll(), getTime());
 				} else {
 					if (inputs.getHeading() - heading < 0) {
-						System.out.println("Erover");
+						//System.out.println("Erover");
 						outputRoll = pidHeading.getOutput(heading, inputs.getHeading(), getTime());
 					}
 					else {
-						System.out.println("Eronder");
-						outputRoll = -pidHeading.getOutput(heading, inputs.getHeading(), getTime());
+						//System.out.println("Eronder");
+						outputRoll = pidHeading.getOutput(heading, inputs.getHeading(), getTime());
 					}
 				}
 			}
+			//System.out.println(toDegrees(heading - inputs.getHeading()));
 			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, (float) Math.PI / 20);
 			leftWingInclination = -outputVelY - outputRoll;
 			rightWingInclination = -outputVelY + outputRoll;
+			//System.out.println("Incl: " + toDegrees(leftWingInclination) + " outputVel: " + toDegrees(-outputVelY) + " Roll: "  + toDegrees(outputRoll));
 			//System.out.println(inputs.getHeading()*360/(2*Math.PI));
 			//System.out.println("left: " + leftWingInclination + " right: " + rightWingInclination);
 			outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
 			outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
 			horStabInclination = -outputPitch;
 			verStabInclination = 0;
+			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
+			break;
+		case KUBUS:
+			thrust = pidTrust.getOutput(65f, speed, getTime());
+			if (inputs.getZ() < 2000) phase = Phase.KUBUS;
+			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
 			break;
 		case GEENKUBUS:
 			if (first) {
@@ -450,15 +472,15 @@ public class Vliegen {
 				//System.out.println("RESET");
 				first = false;
 			}
+			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
 			thrust = pidTrust.getOutput(65f, speed, getTime());
 			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
 			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
 			outputRoll = pidRoll.getOutput(0, inputs.getRoll(), getTime());
-			System.out.println("ROLL: " + outputRoll);
 			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, (float) Math.PI/20);
 			leftWingInclination = -outputVelY - outputRoll;
 			rightWingInclination = -outputVelY + outputRoll;
-			System.out.println("ROLL: " + outputRoll + "INCL: " + -outputVelY + "INCL: " + leftWingInclination + "INCR: " + rightWingInclination);
+			//System.out.println("ROLL: " + outputRoll + "INCL: " + -outputVelY + "INCL: " + leftWingInclination + "INCR: " + rightWingInclination);
 			outputPitch1 = pidPitch.getOutput(0, inputs.getPitch(), getTime());
 			outputPitch1 = aoaController.aoaController(outputPitch1, (float) Math.PI/25);
 			horStabInclination = -outputPitch1;
@@ -467,7 +489,7 @@ public class Vliegen {
 				timeLanden = inputs.getElapsedTime();
 				landen = true;
 			}
-			if (inputs.getElapsedTime() - timeLanden > 5000000f) {
+			if (inputs.getElapsedTime() - timeLanden > 3f) {
 				System.out.println("LANDEN");
 				phase = Phase.LANDEN;
 			}
@@ -494,14 +516,17 @@ public class Vliegen {
 	public float calculateHeading(AutopilotInputs inputs) {
 		float currX = inputs.getX();
 		float currZ = inputs.getZ();
-		float b = -z -currZ;
-		float c = -x - currX;
+		//System.out.println(currZ);
+		float b = -z + currZ;
+		float c = -x + currX;
 		float a = (float) Math.sqrt((b*b) + (c*c));
 		float cos = ((a*a) + (b*b) - (c*c)) / (2*a*b);
+		System.out.println(cos);
 		if (cos > 1) cos = -(1-cos);
-		//System.out.println("A: " + a + "B: " + b + "C: " + c);
+		System.out.println("A: " + a + "B: " + b + "C: " + c);
 		//System.out.println("Heading: " + toDegrees(inputs.getHeading()) + " X: " + currX + " Z: " + currZ + " A: " + a + " B: " + b + " C: " + c + " " + cos + " " +toDegrees((float) Math.acos(cos)) + " " + toDegrees(inputs.getHeading() - (float) Math.acos(cos)));
-		return (float) Math.acos(cos);
+		if (left) return (float) (Math.acos(cos));
+		else      return -(float) Math.acos(cos);
 	}
 	
 	public float toDegrees(float r) {
