@@ -65,6 +65,7 @@ public class Besturing {
 	public Besturing() {
 		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
+		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
 //		try {
 //			fw = new FileWriter("outputroll.txt");
 //			bw = new BufferedWriter(fw);

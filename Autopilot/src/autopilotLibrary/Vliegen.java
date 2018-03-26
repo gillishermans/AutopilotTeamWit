@@ -72,7 +72,7 @@ public class Vliegen {
 	private boolean left = false;
 	private boolean forward = true;
 	
-	private float x = 280;
+	private float x = 0;
 	private float y = 40;
 	private float z = -2000;
 	
@@ -189,7 +189,7 @@ public class Vliegen {
 		
 		//Kubus in zicht
 		else {
-			
+			System.out.println("KUBUS IS IN ZICHT!!!!");
 			k = 3;
 			//System.out.println("Kubus is in zicht");
 			if (phase == Phase.POSITIE) {
@@ -511,6 +511,20 @@ public class Vliegen {
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	
 		
+	}
+	
+	public Vector getNextPos() {
+		return null;
+	}
+	
+	public float distance(Vector v1, Vector v2) {
+		float x1 = (float) (Math.pow(v1.x - v2.x, 2));
+		float y1 = (float) (Math.pow(v1.y - v2.y, 2));
+		float z1 = (float) (Math.pow(v1.z - v2.z, 2));
+		System.out.println(x1 + " " + y1 + " " + z1);
+		float total = Math.abs(x1 + y1 + z1);
+		System.out.println(total);
+		return (float) Math.sqrt(total);
 	}
 	
 	public float calculateHeading(AutopilotInputs inputs) {
