@@ -191,7 +191,7 @@ public class Vliegen {
 		//Kubus in zicht
 		else {
 			k = 3;
-			//System.out.println("Kubus is in zicht");
+			System.out.println("Kubus is in zicht");
 			if (phase == Phase.POSITIE) {
 				phase = Phase.KUBUS;
 				System.out.println("KUBUS");
@@ -532,7 +532,10 @@ public class Vliegen {
 			this.index = this.index + 1;
 			System.out.println("VOLGENDE KUBUS OP: " + x + " " + y + " " + z + " " + index);
 		}
-		else phase = Phase.GEENKUBUS;
+		else {
+			phase = Phase.GEENKUBUS;
+			System.out.println("GEEN KUBUS MEER");
+		}
 	}
 	
 	public float distance(Vector v1, Vector v2) {
