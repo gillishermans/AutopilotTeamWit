@@ -118,7 +118,8 @@ public class Vliegen {
 			speed = Vector.norm(speedVector);
 		}
 		//Geen kubus gevonden -> vlieg rechtdoor
-		if(centerArray.isEmpty() || inputs.getZ() > z+250) {
+		System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
+		if(centerArray.isEmpty() || distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)) > 250) {
 //			if (phase == Phase.KUBUS) {
 //				pidVelY.reset();
 //				pidPitch.reset();
@@ -191,7 +192,7 @@ public class Vliegen {
 		//Kubus in zicht
 		else {
 			k = 3;
-			System.out.println("Kubus is in zicht");
+			//System.out.println("Kubus is in zicht");
 			if (phase == Phase.POSITIE) {
 				phase = Phase.KUBUS;
 				System.out.println("KUBUS");
@@ -243,7 +244,7 @@ public class Vliegen {
 			//float maxRoll = (float) (Math.PI/15);
 			float maxRoll = (float) (Math.PI/4);
 			float outputHor = 0;
-			if((Math.abs(horizontalAngle) < Math.abs(Math.PI/90))) {
+			if((Math.abs(horizontalAngle) < Math.abs(Math.PI/360))) {
 				if (resetHeading) {
 					pidHeadingImage.reset();
 					pidRollImage.reset();
@@ -465,15 +466,20 @@ public class Vliegen {
 			if (distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)) < 5) {
 				setNextPos();
 				pos = true;
-				phase = Phase.POSITIE;
-				System.out.println("POSITIE");
+				if (phase == Phase.KUBUS) {
+					System.out.println("POSITIE");
+					phase = Phase.POSITIE;
+				}
 				pidVerImage.reset();
 				pidHorImage.reset();
 				pidRollImage.reset();
 				pidHeadingImage.reset();
-				//interval = 90;
+				pidRoll.reset();
+				pidStab.reset();
+				pidHeading.reset();
+				interval = 90;
 			}
-			System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
+			//System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
 			thrust = pidTrust.getOutput(65f, speed, getTime());
 			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
 			break;
@@ -517,7 +523,7 @@ public class Vliegen {
 		}
 	
 	
-		//System.out.println("thr " + thrust + "left " + leftWingInclination + "right " + rightWingInclination + "hor " + horStabInclination + "ver " + verStabInclination);
+		System.out.println("thr " + thrust + " left " + leftWingInclination + " right " + rightWingInclination + " hor " + horStabInclination + " hor " + horizontalAngle + " roll " + inputs.getRoll());
 		//System.out.println("HorSTAB " + k + ": " + getAngleOfAttack(speedVector,rightWingInclination)*360/(2*Math.PI));
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	
