@@ -72,9 +72,9 @@ public class Vliegen {
 	private boolean left = false;
 	private boolean forward = true;
 	
-	private float x;
-	private float y;
-	private float z;
+	private float x = 0;
+	private float y = 40;
+	private float z = -2000;
 	private int index = 0;
 	
 	private float interval = 90;
@@ -191,7 +191,7 @@ public class Vliegen {
 		//Kubus in zicht
 		else {
 			k = 3;
-			System.out.println("Kubus is in zicht");
+			//System.out.println("Kubus is in zicht");
 			if (phase == Phase.POSITIE) {
 				phase = Phase.KUBUS;
 				System.out.println("KUBUS");
@@ -351,7 +351,7 @@ public class Vliegen {
 				System.out.println("POSITIE");
 				//System.out.println(inputs.getZ());
 				phase = Phase.POSITIE;
-				setNextPos();
+				//setNextPos();
 			}
 			break;
 		case LANDEN:
@@ -463,9 +463,9 @@ public class Vliegen {
 			break;
 		case KUBUS:
 			if (distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)) < 5) {
-				setNextPos();
+				//setNextPos();
 				pos = true;
-				phase = Phase.POSITIE;
+				if (phase == Phase.KUBUS)	phase = Phase.GEENKUBUS;
 				System.out.println("POSITIE");
 				pidVerImage.reset();
 				pidHorImage.reset();
@@ -473,7 +473,7 @@ public class Vliegen {
 				pidHeadingImage.reset();
 				//interval = 90;
 			}
-			System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
+			//System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
 			thrust = pidTrust.getOutput(65f, speed, getTime());
 			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
 			break;
