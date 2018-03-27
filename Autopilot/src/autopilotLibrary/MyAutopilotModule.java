@@ -5,29 +5,12 @@ import interfaces.*;
 public class MyAutopilotModule implements AutopilotModule {
 
 	public MyAutopilotModule() {
-		besturing = new Besturing();
+		AutopilotHandler handler = new AutopilotHandler();
 	}
-	
-	private static Besturing besturing;
-
-	public AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
-		//Lees config en start een timePassed
-		besturing.setConfig(config);
-		AutopilotOutputs output = timePassed(inputs);
-		return output;
-	}
-
-	public AutopilotOutputs timePassed(AutopilotInputs inputs){
-		//Start het besturingsalgoritme
-		AutopilotOutputs output = besturing.startBesturing(inputs);
-		return output;
-	}
-
 
 	@Override
 	public void defineAirportParams(float length, float width) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
