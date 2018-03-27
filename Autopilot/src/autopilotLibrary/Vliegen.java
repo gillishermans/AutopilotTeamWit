@@ -2,8 +2,6 @@ package autopilotLibrary;
 
 import java.util.ArrayList;
 
-import org.opencv.core.Point;
-
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
@@ -21,8 +19,6 @@ public class Vliegen {
 	
 	private final float maxRoll = (float) (Math.PI/8);
 	
-	private ArrayList<Point> centerArray;
-	private ArrayList<Float> radiusArray;
 	private ArrayList<Vector> posList = new ArrayList<Vector>();
 	
 	public ArrayList<Vector> getPosList(){
