@@ -324,7 +324,7 @@ public class Vliegen {
 			thrust = pidTrust.getOutput(65f, speed, getTime());
 			pidVelY.reset();
 			pidPitch.reset();
-			float outputVelY1 = -pidVelY.getOutput(-0.5f,speedVector.y,getTime());
+			float outputVelY1 = -pidVelY.getOutput(-1f,speedVector.y,getTime());
 			outputVelY1 = aoaController.aoaController(outputVelY1, (float) Math.PI/20);
 			leftWingInclination = -outputVelY1;
 			rightWingInclination = -outputVelY1;
@@ -332,7 +332,7 @@ public class Vliegen {
 			outputPitch2 = aoaController.aoaController(outputPitch2, (float) Math.PI/20);
 			horStabInclination = -outputPitch2;
 			verStabInclination = 5;
-			if (inputs.getY() < 1.5f) {
+			if (inputs.getY() < 1.3f) {
 				System.out.println("REMMEN");
 				phase = Phase.REMMEN;
 			}
@@ -464,6 +464,13 @@ public class Vliegen {
 			}
 			break;
 		case REMMEN:
+			
+			if (inputs.getY() > 1.31f) {
+				System.out.println("LANDEN");
+				phase = Phase.LANDEN;
+			}
+			
+			
 			thrust = 0;
 			leftWingInclination = - (float) Math.PI/60;
 			rightWingInclination = leftWingInclination;
