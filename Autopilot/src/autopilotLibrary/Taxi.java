@@ -12,7 +12,7 @@ public class Taxi {
 	private PIDController pidrightwheel= new PIDController(1f,1f,1f,2486f,0f,1f);
 	private PIDController pidVertax = new PIDController(10,10,0,(float) Math.PI/10, (float) -Math.PI/10, 2);
 	
-	private float bestemmingX = 1000;
+	private float bestemmingX = 300;
 	private float bestemmingZ = -50;
 	
 	private float rightWingInclination,leftWingInclination,thrust,horStabInclination,verStabInclination;
@@ -101,27 +101,6 @@ public class Taxi {
 		}
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
-//		else if (inputs.getElapsedTime()<30){
-//		thrust= this.draaiFunctie(inputs).getThrust();
-//		leftBrakeForce=this.draaiFunctie(inputs).getLeftBrakeForce();
-//		rightBrakeForce=this.draaiFunctie(inputs).getRightBrakeForce();
-//		frontBrakeForce=this.draaiFunctie(inputs).getLeftBrakeForce();
-//		}
-//		
-//		else if (afstand > 5/141.421356*Math.sqrt(Math.pow(bestemmingX, 2)+Math.pow(bestemmingZ, 2)) && inputs.getElapsedTime()>30){
-//		leftBrakeForce=0;
-//		rightBrakeForce=0;
-//		frontBrakeForce=0;
-//		thrust=200;
-//		System.out.print(afstand);
-//		}
-//		
-//	else {
-//			thrust=0;
-//			leftBrakeForce=3000;
-//			rightBrakeForce=3000;
-//			frontBrakeForce=3000;
-//		}
 	
 	public AutopilotOutputs draaiFunctie(AutopilotInputs inputs){
 		float goal;

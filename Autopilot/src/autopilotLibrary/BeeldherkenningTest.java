@@ -147,11 +147,6 @@ public class BeeldherkenningTest {
 	        System.out.println(horizontalAngle(centerArray.get(0)));
 	        System.out.println(verticalAngle(centerArray.get(0)));
 	        
-	        
-	         //System.out.println(centerArray);
-	         //System.out.println(radiusArray);
-	         //System.out.println(colorArray);
-	        
 	    }
 		
 		//Bereken afstand van een object tot de camera
@@ -179,9 +174,7 @@ public class BeeldherkenningTest {
 		}
 		
 		public static BufferedImage Mat2BufferedImage(Mat m){
-			// source: http://answers.opencv.org/question/10344/opencv-java-load-image-to-gui/
-			// The output can be assigned either to a BufferedImage or to an Image
-
+		
 			    int type = BufferedImage.TYPE_BYTE_GRAY;
 			    if ( m.channels() > 1 ) {
 			        type = BufferedImage.TYPE_3BYTE_BGR;

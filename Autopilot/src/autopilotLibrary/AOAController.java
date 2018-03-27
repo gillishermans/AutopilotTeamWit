@@ -39,7 +39,6 @@ public class AOAController {
 		float roll1 = 0;
 		if (incl > 0) {
 			if (roll > 0) {
-				//System.out.println("1: " + (incl + roll));
 				if (incl + roll > max) return max - incl;
 				else return roll;
 			} else {
@@ -47,8 +46,8 @@ public class AOAController {
 				else return roll;
 			}
 		}
+		
 		else
-			//System.out.println("2: " + (incl + roll));
 			if (incl - roll < -max) return -max - incl;
 			else {
 				return roll;

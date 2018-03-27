@@ -29,7 +29,6 @@ public class Besturing {
 	private float rightBrakeForce=0.0f;
 	private float totalMass;
 	private AutopilotConfig config;
-	private Beeldherkenning beeldherkenning;
 	private ArrayList<Vector> posList = new ArrayList<Vector>(); 
 	private float rechtdoorHoek;
 	private float lastLoopTime = 0;
@@ -53,12 +52,6 @@ public class Besturing {
 	private float goalYspeed=0;
 	private float time = 0;
 	
-	
-	
-	
-//	private FileWriter fw;
-//	private BufferedWriter bw;
-	
 	int k = 5;
 	
 	
@@ -66,20 +59,11 @@ public class Besturing {
 		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
 		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
-//		try {
-//			fw = new FileWriter("outputroll.txt");
-//			bw = new BufferedWriter(fw);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void setConfig(AutopilotConfig config) {
 		this.config = config;
-		this.beeldherkenning = new Beeldherkenning(config);
 		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
-		vliegen.setBeeldherkenning(beeldherkenning);
 	}
 	
 	public AutopilotOutputs startBesturing(AutopilotInputs inputs) {
@@ -100,7 +84,6 @@ public class Besturing {
 		double time1 = inputs.getElapsedTime();
 		float elapTime = (float)(time1 - lastLoopTime);
 		lastLoopTime = (float) time1;
-		//turnTime+=elapTime;
 		this.time = elapTime;
 	}
 	
