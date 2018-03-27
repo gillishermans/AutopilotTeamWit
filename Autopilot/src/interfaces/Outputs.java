@@ -51,19 +51,16 @@ public class Outputs implements AutopilotOutputs {
 
 	@Override
 	public float getFrontBrakeForce() {
-		// TODO Auto-generated method stub
 		return this.frontBrakeForce;
 	}
 
 	@Override
 	public float getLeftBrakeForce() {
-		// TODO Auto-generated method stub
 		return this.leftBrakForce;
 	}
 
 	@Override
 	public float getRightBrakeForce() {
-		// TODO Auto-generated method stub
 		return rightBrakeForce;
 	}
 

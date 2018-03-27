@@ -11,9 +11,15 @@ import interfaces.Path;
 
 public class Vliegen {
 	
-	private Path path;
+	private ArrayList<Vector> path = new ArrayList<Vector>();
+	private boolean firstCube = true;
+	
+	private String str = "niks";
+	
 	private Besturing besturing;
 	private AOAController aoaController = new AOAController();
+	
+	private final float maxRoll = (float) (Math.PI/8);
 	
 	private ArrayList<Point> centerArray;
 	private ArrayList<Float> radiusArray;
@@ -42,8 +48,10 @@ public class Vliegen {
 	private float lastLoopTime = 0;
 	private float time = 0;
 	
+	private float lastDistance = 0;
+	
 	private float lastInclRight = 0;
-	private float lastInclHor = 0;
+	private float lastInclLeft = 0;
 	
 	private Phase phase = Phase.INIT;
 	private enum Phase {
@@ -65,11 +73,16 @@ public class Vliegen {
 	private boolean pos = true;
 	private boolean left = false;
 	private boolean forward = true;
+	private boolean poscube = true;
+	
+	private final float maxRollAOA = (float) Math.PI/20;
 	
 	private float x;
 	private float y;
 	private float z;
 	private int index = 0;
+	
+	private float lastOutputHor;
 	
 	private float interval = 90;
 	
@@ -79,7 +92,9 @@ public class Vliegen {
 	}
 	
 	public void setPath(Path path) {
-		this.path = path;
+		for (int i= 0; i < path.getX().length; i++) {
+			this.path.add(new Vector(path.getX()[i], path.getY()[i], path.getZ()[i]));
+		}
 	}
 	
 	public AutopilotOutputs vliegen(AutopilotInputs inputs) {
@@ -162,7 +177,7 @@ public class Vliegen {
 			if (inputs.getZ() < -1000) {
 				System.out.println("POSITIE");
 				phase = Phase.POSITIE;
-				setNextPos();
+				//setNextPos();
 			}
 			break;
 			
@@ -216,6 +231,7 @@ public class Vliegen {
 					pidHeading.reset();
 				}
 				if (Math.abs(inputs.getRoll()) > maxRoll) {
+					str = "MAXROLL";
 					if (inputs.getRoll() > 0) outputRoll = pidRoll.getOutput(maxRoll, inputs.getRoll(), getTime());
 					else                      outputRoll = pidRoll.getOutput(-maxRoll, inputs.getRoll(), getTime());
 				} else {
@@ -242,7 +258,7 @@ public class Vliegen {
 			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
 			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
 			outputRoll = pidRoll.getOutput(0, inputs.getRoll(), getTime());
-			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, (float) Math.PI/20);
+			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, maxRollAOA);
 			leftWingInclination = -outputVelY - outputRoll;
 			rightWingInclination = -outputVelY + outputRoll;
 			outputPitch1 = pidPitch.getOutput(0, inputs.getPitch(), getTime());
@@ -274,12 +290,23 @@ public class Vliegen {
 	}
 	
 	public void setNextPos() {
-		if (index < path.getX().length) {
-			this.x = path.getX()[index];
-			this.y = path.getY()[index];
-			this.z = path.getZ()[index];
-			this.index = this.index + 1;
-			System.out.println("VOLGENDE KUBUS OP: " + x + " " + y + " " + z + " " + index);
+		if (!path.isEmpty()) {
+			if (firstCube) {
+				firstCube = false;
+			}
+			else {
+				path.remove(0);
+			}
+			
+			if (path.isEmpty()) {
+				phase = Phase.GEENKUBUS;
+				System.out.println("GEEN KUBUS");
+			} else {
+				x = path.get(0).x;
+				y = path.get(0).y;
+				z = path.get(0).z;
+				System.out.println("VOLGENDE KUBUS OP: " + x + " " + y + " " + z + " " + index);
+			}
 		}
 		else {
 			phase = Phase.GEENKUBUS;
