@@ -110,7 +110,7 @@ public class Besturing {
 	
 	public void setPath(Path path) {
 		this.path = path;
-		vliegen.setPath(path);
+		//vliegen.setPath(path);
 	}
 	
 }

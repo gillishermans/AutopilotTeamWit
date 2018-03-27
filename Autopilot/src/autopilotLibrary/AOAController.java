@@ -35,6 +35,8 @@ public class AOAController {
 		return incl;
 	}
 	
+	
+	//ROLL < 0 -> ROLL NAAR RECHTS
 	public float aoaRollController(float incl, float roll, float max) {
 		float roll1 = 0;
 		if (incl > 0) {
