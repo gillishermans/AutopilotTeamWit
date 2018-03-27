@@ -1,6 +1,6 @@
 package interfaces;
 
-import autopilotLibrary.CommunicatieTestbed;
+import autopilotLibrary.MyAutopilotModule;
 
 public class AutopilotFactory {
 
@@ -8,8 +8,8 @@ public class AutopilotFactory {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static Autopilot createAutopilot(){
-		return new CommunicatieTestbed();
+	public static AutopilotModule createAutopilotModule() {
+		return new MyAutopilotModule();
 	}
 
 }
