@@ -12,6 +12,8 @@ public class Vliegen {
 	private ArrayList<Vector> path = new ArrayList<Vector>();
 	private boolean firstCube = true;
 	
+	private AutopilotOutputs outputs;
+	
 	private String str = "niks";
 	
 	private Besturing besturing;
@@ -51,7 +53,7 @@ public class Vliegen {
 	
 	private Phase phase = Phase.INIT;
 	private enum Phase {
-		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,ROLL,POSITIE
+		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,POSITIE
 	}
 	
 	private boolean first = true;
@@ -284,6 +286,7 @@ public class Vliegen {
 		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
+	
 	
 	public void setNextPos() {
 		if (!path.isEmpty()) {

@@ -6,13 +6,13 @@ public class AOAController {
 		
 		Vector vector = new Vector(0,0,0);
 		
-		Vector normal = vector.crossProd(this.getAxisVector(),this.getAttackVector(incl));
+		Vector normal = vector.crossProd(getAxisVector(),getAttackVector(incl));
 		Vector airspeed = speed;
-		Vector axis = this.getAxisVector();
+		Vector axis = getAxisVector();
 //		
 		Vector projectedAirspeed = 	vector.sum(airspeed, vector.product(-1*vector.scalairProd(axis, airspeed)/vector.lengthSquared(axis),axis));	
 		float angleOfAttack = (float) -Math.atan2(vector.scalairProd(projectedAirspeed,normal), 
-				vector.scalairProd(projectedAirspeed,this.getAttackVector(incl)));
+				vector.scalairProd(projectedAirspeed,getAttackVector(incl)));
 		
 		return angleOfAttack;
 	}
@@ -27,7 +27,7 @@ public class AOAController {
 				          (float)-Math.cos(incl));
 	}
 	
-	public float aoaController(float incl, float max) {
+	public static float aoaController(float incl, float max) {
 		if (Math.abs(incl) > max) {
 			if (incl > 0) return max;
 			else          return -max;

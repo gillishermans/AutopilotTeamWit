@@ -12,7 +12,9 @@ import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
 import interfaces.Path;
 
-public class Besturing {
+public class Besturing implements Runnable {
+	
+	private AutopilotOutputs outputs = new Outputs(0, 0, 0, 0, 0, 0, 0, 0);
 	
 	private Vliegen vliegen;
 	private Taxi taxi;
@@ -43,6 +45,8 @@ public class Besturing {
 		VLIEGEN,TAXIEN
 	}
 	
+	private AutopilotInputs autopilotInputs;
+	
 	private float maxAOA = (float) Math.PI/18f; 
 	
 	private float lastX = 0;
@@ -66,8 +70,8 @@ public class Besturing {
 		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
 	}
 	
-	public AutopilotOutputs startBesturing(AutopilotInputs inputs) {
-		AutopilotOutputs outputs = new Outputs(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
+	public void startBesturing(AutopilotInputs inputs) {
+		//AutopilotOutputs outputs = new Outputs(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
 		setTime(inputs);
 		switch(state) {
 		case VLIEGEN:
@@ -77,7 +81,6 @@ public class Besturing {
 			outputs = taxi.taxi(inputs);
 			break;
 		}
-		return outputs;
 	}
 	
 	public void setTime(AutopilotInputs inputs) {
@@ -94,6 +97,19 @@ public class Besturing {
 	public void setPath(Path path) {
 		this.path = path;
 		//vliegen.setPath(path);
+	}
+
+	@Override
+	public void run() {
+		startBesturing(autopilotInputs);
+	}
+	
+	public void setInputs(AutopilotInputs inputs) {
+		this.autopilotInputs = inputs;
+	}
+	
+	public AutopilotOutputs getOutputs() {
+		return this.outputs;
 	}
 	
 }
