@@ -11,12 +11,12 @@ import interfaces.AutopilotOutputs;
 public class AutopilotHandler {
 	
 	private HashMap<Integer,Besturing> drones = new HashMap<Integer,Besturing>();
-	private ArrayList<Luchthaven> luchthavens;
+	private ArrayList<Luchthaven> luchthavens = new ArrayList<Luchthaven>();
 	
 	//private HashMap<Integer,Thread> threads = new HashMap<Integer, Thread>();
 	//private ExecutorService executorService = Executors.newFixedThreadPool(4);
 	
-	private Integer index;
+	private Integer index = 0;
 	
 	private float luchthavenLength;
 	private float luchthavenWidth;
