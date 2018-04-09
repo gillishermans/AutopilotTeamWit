@@ -36,7 +36,7 @@ public class MyAutopilotModule implements AutopilotModule {
 	@Override
 	public AutopilotOutputs completeTimeHasPassed(int drone) {
 		// TODO Auto-generated method stub
-		return null;
+		return handler.completeTimeHasPassed(drone);
 	}
 
 	@Override

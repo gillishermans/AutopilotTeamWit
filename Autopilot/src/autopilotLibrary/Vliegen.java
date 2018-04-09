@@ -115,7 +115,7 @@ public class Vliegen {
 			speed = Vector.norm(speedVector);
 		}
 		//Geen kubus gevonden -> vlieg rechtdoor
-		System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
+		//System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
 		
 		frontBrakeForce = 0;
 		rightBrakeForce = 0;

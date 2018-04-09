@@ -13,6 +13,8 @@ public class AutopilotHandler {
 	private HashMap<Integer,Besturing> drones = new HashMap<Integer,Besturing>();
 	private ArrayList<Luchthaven> luchthavens = new ArrayList<Luchthaven>();
 	
+	private GUI gui;
+	
 	//private HashMap<Integer,Thread> threads = new HashMap<Integer, Thread>();
 	//private ExecutorService executorService = Executors.newFixedThreadPool(4);
 	
@@ -24,6 +26,8 @@ public class AutopilotHandler {
 	
 	//Zal een threadpool initialiseren
 	public AutopilotHandler() {
+		//De GUI voor de autopilot
+		gui = new GUI();
 //		for (int i = 0; i < 4; i++) {
 //			threads.put(i, new Thread());
 //		}
@@ -53,11 +57,16 @@ public class AutopilotHandler {
 		Besturing drone = new Besturing();
 		drones.put(index, drone);
 		//threads.put(index, new Thread(drone));
+		gui.addDrone(index);
 		index++;
 	}
 	
 	public void addLuchthaven() {
 		luchthavens.add(new Luchthaven());
+	}
+	
+	public void deliverPackage(int fromAirport, int fromGate, int toAirport, int toGate) {
+		gui.addPackage(fromAirport, fromGate, toAirport, toGate);
 	}
 
 }
