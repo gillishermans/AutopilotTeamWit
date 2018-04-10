@@ -20,7 +20,7 @@ public class Vliegen {
 	private Beeldherkenning beeldherkenning;
 	private AOAController aoaController = new AOAController();
 	
-	private final float maxRoll = (float) (Math.PI/8);
+	private final float maxRoll = (float) (Math.PI/6);
 	
 	private ArrayList<Point> centerArray;
 	private ArrayList<Float> radiusArray;
@@ -48,6 +48,10 @@ public class Vliegen {
 	private PIDController pidRollImage = new PIDController(1f,1,1.5f,(float) Math.PI/6, (float) -Math.PI/6, 1);
 	private PIDController pidHeadingImage = new PIDController(0.5f,1f,0.5f,(float) Math.PI/1, (float) -Math.PI/1, 10);
 	
+	//PID's 180 GRADEN DRAAI
+	private PIDController pidMaxRoll = new PIDController(1f,1f,0f,(float) Math.PI/60, (float) -Math.PI/60 ,20);
+	private PIDController pidDraai = new PIDController(1f,1f,0f,(float) Math.PI/60, (float) -Math.PI/60 ,20);
+	
 	private boolean resetHeading = false;
 	private boolean resetStabilization = false;
 	
@@ -61,7 +65,7 @@ public class Vliegen {
 	
 	private Phase phase = Phase.INIT;
 	private enum Phase {
-		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,ROLL,POSITIE
+		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,DRAAI,POSITIE
 	}
 	
 	private boolean first = true;
@@ -89,6 +93,10 @@ public class Vliegen {
 	private int index = 0;
 	
 	private float lastOutputHor;
+	
+	//desired heading (180 degree turn)
+	private float desiredHeading;
+	private boolean firstTurn = true;
 	
 	private float interval = 90;
 	
@@ -177,40 +185,6 @@ public class Vliegen {
 			
 			rightWingInclination = outputVelY;
 			leftWingInclination = outputVelY;
-			
-			
-			
-			
-			
-			/////////////////////////////////////////////////////////////////////
-			
-			//Naar file schrijven om makkelijker te analyseren
-//			float velY = 0;
-//			if (inputs.getElapsedTime() != 0) {
-//				velY = (lastY-inputs.getY())/getTime();
-//			}
-//			this.lastY = inputs.getY();
-//			//FileWriter fw;
-//			try {
-//				//fw = new FileWriter("outputZ.txt");
-//				//BufferedWriter bw = new BufferedWriter(fw);
-//				if (first && inputs.getElapsedTime() >= 10) {
-//					//System.out.println(vel);
-//					float tijd = inputs.getElapsedTime() -10;
-//					bw.append(Float.toString(inputs.getRoll()) + " " + tijd + "\n");
-//					bw.newLine();
-//					if (inputs.getElapsedTime() > 20) {
-//						bw.close();
-//						fw.close();
-//						first = false;
-//						System.out.println("File Closed");
-//					}
-//				}
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-
 	}
 		
 		//Kubus in zicht
@@ -255,7 +229,7 @@ public class Vliegen {
 //			
 //			lastInclRight = outputVer;
 	
-
+			
 		
 			lastY = inputs.getY();
 			
@@ -323,6 +297,8 @@ public class Vliegen {
 		rightBrakeForce = 0;
 		leftBrakeForce = 0;
 		
+		float outputRoll;
+		
 		
 		//System.out.println(thrust);
 		if (getTime() == 0) phase = Phase.INIT;
@@ -381,7 +357,7 @@ public class Vliegen {
 			if (inputs.getZ() < -1000) {
 				System.out.println("POSITIE");
 				//System.out.println(inputs.getZ());
-				phase = Phase.POSITIE;
+				phase = Phase.DRAAI;
 				//setNextPos();
 			}
 			break;
@@ -402,24 +378,29 @@ public class Vliegen {
 				phase = Phase.REMMEN;
 			}
 			break;
-		case ROLL:
+		case DRAAI:
+			if (firstTurn) desiredHeading = (float) Math.PI;
 			thrust = pidTrust.getOutput(65f, speed, getTime());
-			pidPitch.reset();
 			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
 			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
-			float outputRoll = pidRoll.getOutput((float) (Math.PI/36), inputs.getRoll(), getTime());
+			outputPitch1 = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+			outputPitch1 = aoaController.aoaController(outputPitch1, (float) Math.PI/20);
+			if (desiredHeading - Math.abs(inputs.getHeading()) > (float) Math.PI/70) {
+				str = "NOG NIET";
+				//ALS OVER MAXROLL BRENG TERUG NAAR MAXROLL ANDERS GA NAAR HEADING
+				if (Math.abs(inputs.getRoll()) > maxRoll) outputRoll = pidMaxRoll.getOutput(maxRoll,inputs.getRoll(), getTime());
+				else {
+					if (inputs.getHeading() >= 0) outputRoll = pidDraai.getOutput(desiredHeading, inputs.getHeading(), getTime());
+					else 						 outputRoll = -pidDraai.getOutput(0, inputs.getHeading(), getTime());
+				}
+			} 
+			else {
+				str = "INTERVAL";
+				outputRoll = pidStab.getOutput(0, inputs.getRoll(), getTime());
+			}
+			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, maxRollAOA);
 			leftWingInclination = -outputVelY - outputRoll;
 			rightWingInclination = -outputVelY + outputRoll;
-			System.out.println("left: " + leftWingInclination + " right: " + rightWingInclination);
-			outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
-			outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
-			horStabInclination = -outputPitch;
-			verStabInclination = 0;
-			if (inputs.getElapsedTime() > 40) {
-				System.out.println("ROLL STABILISATIE");
-				phase = Phase.GEENKUBUS;
-				first = true;
-			}
 			break;
 		case POSITIE:
 			float distance = distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z));
@@ -452,6 +433,7 @@ public class Vliegen {
 			}
 			thrust = pidTrust.getOutput(65,speed,getTime());
 			float heading = calculateHeading(inputs);
+			heading = (float) Math.PI;
 			//System.out.println(toDegrees(heading));
 			//heading = (float) (Math.PI/9.5);
 			//System.out.println("HEADING: " + toDegrees(inputs.getHeading()) + " Required: " + toDegrees(heading));

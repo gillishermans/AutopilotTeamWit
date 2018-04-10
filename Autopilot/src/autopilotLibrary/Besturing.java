@@ -33,7 +33,7 @@ public class Besturing {
 	private ArrayList<Vector> posList = new ArrayList<Vector>(); 
 	private float rechtdoorHoek;
 	private float lastLoopTime = 0;
-	private float draaing90 =9.776f;
+	private float draaing90 = 9.776f;
 	
 	private ArrayList<Vector> getPosList(){
 		return this.posList;
@@ -54,11 +54,6 @@ public class Besturing {
 	private float time = 0;
 	
 	
-	
-	
-//	private FileWriter fw;
-//	private BufferedWriter bw;
-	
 	int k = 5;
 	
 	
@@ -66,13 +61,6 @@ public class Besturing {
 		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
 		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
-//		try {
-//			fw = new FileWriter("outputroll.txt");
-//			bw = new BufferedWriter(fw);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void setConfig(AutopilotConfig config) {
