@@ -28,31 +28,15 @@ public class AutopilotHandler {
 	
 	
 	//Zal een threadpool initialiseren
-	@SuppressWarnings("static-access")
 	public AutopilotHandler() {
 		//INIT GUI voor de autopilot
-		initGUI();
+		new GUI();
 //		for (int i = 0; i < 4; i++) {
 //			threads.put(i, new Thread());
 //		}
 //		System.out.println("Autopilot created " + numberOfThreads +  " threads");
 	}
 	
-	public void initGUI() {
-		new JFXPanel();
-		Platform.runLater(new Runnable() {
-		    @Override
-		    public void run() {
-		    	try {
-		    		gui = new GUI();
-					gui.start(new Stage());
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
-		});
-	}
 	
 	//
 	public void startTimeHasPassed(int drone, AutopilotInputs inputs) {
