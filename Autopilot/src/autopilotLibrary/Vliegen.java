@@ -358,6 +358,7 @@ public class Vliegen {
 				System.out.println("POSITIE");
 				//System.out.println(inputs.getZ());
 				phase = Phase.DRAAI;
+				//phase= Phase.POSITIE;
 				//setNextPos();
 			}
 			break;
