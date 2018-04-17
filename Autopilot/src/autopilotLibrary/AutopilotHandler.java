@@ -27,7 +27,7 @@ public class AutopilotHandler {
 	//Zal een threadpool initialiseren
 	public AutopilotHandler() {
 		//De GUI voor de autopilot
-		gui = new GUI();
+		//gui = new GUI();
 //		for (int i = 0; i < 4; i++) {
 //			threads.put(i, new Thread());
 //		}
@@ -57,7 +57,7 @@ public class AutopilotHandler {
 		Besturing drone = new Besturing();
 		drones.put(index, drone);
 		//threads.put(index, new Thread(drone));
-		gui.addDrone(index);
+		//gui.addDrone(index);
 		index++;
 	}
 	
