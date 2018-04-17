@@ -20,6 +20,11 @@ public class Besturing implements Runnable {
 	private Taxi taxi;
 	
 	private Path path;
+	
+	private DroneState droneState = DroneState.FREE;
+	private enum DroneState {
+		FREE, OCCUPIED
+	}
 
 	private float thrust = 0.00f;
 	private float leftWingInclination = 0.0f;
@@ -109,6 +114,7 @@ public class Besturing implements Runnable {
 	}
 	
 	public AutopilotOutputs getOutputs() {
+		System.out.println(outputs.getThrust());
 		return this.outputs;
 	}
 	

@@ -178,7 +178,6 @@ public class Vliegen {
 				//setNextPos();
 			}
 			break;
-			
 		case LANDEN:
 			thrust = pidTrust.getOutput(65f, speed, getTime());
 			pidVelY.reset();

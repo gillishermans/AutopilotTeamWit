@@ -7,6 +7,9 @@ import java.util.concurrent.Executors;
 
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.stage.Stage;
 
 public class AutopilotHandler {
 	
@@ -25,23 +28,41 @@ public class AutopilotHandler {
 	
 	
 	//Zal een threadpool initialiseren
+	@SuppressWarnings("static-access")
 	public AutopilotHandler() {
-		//De GUI voor de autopilot
-		gui = new GUI();
+		//INIT GUI voor de autopilot
+		initGUI();
 //		for (int i = 0; i < 4; i++) {
 //			threads.put(i, new Thread());
 //		}
 //		System.out.println("Autopilot created " + numberOfThreads +  " threads");
 	}
 	
+	public void initGUI() {
+		new JFXPanel();
+		Platform.runLater(new Runnable() {
+		    @Override
+		    public void run() {
+		    	try {
+		    		gui = new GUI();
+					gui.start(new Stage());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		});
+	}
+	
 	//
 	public void startTimeHasPassed(int drone, AutopilotInputs inputs) {
+		System.out.println("DIT IS DRONE: " + drone);
 		drones.get(drone).startBesturing(inputs);
 	}
 	
 	public AutopilotOutputs completeTimeHasPassed(int drone) {
+		System.out.println("DIT IS DRONE OUTPUT: " + drone);
 		return drones.get(drone).getOutputs();
-		
 	}
 	
 	
@@ -60,6 +81,7 @@ public class AutopilotHandler {
 		gui.addDrone(index);
 		index++;
 	}
+	
 	
 	public void addLuchthaven() {
 		luchthavens.add(new Luchthaven());

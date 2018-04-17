@@ -17,56 +17,54 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class GUI extends Frame {
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+public class GUI extends Application {
 	
-	private static final long serialVersionUID = 1L;
-	//Declare variables
-    private Panel pnlDrones;
-    private Panel pnlLogs;
+	Group root = new Group();
 	
-	public GUI() {
-		//setLayout(new FlowLayout());
-		setLayout(null);
-		//Set its size to 500x500 pixels
-		setSize(500,500);
-		setTitle("Autopilot");
-		//INIT pnlDrones
-		pnlDrones = new Panel();
-		pnlDrones.setLocation(10, 10);
-		pnlDrones.setSize(200, 490);
-		add(pnlDrones);
-		pnlDrones.setVisible(true);
-		//INIT pnlLogs
-		pnlLogs = new Panel();
-		pnlLogs.setLocation(260, 10);
-		pnlLogs.setSize(200, 490);
-		add(pnlDrones);
-		pnlLogs.setVisible(true);
-		//TEST
-		addDrone(2);
-		//SET FRAME TO VISIBLE
-		setVisible(true);
-	}
-		    
-	public static void main (String args[]){
-		new GUI().run();
+	private Stage primaryStage;
+	
+	private int yPos = 20;
+	
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		this.primaryStage = primaryStage;
+		primaryStage.setTitle("Autopilot");
+        Canvas canvas = new Canvas(300, 400);
+        root.getChildren().add(canvas);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
 	}
 	
-	public void run() {
-		setLayout(null);
-		//Label lbl = new Label("Drone 1");
-		//pnlDrones.add(lbl);
-		//lbl.setLocation(10, 50);
-		//lbl.setSize(50, 10);
 	
-		setVisible(true);
-		
-		addWindowListener(new WindowAdapter() {
-	        public void windowClosing(WindowEvent we) {
-	            dispose();
-	         }
-	    	}
-		);
+	public static void main(String args[]){           
+		launch(args);      
+	}
+	
+	public void draw() {
+		//drawArc(200,200,70,70,90,90);
+		//drawCube(200,200,10);
+	}
+	
+	public void drawLine(int x1, int y1, int x2, int y2) {
+		Line line = new Line();
+		line.setStartX(x1); 
+		line.setStartY(y1); 
+		line.setEndX(x2); 
+		line.setEndY(y2);
+		root.getChildren().add(line);
 	}
 
 	public void addPackage(int fromAirport, int fromGate, int toAirport, int toGate) {
@@ -74,11 +72,31 @@ public class GUI extends Frame {
 	}
 
 	public void addDrone(Integer index) {
-		//INIT new label
-		Label lbl = new Label("Drone " + index);
-		pnlDrones.add(lbl);
-		lbl.setLocation(20, 10);
-		lbl.setSize(50, 10);
+		Text txt = new Text(10,yPos,"Drone " + index);
+		//root.getChildren().add(txt);
+		yPos = yPos + 20;
+		update(txt);
 	}
+	
+	public void addToRoot(Node node) {
+		root.getChildren().add(node);
+	}
+	
+	
+	public void update(Node node) {
+		Platform.runLater(new Runnable() {
+		    @Override
+		    public void run() {
+		    	try {
+		    		root.getChildren().add(node);
+		    		primaryStage.show();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		});
+	}
+
 
 }
