@@ -8,6 +8,7 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 
@@ -38,6 +39,10 @@ public class GUI extends Frame {
                 System.exit(0);
             }
         } );
+		
+		Line2D l = new Line2D.Double();
+		l.setLine(50, 0, 50, 200);
+		//frame.add(l);
 	}  
 		
 	public static void main(String args[]){  
@@ -47,7 +52,7 @@ public class GUI extends Frame {
 	public void setHeader() {
 		Label lblDrone = new Label("Drones");
 		lblDrone.setFont(headerFont);
-		lblDrone.setBounds(12, 50, 80, 30);
+		lblDrone.setBounds(10, 25, 80, 30);
 		frame.add(lblDrone);
 		repaint();
 	}
@@ -55,7 +60,7 @@ public class GUI extends Frame {
 	public void addDrone(Integer i) {
 		Label lbl = new Label(i.toString());
 		lbl.setFont(itemFont);
-		lbl.setBounds(35, 90, 20, 30);
+		lbl.setBounds(20, 90, 20, 30);
 		frame.add(lbl);
 		repaint();
 	}
