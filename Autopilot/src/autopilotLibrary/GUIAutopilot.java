@@ -132,8 +132,6 @@ public class GUIAutopilot {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setResizable(false);
-        
-        addDrone(1);
     
 	}
 
@@ -198,10 +196,11 @@ public class GUIAutopilot {
 			break;
 		}
 		case TAXIEN: {
-			
+			l.setText("        " + "TAXIING" + " ");
+			break;
 		}
 		default: {
-			//VLIEGEN
+			l.setText("         " + "FLYING" + " ");
 		}
 		}
 	}
