@@ -32,13 +32,13 @@ public class Taxi {
 		float afstand;
 		afstand = (float) Math.sqrt(Math.pow((bestemmingX-inputs.getX()),2)+Math.pow((bestemmingZ-inputs.getZ()), 2));
 		
-		if (getTime() == 0) {
+//		if (getTime() == 0) {
 		rightWingInclination = (float) (Math.PI/20);
 		leftWingInclination = (float) (Math.PI/20);
 		thrust = 0f;
 		horStabInclination = 0f;
 		verStabInclination = 0f;
-		}
+		//}
 		leftBrakeForce=3000;
 		rightBrakeForce=3000;
 		frontBrakeForce=3000;
