@@ -39,7 +39,7 @@ public class Besturing implements Runnable {
 	private ArrayList<Vector> posList = new ArrayList<Vector>(); 
 	private float rechtdoorHoek;
 	private float lastLoopTime = 0;
-	private float draaing90 =9.776f;
+	private float draaing90 = 9.776f;
 	
 	private ArrayList<Vector> getPosList(){
 		return this.posList;
