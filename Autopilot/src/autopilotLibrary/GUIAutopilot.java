@@ -162,12 +162,15 @@ public class GUIAutopilot {
 		switch(s) {
 		case FREE: {
 			l.setBackground(Color.GREEN);
+			break;
 		}
 		case PICKING_UP: {
 			l.setBackground(Color.ORANGE);
+			break;
 		}
 		case OCCUPIED: {
 			l.setBackground(Color.RED);
+			break;
 		}
 		}
 	}
@@ -188,6 +191,10 @@ public class GUIAutopilot {
 			break;
 		}
 		case STABILISEREN: {
+			l.setText("  " + "STABELIZE" + " ");
+			break;
+		}
+		case STABILISEREN1: {
 			l.setText("  " + "STABELIZE" + " ");
 			break;
 		}

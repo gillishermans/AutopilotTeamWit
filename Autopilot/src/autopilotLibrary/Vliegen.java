@@ -24,6 +24,8 @@ public class Vliegen {
 	
 	private ArrayList<Vector> posList = new ArrayList<Vector>();
 	
+	private float t;
+	
 	public ArrayList<Vector> getPosList(){
 		return this.posList;
 	}
@@ -140,7 +142,7 @@ public class Vliegen {
 			rightWingInclination = leftWingInclination;
 			horStabInclination = 0;
 			verStabInclination = 0;
-			if (speedVector.z < -40) { 
+			if (getTime() < 5) { 
 				phase = PhaseEnum.OPSTIJGEN;
 				System.out.println("OPSTIJGEN");
 			}
@@ -173,9 +175,13 @@ public class Vliegen {
 			verStabInclination = 0f;
 			if (inputs.getZ() < -1000) {
 				System.out.println("POSITIE");
-				phase = PhaseEnum.POSITIE;
+				phase = PhaseEnum.LINKS;
+				t = getTime();
 				//setNextPos();
 			}
+//			if (t!= 0) {
+//				if (getTime() - t > 10)
+//			}
 			break;
 		case LANDEN:
 			thrust = pidTrust.getOutput(65f, speed, getTime());
@@ -197,21 +203,132 @@ public class Vliegen {
 			
 		case POSITIE:
 			float outputRoll;
-			if (pos) {
-				if (z < inputs.getZ()) forward = true;
-				else				   forward = false;
-				if (x > inputs.getX()) left = false;
-				else                   left = true;
-				pos = false;
-				System.out.println(forward);
-			}
+//			if (pos) {
+//				if (z < inputs.getZ()) forward = true;
+//				else				   forward = false;
+//				if (x > inputs.getX()) left = false;
+//				else                   left = true;
+//				pos = false;
+//				System.out.println(forward);
+//			}
 			float i =0;
 			i=+1;
 			float maxRoll = (float) Math.PI/20;
 			thrust = pidTrust.getOutput(65,speed,getTime());
 			float heading = calculateHeading(inputs);
 			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
-			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
+			//outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
+			if (Math.abs(heading - inputs.getHeading()) < (float) Math.PI/interval) {
+				if (interval < 360) {
+					interval = interval + 1;
+				}
+				outputRoll = pidStab.getOutput(0,inputs.getRoll(),getTime());
+				if (first) {
+					first = false;
+					System.out.println("Stab");
+				}
+			} 
+			else {
+				if (!first) {
+					first = true;
+					
+					pidHeading.reset();
+				}
+				if (Math.abs(inputs.getRoll()) > maxRoll) {
+					str = "MAXROLL";
+					if (inputs.getRoll() > 0) outputRoll = pidRoll.getOutput(maxRoll, inputs.getRoll(), getTime());
+					else                      outputRoll = pidRoll.getOutput(-maxRoll, inputs.getRoll(), getTime());
+				} else {
+						outputRoll = pidHeading.getOutput(heading, inputs.getHeading(), getTime());
+					}
+				}
+			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, (float) Math.PI / 20);
+			leftWingInclination = -outputVelY - outputRoll;
+			rightWingInclination = -outputVelY + outputRoll;
+			outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+			//outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
+			horStabInclination = -outputPitch;
+			verStabInclination = 0;
+			break;
+		case LINKS:
+//			if (pos) {
+//				if (z < inputs.getZ()) forward = true;
+//				else				   forward = false;
+//				if (x > inputs.getX()) left = false;
+//				else                   left = true;
+//				pos = false;
+//				System.out.println(forward);
+//			}
+			i =0;
+			i=+1;
+			maxRoll = (float) Math.PI/20;
+			thrust = pidTrust.getOutput(65,speed,getTime());
+			heading = calculateHeading(inputs);
+			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
+			//outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
+			if (Math.abs(heading - inputs.getHeading()) < (float) Math.PI/interval) {
+				if (interval < 360) {
+					interval = interval + 1;
+				}
+				outputRoll = pidStab.getOutput(0,inputs.getRoll(),getTime());
+				if (first) {
+					first = false;
+					System.out.println("Stab");
+				}
+			} 
+			else {
+				if (!first) {
+					first = true;
+					
+					pidHeading.reset();
+				}
+				if (Math.abs(inputs.getRoll()) > maxRoll) {
+					str = "MAXROLL";
+					if (inputs.getRoll() > 0) outputRoll = pidRoll.getOutput(maxRoll, inputs.getRoll(), getTime());
+					else                      outputRoll = pidRoll.getOutput(-maxRoll, inputs.getRoll(), getTime());
+				} else {
+						outputRoll = pidHeading.getOutput(heading, inputs.getHeading(), getTime());
+					}
+				}
+			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, (float) Math.PI / 20);
+			leftWingInclination = -outputVelY - outputRoll;
+			rightWingInclination = -outputVelY + outputRoll;
+			outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+			//outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
+			horStabInclination = -outputPitch;
+			verStabInclination = 0;
+			if (inputs.getZ() < -1350) {
+				phase = PhaseEnum.STABILISEREN1;
+				t = getTime();
+			}
+			break;
+		case STABILISEREN1:
+			thrust = pidTrust.getOutput(65,speed,getTime());
+			//System.out.println("STABILISEREN");
+			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
+			outputRoll = pidStab.getOutput(0,inputs.getRoll(),getTime());
+			leftWingInclination = -outputVelY - outputRoll;
+			rightWingInclination = -outputVelY + outputRoll;
+			outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+			horStabInclination = -outputPitch;
+			verStabInclination = 0;
+			break;
+		case RECHTS:
+			//if (pos) {
+//				if (z < inputs.getZ()) forward = true;
+//				else				   forward = false;
+//				if (x > inputs.getX()) left = false;
+//				else                   left = true;
+//				pos = false;
+//				System.out.println(forward);
+//			}
+			i =0;
+			i=+1;
+			maxRoll = (float) Math.PI/20;
+			thrust = pidTrust.getOutput(65,speed,getTime());
+			heading = calculateHeading(inputs);
+			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
+			//outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
 			if (Math.abs(heading - inputs.getHeading()) < (float) Math.PI/interval) {
 				if (interval < 360) {
 					interval = interval + 1;
@@ -240,11 +357,10 @@ public class Vliegen {
 			leftWingInclination = -outputVelY + outputRoll;
 			rightWingInclination = -outputVelY - outputRoll;
 			outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
-			outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
+			//outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
 			horStabInclination = -outputPitch;
 			verStabInclination = 0;
 			break;
-			
 		case GEENKUBUS:
 			if (first) {
 				pidRoll.reset();
