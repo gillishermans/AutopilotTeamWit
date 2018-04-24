@@ -2,6 +2,7 @@ package autopilotLibrary;
 
 import java.util.ArrayList;
 
+import enums.PhaseEnum;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
@@ -51,10 +52,8 @@ public class Vliegen {
 	private float lastInclRight = 0;
 	private float lastInclLeft = 0;
 	
-	private Phase phase = Phase.INIT;
-	private enum Phase {
-		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,POSITIE
-	}
+	private PhaseEnum phase = PhaseEnum.INIT;
+	
 	
 	private boolean first = true;
 	
@@ -121,7 +120,7 @@ public class Vliegen {
 		rightBrakeForce = 0;
 		leftBrakeForce = 0;
 		
-		if (getTime() == 0) phase = Phase.INIT;
+		if (getTime() == 0) phase = PhaseEnum.INIT;
 		
 		switch(phase) {
 		case INIT: //eerste stap, standaard waarden doorgeven
@@ -131,7 +130,7 @@ public class Vliegen {
 			thrust = 80f;
 			horStabInclination = 0f;
 			verStabInclination = 0f;
-			phase = Phase.RIJDEN;
+			phase = PhaseEnum.RIJDEN;
 			System.out.println("RIJDEN");
 			break;
 			
@@ -142,7 +141,7 @@ public class Vliegen {
 			horStabInclination = 0;
 			verStabInclination = 0;
 			if (speedVector.z < -40) { 
-				phase = Phase.OPSTIJGEN;
+				phase = PhaseEnum.OPSTIJGEN;
 				System.out.println("OPSTIJGEN");
 			}
 			break;
@@ -157,7 +156,7 @@ public class Vliegen {
 			verStabInclination = 0;
 			if (inputs.getY() > 40) {
 				System.out.println("STABILISEREN");
-				phase = Phase.STABILISEREN;
+				phase = PhaseEnum.STABILISEREN;
 				pidPitch.reset();
 			}
 			break;
@@ -174,7 +173,7 @@ public class Vliegen {
 			verStabInclination = 0f;
 			if (inputs.getZ() < -1000) {
 				System.out.println("POSITIE");
-				phase = Phase.POSITIE;
+				phase = PhaseEnum.POSITIE;
 				//setNextPos();
 			}
 			break;
@@ -192,7 +191,7 @@ public class Vliegen {
 			verStabInclination = 0;
 			if (inputs.getY() < 1.5f) {
 				System.out.println("REMMEN");
-				phase = Phase.REMMEN;
+				phase = PhaseEnum.REMMEN;
 			}
 			break;
 			
@@ -268,7 +267,7 @@ public class Vliegen {
 			}
 			if (inputs.getElapsedTime() - timeLanden > 3f) {
 				System.out.println("LANDEN");
-				phase = Phase.LANDEN;
+				phase = PhaseEnum.LANDEN;
 			}
 			break;
 			
@@ -297,7 +296,7 @@ public class Vliegen {
 			}
 			
 			if (path.isEmpty()) {
-				phase = Phase.GEENKUBUS;
+				phase = PhaseEnum.GEENKUBUS;
 				System.out.println("GEEN KUBUS");
 			} else {
 				x = path.get(0).x;
@@ -307,7 +306,7 @@ public class Vliegen {
 			}
 		}
 		else {
-			phase = Phase.GEENKUBUS;
+			phase = PhaseEnum.GEENKUBUS;
 			System.out.println("GEEN KUBUS MEER");
 		}
 	}
@@ -345,6 +344,10 @@ public class Vliegen {
 	
 	public float getTime() {
 		return time;
+	}
+
+	public PhaseEnum getPhase() {
+		return this.phase;
 	}
 	
 }

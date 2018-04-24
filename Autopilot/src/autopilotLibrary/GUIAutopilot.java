@@ -15,6 +15,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import enums.OccupationEnum;
+import enums.PhaseEnum;
+
 public class GUIAutopilot {
 	
 	JPanel mainPanel = new JPanel(new BorderLayout());
@@ -130,14 +133,7 @@ public class GUIAutopilot {
         frame.setVisible(true);
         frame.setResizable(false);
         
-        //changeStateDrone("PICKING_UP", 1);
         addDrone(1);
-        addDrone(2);
-        changeJobDrone("PACKAGE", 1);
-        changeStateDrone("LANDING", 1);
-        
-        addToDo(1, 1, 2, 2, 2);
-        addPackageProc(1);
     
 	}
 
@@ -157,41 +153,56 @@ public class GUIAutopilot {
 		l.setBackground(Color.GREEN);
 		drone.add(l,0);
 		drone.add(new JLabel("        " + 1.1 + "         "), 1);
-		drone.add(new JLabel("     " + "TAKEOFF" + " "), 2);
+		drone.add(new JLabel("            " + "INIT" + "    "), 2);
 		
 		drone.setLayout(new BoxLayout(drone, BoxLayout.X_AXIS));
 		pnlDroneInfo.add(drone, i);
 	}
 	
-	public void changeJobDrone(String s, Integer index) {
+	public void changeJobDrone(OccupationEnum s, Integer index) {
 		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(0);
-		if (s == "FREE") {
+		switch(s) {
+		case FREE: {
 			l.setBackground(Color.GREEN);
 		}
-		else if (s == "PICKING_UP") {
+		case PICKING_UP: {
 			l.setBackground(Color.ORANGE);
 		}
-		else if (s == "PACKAGE") {
+		case OCCUPIED: {
 			l.setBackground(Color.RED);
+		}
 		}
 	}
 	
-	public void changeStateDrone(String s, Integer index) {
+	public void changeStateDrone(PhaseEnum s, Integer index) {
 		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(2);
-		if (s == "INIT") {
+		switch(s) {
+		case INIT: {
 			l.setText("            " + "INIT" + "    ");
+			break;
 		}
-		else if (s == "TAKEOFF") {
+		case OPSTIJGEN: {
 			l.setText("     " + "TAKEOFF" + " ");
+			break;
 		}
-		else if (s == "DRIVING") {
+		case RIJDEN :{
 			l.setText("       " + "DRIVING" + " ");
+			break;
 		}
-		else if (s == "STABELIZE") {
+		case STABILISEREN: {
 			l.setText("  " + "STABELIZE" + " ");
+			break;
 		}
-		else if (s == "LANDING") {
+		case LANDEN: {
 			l.setText("      " + "LANDING" + " ");
+			break;
+		}
+		case TAXIEN: {
+			
+		}
+		default: {
+			//VLIEGEN
+		}
 		}
 	}
 	

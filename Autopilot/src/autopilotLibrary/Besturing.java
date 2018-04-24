@@ -4,6 +4,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import enums.OccupationEnum;
+import enums.PhaseEnum;
+
 //import org.opencv.core.Point;
 
 import interfaces.AutopilotConfig;
@@ -21,10 +24,7 @@ public class Besturing implements Runnable {
 	
 	private Path path;
 	
-	private DroneState droneState = DroneState.FREE;
-	private enum DroneState {
-		FREE, OCCUPIED
-	}
+	private OccupationEnum occupation = OccupationEnum.FREE;
 
 	private float thrust = 0.00f;
 	private float leftWingInclination = 0.0f;
@@ -45,10 +45,8 @@ public class Besturing implements Runnable {
 		return this.posList;
 	}
 	
-	private State state = State.VLIEGEN; // PAS AAN ALS JE WILT TAXIEN
-	private enum State {
-		VLIEGEN,TAXIEN
-	}
+	private PhaseEnum state = PhaseEnum.VLIEGEN; // PAS AAN ALS JE WILT TAXIEN
+	
 	
 	private AutopilotInputs autopilotInputs;
 	
@@ -116,6 +114,19 @@ public class Besturing implements Runnable {
 	public AutopilotOutputs getOutputs() {
 		System.out.println(outputs.getThrust());
 		return this.outputs;
+	}
+
+	public PhaseEnum getState() {
+		if (state == PhaseEnum.TAXIEN) {
+			return state;
+		}
+		else {
+			return vliegen.getPhase();
+		}
+	}
+	
+	public OccupationEnum getOccupation() {
+		return occupation;
 	}
 	
 }
