@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.opencv.core.Point;
 
+import enums.PhaseEnum;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
@@ -63,10 +64,8 @@ public class Vliegen {
 	private float lastInclRight = 0;
 	private float lastInclLeft = 0;
 	
-	private Phase phase = Phase.INIT;
-	private enum Phase {
-		INIT,RIJDEN,OPSTIJGEN,STABILISEREN,KUBUS,GEENKUBUS,LANDEN,REMMEN,DRAAI,POSITIE
-	}
+	private PhaseEnum phase = PhaseEnum.INIT;
+	
 	
 	private boolean first = true;
 	
@@ -148,8 +147,8 @@ public class Vliegen {
 		//Geen kubus gevonden -> vlieg rechtdoor
 		//System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
 		if(centerArray.isEmpty() || distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)) > 0) {
-			if (phase == Phase.KUBUS) {
-				phase = Phase.POSITIE;
+			if (phase == PhaseEnum.KUBUS) {
+				phase = PhaseEnum.POSITIE;
 				System.out.println("POSITIE");
 			}
 //			if (phase == Phase.KUBUS) {
@@ -191,8 +190,8 @@ public class Vliegen {
 		else {
 			k = 3;
 			//System.out.println("Kubus is in zicht");
-			if (phase == Phase.POSITIE) {
-				phase = Phase.KUBUS;
+			if (phase == PhaseEnum.POSITIE) {
+				phase = PhaseEnum.KUBUS;
 				System.out.println("KUBUS");
 			}
 			//Zoek dichtsbijzijnde kubus
@@ -301,7 +300,7 @@ public class Vliegen {
 		
 		
 		//System.out.println(thrust);
-		if (getTime() == 0) phase = Phase.INIT;
+		if (getTime() == 0) phase = PhaseEnum.INIT;
 		
 		
 		switch(phase) {
@@ -312,7 +311,7 @@ public class Vliegen {
 			thrust = 80f;
 			horStabInclination = 0f;
 			verStabInclination = 0f;
-			phase = Phase.RIJDEN;
+			phase = PhaseEnum.RIJDEN;
 			//System.out.println("HEADING: " + toDegrees(calculateHeading(inputs)));
 			System.out.println("RIJDEN");
 			break;
@@ -323,7 +322,7 @@ public class Vliegen {
 			horStabInclination = 0;
 			verStabInclination = 0;
 			if (speedVector.z < -40) { 
-				phase = Phase.OPSTIJGEN;
+				phase = PhaseEnum.OPSTIJGEN;
 				System.out.println("OPSTIJGEN");
 			}
 			break;
@@ -337,7 +336,7 @@ public class Vliegen {
 			verStabInclination = 0;
 			if (inputs.getY() > 40) {
 				System.out.println("STABILISEREN");
-				phase = Phase.STABILISEREN;
+				phase = PhaseEnum.STABILISEREN;
 				pidPitch.reset();
 			}
 			break;
@@ -357,7 +356,7 @@ public class Vliegen {
 			if (inputs.getZ() < -1000) {
 				System.out.println("POSITIE");
 				//System.out.println(inputs.getZ());
-				phase = Phase.DRAAI;
+				phase = PhaseEnum.DRAAI;
 				//phase= Phase.POSITIE;
 				//setNextPos();
 			}
@@ -376,7 +375,7 @@ public class Vliegen {
 			verStabInclination = 0;
 			if (inputs.getY() < 1.5f) {
 				System.out.println("REMMEN");
-				phase = Phase.REMMEN;
+				phase = PhaseEnum.REMMEN;
 			}
 			break;
 		case DRAAI:
@@ -408,9 +407,9 @@ public class Vliegen {
 			if (distance - lastDistance > 0) {
 				setNextPos();
 				pos = true;
-				if (phase != Phase.GEENKUBUS) {
+				if (phase != PhaseEnum.GEENKUBUS) {
 					System.out.println("POSITIE");
-					phase = Phase.POSITIE;
+					phase = PhaseEnum.POSITIE;
 				}
 				pidVerImage.reset();
 				pidHorImage.reset();
@@ -511,9 +510,9 @@ public class Vliegen {
 			if (distance - lastDistance > 0) {
 				setNextPos();
 				pos = true;
-				if (phase != Phase.GEENKUBUS) {
+				if (phase != PhaseEnum.GEENKUBUS) {
 					System.out.println("POSITIE");
-					phase = Phase.POSITIE;
+					phase = PhaseEnum.POSITIE;
 				}
 				pidVerImage.reset();
 				pidHorImage.reset();
@@ -564,7 +563,7 @@ public class Vliegen {
 			}
 			if (inputs.getElapsedTime() - timeLanden > 3f) {
 				System.out.println("LANDEN");
-				phase = Phase.LANDEN;
+				phase = PhaseEnum.LANDEN;
 			}
 			break;
 		case REMMEN:
@@ -596,7 +595,7 @@ public class Vliegen {
 			}
 			
 			if (path.isEmpty()) {
-				phase = Phase.GEENKUBUS;
+				phase = PhaseEnum.GEENKUBUS;
 				System.out.println("GEEN KUBUS");
 			} else {
 				x = path.get(0).x;
@@ -606,7 +605,7 @@ public class Vliegen {
 			}
 		}
 		else {
-			phase = Phase.GEENKUBUS;
+			phase = PhaseEnum.GEENKUBUS;
 			System.out.println("GEEN KUBUS MEER");
 		}
 	}
@@ -650,6 +649,11 @@ public class Vliegen {
 	
 	public float getTime() {
 		return time;
+	}
+
+	public PhaseEnum getPhase() {
+		return this.phase;
+		
 	}
 	
 }

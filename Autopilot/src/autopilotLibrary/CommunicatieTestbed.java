@@ -4,12 +4,15 @@ import interfaces.*;
 
 public class CommunicatieTestbed implements Autopilot{
 
+	private static Besturing besturing;
+	private GUIAutopilot gui;
+	
 	public CommunicatieTestbed() {
-		besturing = new Besturing();
+		this.besturing = new Besturing();
+		this.gui = new GUIAutopilot();
 	}
 	
-	private static Besturing besturing;
-
+	
 	public AutopilotOutputs simulationStarted(AutopilotConfig config, AutopilotInputs inputs) {
 		//Lees config en start een timePassed
 		besturing.setConfig(config);
@@ -20,6 +23,7 @@ public class CommunicatieTestbed implements Autopilot{
 	public AutopilotOutputs timePassed(AutopilotInputs inputs){
 		//Start het besturingsalgoritme
 		AutopilotOutputs output = besturing.startBesturing(inputs);
+		updateGUI(output);
 		return output;
 	}
 
@@ -27,6 +31,14 @@ public class CommunicatieTestbed implements Autopilot{
 		
 		//Stop de simulatie
 		
+	}
+	
+	public void updateGUI(AutopilotOutputs output) {
+		gui.setLeftInclination(output.getLeftWingInclination());
+		gui.setRightInclination(output.getRightWingInclination());
+		gui.setHorizontalStabInclination(output.getHorStabInclination());
+		gui.setVerticalStabInclination(output.getVerStabInclination());
+		gui.setState(besturing.getPhase());
 	}
 
 

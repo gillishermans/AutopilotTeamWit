@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.opencv.core.Point;
 
+import enums.PhaseEnum;
 import interfaces.AutopilotConfig;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
@@ -99,6 +100,10 @@ public class Besturing {
 	public void setPath(Path path) {
 		this.path = path;
 		//vliegen.setPath(path);
+	}
+
+	public PhaseEnum getPhase() {
+		return vliegen.getPhase();
 	}
 	
 }
