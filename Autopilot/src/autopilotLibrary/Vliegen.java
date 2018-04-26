@@ -9,6 +9,8 @@ import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
 import interfaces.Path;
+import util.PIDController;
+import util.Vector;
 
 public class Vliegen {
 	

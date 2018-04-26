@@ -90,7 +90,8 @@ public class Beeldherkenning {
 			//C:\Users\Midas\Documents\P&O\opencv-3.3.1-vc14\opencv\build\java\x64
 			//System.load("D:\\Downloads\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
 			//System.load("C:\\Users\\Viktor Van Hoey\\Documents\\School\\P&O\\opencv-3.3.1-vc14\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
-			System.load("/Users/jan/Documents/Semester_6_ingenieurswetenschappen/PENO_4_SEM_2/java/libopencv-330.dylib");
+			//System.load("/Users/jan/Documents/Semester_6_ingenieurswetenschappen/PENO_4_SEM_2/java/libopencv-330.dylib");
+			System.load("C:\\Users\\vikto\\Documents\\Autopilot\\opencv\\build\\java\\x64\\" + Core.NATIVE_LIBRARY_NAME + ".dll");
 
 	        centerArray = new ArrayList<Point>();
 	    	radiusArray = new ArrayList<Float>();

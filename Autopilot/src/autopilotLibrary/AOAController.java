@@ -1,5 +1,7 @@
 package autopilotLibrary;
 
+import util.Vector;
+
 public class AOAController {
 
 	public float getAngleOfAttack(Vector speed, float incl) {

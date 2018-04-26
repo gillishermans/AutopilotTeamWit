@@ -12,6 +12,7 @@ import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
 import interfaces.Path;
+import util.Vector;
 
 public class Besturing {
 	
@@ -19,16 +20,9 @@ public class Besturing {
 	private Taxi taxi;
 	
 	private Path path;
-
-	private float thrust = 0.00f;
-	private float leftWingInclination = 0.0f;
-	private float rightWingInclination = 0.0f;
-	private float horStabInclination = 0.0f;
-	private float verStabInclination = 0.0f;
-	private float frontBrakeForce=0.0f;
-	private float leftBrakeForce=0.0f;
-	private float rightBrakeForce=0.0f;
+	
 	private float totalMass;
+	
 	private AutopilotConfig config;
 	private Beeldherkenning beeldherkenning;
 	private ArrayList<Vector> posList = new ArrayList<Vector>(); 
@@ -51,7 +45,7 @@ public class Besturing {
 	private float lastY = 0;
 	private float lastZ = 0;
 	float outputVelY = 0;
-	private float goalYspeed=0;
+	private float goalYspeed = 0;
 	private float time = 0;
 	
 	
