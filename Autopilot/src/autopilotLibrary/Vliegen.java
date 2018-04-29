@@ -135,18 +135,18 @@ public class Vliegen {
 			phase = PhaseEnum.RIJDEN;
 			System.out.println("RIJDEN");
 			break;
-			
+			 
 		case RIJDEN:
 			thrust = 2000;
-			leftWingInclination = (float) - Math.PI/60;
+			leftWingInclination = (float)  Math.PI/60;
 			rightWingInclination = leftWingInclination;
-			horStabInclination = 0;
+			horStabInclination =  (float )Math.PI/60;
 			verStabInclination = 0;
 			if (getTime() < 5) { 
 				phase = PhaseEnum.OPSTIJGEN;
 				System.out.println("OPSTIJGEN");
 			}
-			break;
+			break; 
 			
 		case OPSTIJGEN:
 			thrust = 2000;

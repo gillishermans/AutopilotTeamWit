@@ -168,7 +168,7 @@ public class GUIAutopilot {
 			l.setBackground(Color.ORANGE);
 			break;
 		}
-		case OCCUPIED: {
+		case DELIVERING: {
 			l.setBackground(Color.RED);
 			break;
 		}
