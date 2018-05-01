@@ -30,7 +30,4 @@ public class Delivery {
 		if(state == DeliveryEnum.OPEN) return true;
 		else return false;
 	}
-	
-
-
 }

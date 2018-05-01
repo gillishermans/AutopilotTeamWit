@@ -3,6 +3,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import enums.OccupationEnum;
 import enums.PhaseEnum;
@@ -23,7 +24,7 @@ public class Besturing implements Runnable {
 	private Taxi taxi;
 
 	private OccupationEnum occupation = OccupationEnum.FREE;
-	private PhaseEnum state = PhaseEnum.TAXIEN; // PAS AAN ALS JE WILT TAXIEN
+	private PhaseEnum state = PhaseEnum.TAXIEN;
 	
 	private Path path;
 	private AutopilotConfig config;
@@ -47,8 +48,11 @@ public class Besturing implements Runnable {
 	private int startingGate;
 	private int startingPointingTo;
 	
+	private Delivery delivery;
+	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
+	
 
-	public Besturing(int airport, int gate, int pointingToRunway, AutopilotConfig config) {
+	public Besturing(int airport, int gate, int pointingToRunway, AutopilotConfig config, HashMap<Integer,Airport> airports) {
 		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
 		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
@@ -57,6 +61,7 @@ public class Besturing implements Runnable {
 		startingAirport = airport;
 		startingGate = gate;
 		startingPointingTo = pointingToRunway;
+		this.airports = airports;
 	}
 	
 	public void setConfig(AutopilotConfig config) {
@@ -65,17 +70,35 @@ public class Besturing implements Runnable {
 	}
 	
 	public void startBesturing(AutopilotInputs inputs) {
-		//AutopilotOutputs outputs = new Outputs(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
 		setInputs(inputs);
-		setTime(inputs);
-		switch(state) {
-		case VLIEGEN:
-			outputs = vliegen.vliegen(inputs);
-			break;
-		case TAXIEN:
-			outputs = taxi.taxi(inputs);
-			break;
+		
+		if(occupation == OccupationEnum.PICKING_UP){
+			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getY())){
+				//At airport -> TAXI to gate
+				outputs = taxi.taxi(inputs);
+			} else {
+				//Wrong airport -> VLIEG to other airport
+				outputs = vliegen.vliegen(inputs);
+			}
+			
+		} else if (occupation == OccupationEnum.DELIVERING){
+			if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getY())){
+				//At airport -> TAXI to gate
+				outputs = taxi.taxi(inputs);
+			} else {
+				//Wrong airport -> VLIEG to other airport
+				outputs = vliegen.vliegen(inputs);
+			}
 		}
+
+//		switch(state) {
+//		case VLIEGEN:
+//			outputs = vliegen.vliegen(inputs);
+//			break;
+//		case TAXIEN:
+//			outputs = taxi.taxi(inputs);
+//			break;
+//		}
 	}
 	
 	public void setTime(AutopilotInputs inputs) {
@@ -101,6 +124,7 @@ public class Besturing implements Runnable {
 	
 	public void setInputs(AutopilotInputs inputs) {
 		this.autopilotInputs = inputs;
+		setTime(inputs);
 	}
 
 	
@@ -124,6 +148,10 @@ public class Besturing implements Runnable {
 	
 	public OccupationEnum getOccupation() {
 		return occupation;
+	}
+
+	public void assign(Delivery deliv) {
+		this.delivery = deliv;
 	}
 	
 }

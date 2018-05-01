@@ -8,10 +8,10 @@ import enums.OccupationEnum;
 public class PackageHandler {
 
 	private HashMap<Integer,Besturing> drones = new HashMap<Integer,Besturing>();
-	private ArrayList<Airport> airports = new ArrayList<Airport>();
+	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
 	private ArrayList<Delivery> packages = new ArrayList<Delivery>();
 	
-	public PackageHandler(HashMap<Integer,Besturing> drones, ArrayList<Airport> airports) {
+	public PackageHandler(HashMap<Integer,Besturing> drones, HashMap<Integer,Airport> airports) {
 		this.drones = drones;
 		this.airports = airports;
 	}
@@ -28,8 +28,16 @@ public class PackageHandler {
 	 */
 	public void update(int drone){
 		if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
-			getClosestPackage(drone).assign(drone);
+			assign(drone, getClosestPackage(drone));
 		}
+	}
+	
+	/**
+	 * Assigns a package to a drone.
+	 */
+	private void assign(int drone, Delivery deliv){
+		deliv.assign(drone);
+		drones.get(drone).assign(deliv);
 	}
 	
 	/**
@@ -53,9 +61,17 @@ public class PackageHandler {
 	/**
 	 * Gets the starting  position of a delivery.
 	 */
-	private float [] getStartingPosition(Delivery delivery){
+	public float[] getStartingPosition(Delivery delivery){
 		Airport ap = airports.get(delivery.fromAirport);
-		return new float[]{ap.getX(),ap.getZ()} ;
+		return ap.getMiddleGate(delivery.fromGate) ;
+	}
+	
+	/**
+	 * Gets the end goal position of a delivery.
+	 */
+	public float[] getEndPosition(Delivery delivery){
+		Airport ap = airports.get(delivery.toAirport);
+		return ap.getMiddleGate(delivery.toGate) ;
 	}
 	
 	/**
