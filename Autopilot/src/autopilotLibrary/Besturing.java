@@ -51,13 +51,15 @@ public class Besturing implements Runnable {
 	private Delivery delivery;
 	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
 	private PackageHandler packageHandler;
+	private int id;
 	
 
-	public Besturing(int airport, int gate, int pointingToRunway, AutopilotConfig config, HashMap<Integer,Airport> airports, PackageHandler pH) {
+	public Besturing(int id, int airport, int gate, int pointingToRunway, AutopilotConfig config, HashMap<Integer,Airport> airports, PackageHandler pH) {
 		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
 		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
 		
+		this.id = id;
 		setConfig(config);
 		startingAirport = airport;
 		startingGate = gate;
