@@ -28,7 +28,7 @@ public class Taxi {
 		this.besturing = besturing;
 	}
 	
-	public AutopilotOutputs taxi(AutopilotInputs inputs) {
+	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel) {
 		float afstand;
 		afstand = (float) Math.sqrt(Math.pow((bestemmingX-inputs.getX()),2)+Math.pow((bestemmingZ-inputs.getZ()), 2));
 		

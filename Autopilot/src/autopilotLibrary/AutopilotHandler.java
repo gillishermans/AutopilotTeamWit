@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class AutopilotHandler {
 	
 	private HashMap<Integer,Besturing> drones = new HashMap<Integer,Besturing>();
-	private ArrayList<Airport> airports = new ArrayList<Airport>();
+	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
 	
 	private GUIAutopilot gui;
 	
@@ -78,14 +78,15 @@ public class AutopilotHandler {
 	 * Adds an airport at with the given parameters.
 	 */
 	public void addAirport(float centerX, float centerZ, float centerToRunway0X, float centerToRunway0Z) {
-		airports.add(new Airport(airportLength,airportWidth,centerX,centerZ,centerToRunway0X,centerToRunway0Z));
+		int key = airports.size(); 
+		airports.put(key, new Airport(airportLength,airportWidth,centerX,centerZ,centerToRunway0X,centerToRunway0Z));
 	}
 	
 	/**
 	 * Adds a drone with the given parameters.
 	 */
 	public void addDrone(int airport, int gate, int pointingToRunway, AutopilotConfig config) {
-		Besturing drone = new Besturing(airport, gate, pointingToRunway, config);
+		Besturing drone = new Besturing(airport, gate, pointingToRunway, config, airports, packageHandler);
 		drones.put(droneIndex, drone);
 		//threads.put(index, new Thread(drone));
 		gui.addDrone(droneIndex);
@@ -107,6 +108,7 @@ public class AutopilotHandler {
 	}
 	
 	public void updateOccupationDrone(Integer i) {
+		packageHandler.update(i); //TODO worden pakketten aangegeven?
 		gui.changeJobDrone(drones.get(i).getOccupation(), i);
 	}
 	
