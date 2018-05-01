@@ -15,25 +15,14 @@ public class Airport {
 	}
 	
 	/**
-	 * Calculates rotated position of a position according to the orientation.
-	 */
-	public float[] getRotatedPoint(float x, float z){
-		float angle = getOrientation();
-		
-		float rotatedX = (float) (getX() + (x  * Math.cos(angle)) - (z * Math.sin(angle)));
-		float rotatedZ = (float) (getZ() + (x  * Math.sin(angle)) + (z * Math.cos(angle)));
-
-		return new float []{rotatedX, rotatedZ};
-	}
-	
-	/**
 	 * Checks if a position is on gate 0.
 	 */
 	public boolean onGate0(float x, float z){
+		float[] point = getInvertedRotatedPoint(x, z);
+		float[] a = getInvertedRotatedPoint(getStartGate0()[0], getStartGate0()[1]);
+		float[] b = getInvertedRotatedPoint(getEndGate0()[0], getEndGate0()[1]);
 		boolean onGateX = false;
 		boolean onGateZ = false;
-		float[] a = getStartGate0();
-		float[] b = getEndGate0();
 		if(a[0] < b[0]){
 			if(x >= a[0] && x <= b[0]) onGateX = true;
 		}
@@ -51,10 +40,11 @@ public class Airport {
 	 * Checks if a position is on gate 1.
 	 */
 	public boolean onGate1(float x, float z){
+		float[] point = getInvertedRotatedPoint(x, z);
+		float[] a = getInvertedRotatedPoint(getStartGate1()[0], getStartGate1()[1]);
+		float[] b = getInvertedRotatedPoint(getEndGate1()[0], getEndGate1()[1]);
 		boolean onGateX = false;
 		boolean onGateZ = false;
-		float[] a = getStartGate1();
-		float[] b = getEndGate1();
 		if(a[0] < b[0]){
 			if(x >= a[0] && x <= b[0]) onGateX = true;
 		}
@@ -72,23 +62,50 @@ public class Airport {
 	 * Checks if a position is on the airport.
 	 */
 	public boolean onAirport(float x, float z){
+		float[] point = getInvertedRotatedPoint(x, z);
+		float[] a = getInvertedRotatedPoint(getStartRunway0Corner()[0], getStartRunway0Corner()[1]);
+		float[] b = getInvertedRotatedPoint(getEndRunway1Corner()[0], getEndRunway1Corner()[1]);
+
 		boolean onAirportX = false;
 		boolean onAirportZ = false;
-		float[] a = getStartRunway0Corner();
-		float[] b = getEndRunway1Corner();
 		if(a[0] < b[0]){
-			if(x >= a[0] && x <= b[0]) onAirportX = true;
+			if(point[0] >= a[0] && point[0] <= b[0]) onAirportX = true;
 		}
-		else if(x <= a[0] && x >= b[0]) onAirportX = true;
+		else if(point[0] <= a[0] && point[0] >= b[0]) onAirportX = true;
 		
 		if(a[1] < b[1]){
-			if(z >= a[1] && z <= b[1]) onAirportZ = true;
+			if(point[1] >= a[1] && point[1] <= b[1]) onAirportZ = true;
 		}
-		else if(z <= a[1] && z >= b[1]) onAirportZ = true;
+		else if(point[1] <= a[1] && point[1] >= b[1]) onAirportZ = true;
 		
 		return (onAirportX && onAirportZ);
+		
 	}
 	
+	/**
+	 * Calculates rotated position of a position according to the orientation.
+	 */
+	public float[] getRotatedPoint(float x, float z){
+		float angle = getOrientation();
+		
+		float rotatedX = (float) (getX() + (x  * Math.cos(angle)) - (z * Math.sin(angle)));
+		float rotatedZ = (float) (getZ() + (x  * Math.sin(angle)) + (z * Math.cos(angle)));
+
+		return new float []{rotatedX, rotatedZ};
+	}
+	
+	/**
+	 * Calculates invertedrotated position of a position according to the orientation.
+	 */
+	public float[] getInvertedRotatedPoint(float x, float z){
+		float angle = -getOrientation();
+		
+		float rotatedX = (float) (getX() + (x  * Math.cos(angle)) - (z * Math.sin(angle)));
+		float rotatedZ = (float) (getZ() + (x  * Math.sin(angle)) + (z * Math.cos(angle)));
+
+		return new float []{rotatedX, rotatedZ};
+	}
+
 	/**
 	 * Gets the start position corner of gate 0.
 	 */
@@ -115,11 +132,6 @@ public class Airport {
 	 */
 	public float[] getEndGate1(){
 		return getRotatedPoint(getW()/2,getW());
-	}
-	
-	public float[] getMiddleGate(int gate){
-		if(gate == 0) return getMiddleGate0();
-		else return getMiddleGate1();
 	}
 	
 	/**
@@ -166,7 +178,7 @@ public class Airport {
 	 * 	(to middle of runway 0)
 	 */
 	public float getCenterToRunway0X(){
-		return getX() - getRotatedPoint(-((getL()/2) + (getW()/2)), -getW())[0];
+		return getX() -  getStartRunway0Corner()[0];
 	}
 	
 	/**
@@ -177,13 +189,6 @@ public class Airport {
 		return getZ() - getStartRunway0Corner()[1];
 	}
 	
-	
-	public float setOrientation(){
-		
-		
-		
-		return 0;
-	}
 	
 	public float getL(){
 		return this.L;
@@ -201,14 +206,6 @@ public class Airport {
 		return this.centerZ;
 	}
 	
-	public float centerToRunway0X(){
-		return this.centerToRunway0X;
-	}
-	
-	public float centerToRunway0Z(){
-		return this.centerToRunway0Z;
-	}
-	
 	public float getRadians (float L, float W, float centerToRunway0x, float centerToRunway0z){
 		Vector vector1 = new Vector(L + (W/2),0,W); 
 		Vector vector2 = new Vector (centerToRunway0x,0,centerToRunway0z);
@@ -220,9 +217,9 @@ public class Airport {
 		return orientation;
 	}
 
-	public void setOrientation(float orientation) {
-		this.orientation = orientation;
+	public float[] getMiddleGate(int gate) {
+		if(gate == 0) return getMiddleGate0();
+		else return getMiddleGate1();
 	}
-
 
 }
