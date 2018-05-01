@@ -86,7 +86,7 @@ public class AutopilotHandler {
 	 * Adds a drone with the given parameters.
 	 */
 	public void addDrone(int airport, int gate, int pointingToRunway, AutopilotConfig config) {
-		Besturing drone = new Besturing(airport, gate, pointingToRunway, config, airports);
+		Besturing drone = new Besturing(airport, gate, pointingToRunway, config, airports, packageHandler);
 		drones.put(droneIndex, drone);
 		//threads.put(index, new Thread(drone));
 		gui.addDrone(droneIndex);
