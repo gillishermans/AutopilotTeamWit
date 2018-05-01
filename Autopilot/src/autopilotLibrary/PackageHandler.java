@@ -28,7 +28,7 @@ public class PackageHandler {
 	 */
 	public void update(int drone){
 		if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
-			assign(drone, getClosestPackage(drone));
+			if(getClosestPackage(drone) != null) assign(drone, getClosestPackage(drone));
 		}
 	}
 	
@@ -38,6 +38,7 @@ public class PackageHandler {
 	private void assign(int drone, Delivery deliv){
 		deliv.assign(drone);
 		drones.get(drone).assign(deliv);
+		System.out.println("ASSIGN PACKAGE ");
 	}
 	
 	/**
@@ -47,8 +48,9 @@ public class PackageHandler {
 		Besturing d = drones.get(drone);
 		float[] dronePos = d.getPosition();
 		float[] droneGeneralPos = new float[]{dronePos[0],dronePos[2]};
-		Delivery closestDelivery = null;
-		float closest = 999999999;
+		Delivery closestDelivery = packages.get(0);
+		float closest = distance(droneGeneralPos,getStartingPosition(closestDelivery));
+		System.out.println("PACKAGE AMOUNT/ " + packages.size());
 		for(Delivery delivery : packages){
 			if(distance(droneGeneralPos,getStartingPosition(delivery)) < closest){
 				closest = distance(droneGeneralPos,getStartingPosition(delivery));

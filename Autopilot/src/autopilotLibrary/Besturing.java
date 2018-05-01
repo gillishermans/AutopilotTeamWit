@@ -77,12 +77,15 @@ public class Besturing implements Runnable {
 		setInputs(inputs);
 		
 		if(occupation == OccupationEnum.PICKING_UP){
+			System.out.println("PCIKING UP ");
 			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getY())){
 				//At airport -> TAXI to gate
 				outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery));
+				System.out.println("TAXI!!!! ");
 			} else {
 				//Wrong airport -> VLIEG to other airport
 				outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery));
+				System.out.println("VLIEGEN!!!! ");
 			}
 			
 		} else if (occupation == OccupationEnum.DELIVERING){
@@ -94,6 +97,7 @@ public class Besturing implements Runnable {
 				outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery));
 			}
 		}
+		
 
 //		switch(state) {
 //		case VLIEGEN:
@@ -156,6 +160,7 @@ public class Besturing implements Runnable {
 
 	public void assign(Delivery deliv) {
 		this.delivery = deliv;
+		occupation = OccupationEnum.PICKING_UP;
 	}
 	
 }

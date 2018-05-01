@@ -325,7 +325,7 @@ public class Vliegen {
 			this.stabiliseren(inputs, speed, speedVector);
 			if (inputs.getZ() < -800) {
 				System.out.println("POSITIE");
-				phase = PhaseEnum.LINKS;
+				phase = PhaseEnum.RECHTDOOR;
 				t = getTime();
 				//setNextPos();
 			}
@@ -359,13 +359,13 @@ public class Vliegen {
 			this.draai(inputs, speed, speedVector, -1);
 			break;
 			
-		case GEENKUBUS:
+		case RECHTDOOR:
 			this.geenkubus(inputs, speed, speedVector);
 			if (!landen) {
 				timeLanden = inputs.getElapsedTime();
 				landen = true;
 			}
-			if (inputs.getElapsedTime() - timeLanden > 3f) {
+			if (inputs.getElapsedTime() - timeLanden > 5f) {
 				System.out.println("LANDEN");
 				phase = PhaseEnum.LANDEN;
 			}
@@ -389,7 +389,7 @@ public class Vliegen {
 			}
 			
 			if (path.isEmpty()) {
-				phase = PhaseEnum.GEENKUBUS;
+				phase = PhaseEnum.RECHTDOOR;
 				System.out.println("GEEN KUBUS");
 			} else {
 				x = path.get(0).x;
@@ -399,7 +399,7 @@ public class Vliegen {
 			}
 		}
 		else {
-			phase = PhaseEnum.GEENKUBUS;
+			phase = PhaseEnum.RECHTDOOR;
 			System.out.println("GEEN KUBUS MEER");
 		}
 	}
