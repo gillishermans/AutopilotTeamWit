@@ -12,19 +12,18 @@ public class MyAutopilotModule implements AutopilotModule {
 
 	@Override
 	public void defineAirportParams(float length, float width) {
-		handler.setLuchthavenConfig(length, width);
+		handler.setAirportConfig(length, width);
 	}
 
 	@Override
 	public void defineAirport(float centerX, float centerZ, float centerToRunway0X, float centerToRunway0Z) {
-		handler.addLuchthaven();
+		handler.addAirport(centerX,centerZ,centerToRunway0X,centerToRunway0Z);
 		
 	}
 
 	@Override
 	public void defineDrone(int airport, int gate, int pointingToRunway, AutopilotConfig config) {
-		handler.addDrone();
-		
+		handler.addDrone(airport, gate, pointingToRunway, config);
 	}
 
 	@Override
@@ -35,14 +34,12 @@ public class MyAutopilotModule implements AutopilotModule {
 
 	@Override
 	public AutopilotOutputs completeTimeHasPassed(int drone) {
-		// TODO Auto-generated method stub
 		return handler.completeTimeHasPassed(drone);
 	}
 
 	@Override
 	public void deliverPackage(int fromAirport, int fromGate, int toAirport, int toGate) {
-		// TODO Auto-generated method stub
-		
+		handler.deliverPackage(fromAirport, fromGate, toAirport, toGate);
 	}
 	
 	@Override

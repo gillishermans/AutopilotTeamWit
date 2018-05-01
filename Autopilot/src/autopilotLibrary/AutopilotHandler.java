@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 
 import enums.OccupationEnum;
 import enums.PhaseEnum;
+import interfaces.AutopilotConfig;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import javafx.application.Platform;
@@ -16,7 +17,7 @@ import javafx.stage.Stage;
 public class AutopilotHandler {
 	
 	private HashMap<Integer,Besturing> drones = new HashMap<Integer,Besturing>();
-	private ArrayList<Luchthaven> luchthavens = new ArrayList<Luchthaven>();
+	private ArrayList<Airport> airports = new ArrayList<Airport>();
 	
 	private GUIAutopilot gui;
 	
@@ -26,8 +27,10 @@ public class AutopilotHandler {
 	private Integer packageIndex = 0;
 	private Integer droneIndex = 0;
 	
-	private float luchthavenLength;
-	private float luchthavenWidth;
+	private float airportLength;
+	private float airportWidth;
+	
+	private PackageHandler packageHandler;
 	
 	
 	//Zal een threadpool initialiseren
@@ -38,15 +41,22 @@ public class AutopilotHandler {
 //			threads.put(i, new Thread());
 //		}
 //		System.out.println("Autopilot created " + numberOfThreads +  " threads");
+		
+		packageHandler = new PackageHandler(drones, airports);
 	}
 	
 	
-	//
+	/**
+	 * Starts a time passed for a drone with the given inputs.
+	 */
 	public void startTimeHasPassed(int drone, AutopilotInputs inputs) {
 		System.out.println("DIT IS DRONE: " + drone);
 		drones.get(drone).startBesturing(inputs);
 	}
 	
+	/**
+	 * Completes a time passed for a drone and returns outputs.
+	 */
 	public AutopilotOutputs completeTimeHasPassed(int drone) {
 		System.out.println("DIT IS DRONE OUTPUT: " + drone);
 		Besturing b = drones.get(drone);
@@ -56,29 +66,37 @@ public class AutopilotHandler {
 		return b.getOutputs();
 	}
 	
-	
-	//ZAL ALLE AUTOPILOTS AANMAKEN EN BIJHOUDEN
-	//ALLE LUCHTHAVENS
-	
-	public void setLuchthavenConfig(float length, float width) {
-		this.luchthavenLength = length;
-		this.luchthavenWidth = width;
+	/**
+	 * Sets the airport configuration parameters.
+	 */
+	public void setAirportConfig(float length, float width) {
+		this.airportLength = length;
+		this.airportWidth = width;
 	}
 	
-	public void addDrone() {
-		Besturing drone = new Besturing();
+	/**
+	 * Adds an airport at with the given parameters.
+	 */
+	public void addAirport(float centerX, float centerZ, float centerToRunway0X, float centerToRunway0Z) {
+		airports.add(new Airport(airportLength,airportWidth,centerX,centerZ,centerToRunway0X,centerToRunway0Z));
+	}
+	
+	/**
+	 * Adds a drone with the given parameters.
+	 */
+	public void addDrone(int airport, int gate, int pointingToRunway, AutopilotConfig config) {
+		Besturing drone = new Besturing(airport, gate, pointingToRunway, config);
 		drones.put(droneIndex, drone);
 		//threads.put(index, new Thread(drone));
 		gui.addDrone(droneIndex);
 		droneIndex++;
 	}
 	
-
-	public void addLuchthaven() {
-		luchthavens.add(new Luchthaven());
-	}
-	
+	/**
+	 * Starts a new package delivery request from an airport to gate to another.
+	 */
 	public void deliverPackage(int fromAirport, int fromGate, int toAirport, int toGate) {
+		packageHandler.deliverPackage(fromAirport, fromGate, toAirport, toGate);
 		gui.addToDo(packageIndex, fromAirport, fromGate, toAirport, toGate);
 		packageIndex++;
 	}

@@ -1,5 +1,5 @@
 package enums;
 
 public enum OccupationEnum {
-	FREE, PICKING_UP, OCCUPIED
+	FREE, PICKING_UP, DELIVERING
 }

@@ -21,37 +21,19 @@ public class Besturing implements Runnable {
 	
 	private Vliegen vliegen;
 	private Taxi taxi;
+
+	private OccupationEnum occupation = OccupationEnum.FREE;
+	private PhaseEnum state = PhaseEnum.TAXIEN; // PAS AAN ALS JE WILT TAXIEN
 	
 	private Path path;
-	
-	private OccupationEnum occupation = OccupationEnum.FREE;
-
-	private float thrust = 0.00f;
-	private float leftWingInclination = 0.0f;
-	private float rightWingInclination = 0.0f;
-	private float horStabInclination = 0.0f;
-	private float verStabInclination = 0.0f;
-	private float frontBrakeForce=0.0f;
-	private float leftBrakeForce=0.0f;
-	private float rightBrakeForce=0.0f;
-	private float totalMass;
 	private AutopilotConfig config;
-	private ArrayList<Vector> posList = new ArrayList<Vector>(); 
+	private AutopilotInputs autopilotInputs;
+	
 	private float rechtdoorHoek;
 	private float lastLoopTime = 0;
 	private float draaing90 =9.776f;
-	
-	private ArrayList<Vector> getPosList(){
-		return this.posList;
-	}
-	
-	private PhaseEnum state = PhaseEnum.VLIEGEN; // PAS AAN ALS JE WILT TAXIEN
-	
-	
-	private AutopilotInputs autopilotInputs;
-	
-	private float maxAOA = (float) Math.PI/18f; 
-	
+	private float totalMass;
+	private float maxAOA = (float) Math.PI/18f; 	
 	private float lastX = 0;
 	private float lastY = 0;
 	private float lastZ = 0;
@@ -61,11 +43,20 @@ public class Besturing implements Runnable {
 	
 	int k = 5;
 	
+	private int startingAirport;
+	private int startingGate;
+	private int startingPointingTo;
 	
-	public Besturing() {
+
+	public Besturing(int airport, int gate, int pointingToRunway, AutopilotConfig config) {
 		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
 		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
+		
+		setConfig(config);
+		startingAirport = airport;
+		startingGate = gate;
+		startingPointingTo = pointingToRunway;
 	}
 	
 	public void setConfig(AutopilotConfig config) {
@@ -75,6 +66,7 @@ public class Besturing implements Runnable {
 	
 	public void startBesturing(AutopilotInputs inputs) {
 		//AutopilotOutputs outputs = new Outputs(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
+		setInputs(inputs);
 		setTime(inputs);
 		switch(state) {
 		case VLIEGEN:
@@ -109,6 +101,11 @@ public class Besturing implements Runnable {
 	
 	public void setInputs(AutopilotInputs inputs) {
 		this.autopilotInputs = inputs;
+	}
+
+	
+	public float[] getPosition(){
+		return new float[]{autopilotInputs.getX(), autopilotInputs.getY(), autopilotInputs.getZ()};
 	}
 	
 	public AutopilotOutputs getOutputs() {
