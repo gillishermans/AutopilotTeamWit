@@ -23,7 +23,7 @@ public class Besturing implements Runnable {
 	private Taxi taxi;
 
 	private OccupationEnum occupation = OccupationEnum.FREE;
-	private PhaseEnum state = PhaseEnum.TAXIEN; // PAS AAN ALS JE WILT TAXIEN
+	private PhaseEnum state = PhaseEnum.VLIEGEN; // PAS AAN ALS JE WILT TAXIEN
 	
 	private Path path;
 	private AutopilotConfig config;
