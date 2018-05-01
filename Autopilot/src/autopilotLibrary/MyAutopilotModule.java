@@ -18,7 +18,6 @@ public class MyAutopilotModule implements AutopilotModule {
 	@Override
 	public void defineAirport(float centerX, float centerZ, float centerToRunway0X, float centerToRunway0Z) {
 		handler.addAirport(centerX,centerZ,centerToRunway0X,centerToRunway0Z);
-		
 	}
 
 	@Override

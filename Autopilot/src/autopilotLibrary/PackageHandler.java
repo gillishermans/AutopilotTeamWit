@@ -40,7 +40,7 @@ public class PackageHandler {
 		float[] dronePos = d.getPosition();
 		float[] droneGeneralPos = new float[]{dronePos[0],dronePos[2]};
 		Delivery closestDelivery = null;
-		float closest = 999999;
+		float closest = 999999999;
 		for(Delivery delivery : packages){
 			if(distance(droneGeneralPos,getStartingPosition(delivery)) < closest){
 				closest = distance(droneGeneralPos,getStartingPosition(delivery));
