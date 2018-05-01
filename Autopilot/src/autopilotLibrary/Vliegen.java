@@ -97,6 +97,9 @@ public class Vliegen {
 		}
 	}
 	
+	/**
+	 * Initialiseer drone.
+	 */
 	public AutopilotOutputs init(AutopilotInputs inputs ){
 		
 		System.out.println("INIT");
@@ -108,7 +111,10 @@ public class Vliegen {
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 	
-	public AutopilotOutputs Rijden (AutopilotInputs inputs ){
+	/**
+	 * Versnellen om op te stijgen.
+	 */
+	public AutopilotOutputs rijden(AutopilotInputs inputs ){
 		
 		thrust = 2000;
 		leftWingInclination = (float)  Math.PI/60;
@@ -117,8 +123,11 @@ public class Vliegen {
 		verStabInclination = 0;
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
-
-	public AutopilotOutputs Opstijgen(AutopilotInputs inputs ){
+	
+	/**
+	 * Opstijgen.
+	 */
+	public AutopilotOutputs opstijgen(AutopilotInputs inputs ){
 		
 		thrust = 2000;
 		leftWingInclination = (float) Math.PI/20;
@@ -130,6 +139,9 @@ public class Vliegen {
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 	
+	/**
+	 * Drone stabiliseren.
+	 */
 	public AutopilotOutputs stabiliseren(AutopilotInputs inputs, float speed, Vector speedVector  ){
 		
 		thrust = pidTrust.getOutput(65f, speed, getTime());
@@ -144,7 +156,10 @@ public class Vliegen {
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 	
-	public AutopilotOutputs  Draai(AutopilotInputs inputs, float speed , Vector speedVector, float teken ){
+	/**
+	 * Draai inzetten.
+	 */
+	public AutopilotOutputs  draai(AutopilotInputs inputs, float speed , Vector speedVector, float teken ){
 		float outputRoll;
 		float i =0;
 		i=+1;
@@ -200,7 +215,7 @@ public class Vliegen {
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 	
-	public AutopilotOutputs  Geenkubus(AutopilotInputs inputs, float speed , Vector speedVector ){
+	public AutopilotOutputs  geenkubus(AutopilotInputs inputs, float speed , Vector speedVector ){
 		float outputRoll;
 		if (first) {
 			pidRoll.reset();
@@ -250,8 +265,10 @@ public class Vliegen {
 
 	}
 	
-	
-	public AutopilotOutputs vliegen(AutopilotInputs inputs) {
+	/**
+	 * Hoofdfunctie: bepaalt welke stap van het vliegprocess moet gebeuren.
+	 */
+	public AutopilotOutputs vliegen(AutopilotInputs inputs, float[] doel) {
 		
 		setTime(inputs);
 		float horizontalAngle = 0;	
@@ -288,7 +305,7 @@ public class Vliegen {
 			break;
 			
 		case RIJDEN:
-			this.Rijden(inputs);
+			this.rijden(inputs);
 			if (getTime() < 3) { 
 				phase = PhaseEnum.OPSTIJGEN;
 				System.out.println("OPSTIJGEN");
@@ -296,7 +313,7 @@ public class Vliegen {
 			break;
 			
 		case OPSTIJGEN:
-			this.Opstijgen(inputs);
+			this.opstijgen(inputs);
 			if (inputs.getY() > 40) {
 				System.out.println("STABILISEREN");
 				phase = PhaseEnum.STABILISEREN;
@@ -323,7 +340,7 @@ public class Vliegen {
 			break;
 			
 		case LINKS:
-			this.Draai(inputs, speed, speedVector,1);
+			this.draai(inputs, speed, speedVector,1);
 			if (inputs.getZ() < -1000) {
 				phase = PhaseEnum.STABILISEREN1;
 				t = getTime();
@@ -339,11 +356,11 @@ public class Vliegen {
 			break;
 			
 		case RECHTS:
-			this.Draai(inputs, speed, speedVector, -1);
+			this.draai(inputs, speed, speedVector, -1);
 			break;
 			
 		case GEENKUBUS:
-			this.Geenkubus(inputs, speed, speedVector);
+			this.geenkubus(inputs, speed, speedVector);
 			if (!landen) {
 				timeLanden = inputs.getElapsedTime();
 				landen = true;

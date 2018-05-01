@@ -77,23 +77,19 @@ public class Besturing implements Runnable {
 		if(occupation == OccupationEnum.PICKING_UP){
 			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getY())){
 				//At airport -> TAXI to gate
-				packageHandler.getStartingPosition(delivery);
-				outputs = taxi.taxi(inputs);
+				outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery));
 			} else {
 				//Wrong airport -> VLIEG to other airport
-				packageHandler.getStartingPosition(delivery);
-				outputs = vliegen.vliegen(inputs);
+				outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery));
 			}
 			
 		} else if (occupation == OccupationEnum.DELIVERING){
 			if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getY())){
 				//At airport -> TAXI to gate
-				packageHandler.getEndPosition(delivery);
-				outputs = taxi.taxi(inputs);
+				outputs = taxi.taxi(inputs,packageHandler.getEndPosition(delivery));
 			} else {
 				//Wrong airport -> VLIEG to other airport
-				packageHandler.getEndPosition(delivery);
-				outputs = vliegen.vliegen(inputs);
+				outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery));
 			}
 		}
 
