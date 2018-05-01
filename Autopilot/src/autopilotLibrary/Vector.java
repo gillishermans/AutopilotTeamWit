@@ -35,7 +35,7 @@ public class Vector {
 		return new Vector(s * v.x, s*v.y, s*v.z);
 	}
 	
-	public float scalairProd(Vector a, Vector b) {
+	public static float scalairProd(Vector a, Vector b) {
 		return a.x*b.x + a.y*b.y + a.z*b.z;
 	}
 	
