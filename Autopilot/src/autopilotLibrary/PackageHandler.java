@@ -2,6 +2,7 @@ package autopilotLibrary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import enums.OccupationEnum;
 
@@ -45,13 +46,16 @@ public class PackageHandler {
 	 * Gets the closest delivery to a drone.
 	 */
 	private Delivery getClosestPackage(int drone){
+		
+		if(getFreePackages().size() == 0) return null;
+		
 		Besturing d = drones.get(drone);
 		float[] dronePos = d.getPosition();
 		float[] droneGeneralPos = new float[]{dronePos[0],dronePos[2]};
-		Delivery closestDelivery = packages.get(0);
+		Delivery closestDelivery = getFreePackages().get(0);
 		float closest = distance(droneGeneralPos,getStartingPosition(closestDelivery));
-		System.out.println("PACKAGE AMOUNT/ " + packages.size());
-		for(Delivery delivery : packages){
+		System.out.println("PACKAGE AMOUNT/ " + getFreePackages().size());
+		for(Delivery delivery : getFreePackages()){
 			if(distance(droneGeneralPos,getStartingPosition(delivery)) < closest){
 				closest = distance(droneGeneralPos,getStartingPosition(delivery));
 				closestDelivery = delivery;
@@ -81,6 +85,14 @@ public class PackageHandler {
 	 */
 	private float distance(float[] dronePos, float[] deliveryPos){
 		 return (float) Math.sqrt(Math.pow((dronePos[0] - deliveryPos[0]), 2) + Math.pow((dronePos[1] - deliveryPos[1]), 2));
+	}
+	
+	private List<Delivery> getFreePackages(){
+		List<Delivery> free = new ArrayList<Delivery>();
+		for(Delivery d : packages){
+			if(d.isOpen()) free.add(d);
+		}
+		return free;
 	}
 	
 }

@@ -365,7 +365,7 @@ public class Vliegen {
 				timeLanden = inputs.getElapsedTime();
 				landen = true;
 			}
-			if (inputs.getElapsedTime() - timeLanden > 5f) {
+			if (inputs.getElapsedTime() - timeLanden > 3.5f) {
 				System.out.println("LANDEN");
 				phase = PhaseEnum.LANDEN;
 			}
