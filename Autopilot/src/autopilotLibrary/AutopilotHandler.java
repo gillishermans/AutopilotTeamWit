@@ -61,6 +61,7 @@ public class AutopilotHandler {
 		System.out.println("DIT IS DRONE OUTPUT: " + drone);
 		Besturing b = drones.get(drone);
 		PhaseEnum s = b.getState();
+		packageHandler.update(drones);
 		updateStateDrone(drone);
 		updateOccupationDrone(drone);
 		return b.getOutputs();
@@ -103,12 +104,11 @@ public class AutopilotHandler {
 	}
 	
 	public void updateStateDrone(Integer i) {
-		
 		gui.changeStateDrone(drones.get(i).getState(), i);
 	}
 	
 	public void updateOccupationDrone(Integer i) {
-		packageHandler.update(i); //TODO worden pakketten aangegeven?
+		//packageHandler.update(i); 
 		gui.changeJobDrone(drones.get(i).getOccupation(), i);
 	}
 	

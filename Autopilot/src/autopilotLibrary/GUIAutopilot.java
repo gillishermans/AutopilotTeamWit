@@ -206,6 +206,10 @@ public class GUIAutopilot {
 			l.setText("        " + "TAXIING" + " ");
 			break;
 		}
+		case VLIEGEN: {
+			l.setText("        " + "FLYING" + " ");
+			break;
+		}
 		default: {
 			l.setText("         " + "FLYING" + " ");
 		}
@@ -228,7 +232,5 @@ public class GUIAutopilot {
 		pnlPackageTodo.remove(l);
 		pnlPackageProc.add(l, id);
 	}
-	
-
 	
 }

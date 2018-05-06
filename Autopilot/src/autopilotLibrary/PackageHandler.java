@@ -34,12 +34,40 @@ public class PackageHandler {
 	}
 	
 	/**
+	 * Updates all drones package delivery status.
+	 */
+	public void update(HashMap<Integer, Besturing> drones) {
+		for(Delivery d : getFreePackages()){
+			assign(getClosestDrone(d,drones),d);
+		}
+	}
+	
+	/**
 	 * Assigns a package to a drone.
 	 */
 	private void assign(int drone, Delivery deliv){
 		deliv.assign(drone);
 		drones.get(drone).assign(deliv);
-		System.out.println("ASSIGN PACKAGE ");
+		System.out.println("ASSIGN PACKAGE DRONE " + drone + " APGATE" + deliv.fromAirport + "." + deliv.fromGate);
+	}
+	
+	/**
+	 * Gets the closest drone to a delivery.
+	 */
+	private int getClosestDrone(Delivery d, HashMap<Integer, Besturing> drones){
+		
+		float[] deliveryGeneralPos = getStartingPosition(d);
+		int closestDrone = 0;
+		float closest = distance(deliveryGeneralPos,drones.get(0).getPosition());
+		for(int drone : drones.keySet()){
+			System.out.println("CHECK DRONE " + drone);
+			System.out.println("DISTANCE " + distance(deliveryGeneralPos,drones.get(drone).getPosition()));
+			if(distance(deliveryGeneralPos,drones.get(drone).getPosition()) < closest){
+				closest = distance(deliveryGeneralPos,drones.get(drone).getPosition());
+				closestDrone = drone;
+			}
+		}
+		return closestDrone;
 	}
 	
 	/**
@@ -87,6 +115,9 @@ public class PackageHandler {
 		 return (float) Math.sqrt(Math.pow((dronePos[0] - deliveryPos[0]), 2) + Math.pow((dronePos[1] - deliveryPos[1]), 2));
 	}
 	
+	/**
+	 * Get a list of free packages.
+	 */
 	private List<Delivery> getFreePackages(){
 		List<Delivery> free = new ArrayList<Delivery>();
 		for(Delivery d : packages){
@@ -94,5 +125,4 @@ public class PackageHandler {
 		}
 		return free;
 	}
-	
 }
