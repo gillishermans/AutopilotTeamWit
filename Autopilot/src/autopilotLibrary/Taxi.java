@@ -30,7 +30,7 @@ public class Taxi {
 	
 	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel) {
 		float afstand;
-		afstand = (float) Math.sqrt(Math.pow((bestemmingX-inputs.getX()),2)+Math.pow((bestemmingZ-inputs.getZ()), 2));
+		afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
 		
 //		if (getTime() == 0) {
 		rightWingInclination = (float) (Math.PI/20);
@@ -44,14 +44,14 @@ public class Taxi {
 		frontBrakeForce=3000;
 		thrust=0;
 		if (inputs.getElapsedTime() < 9.762){
-			if( bestemmingX >0){
+			if( doel[0]-inputs.getX() >0){
 				thrust=200;//rechts draaien
 				leftBrakeForce=3000;
 				rightBrakeForce=0;
 				frontBrakeForce=0;
 			}
 			
-			else if (bestemmingX<0){//links draaien 
+			else if (doel[0]-inputs.getX()<0){//links draaien 
 				thrust=200;
 				leftBrakeForce=0;
 				rightBrakeForce=3000;
@@ -74,13 +74,13 @@ public class Taxi {
 		if (ZPART && inputs.getElapsedTime()> turnTime+3 ){
 			//
 			if (inputs.getElapsedTime()< this.turnTime+12.912){
-				if( bestemmingZ*bestemmingX>0){ //rechts draaien 
+				if( (bestemmingZ-inputs.getZ())*(bestemmingX-inputs.getX())>0){ //rechts draaien 
 					thrust=200;
 					leftBrakeForce=3000;
 					rightBrakeForce=0;
 					frontBrakeForce=0;
 				}
-				else if (bestemmingX*bestemmingZ<0){ //links draaien 
+				else if ((bestemmingX-inputs.getX())*(bestemmingZ-inputs.getZ())<0){ //links draaien 
 					System.out.print(turnTime);
 					thrust=200;
 					leftBrakeForce=0;
