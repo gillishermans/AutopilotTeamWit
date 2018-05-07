@@ -74,6 +74,7 @@ public class Besturing implements Runnable {
 	}
 	
 	public void startBesturing(AutopilotInputs inputs) {
+		System.out.println("inputs pos: " + inputs.getX() +" "+ inputs.getY() +" "+ inputs.getZ());
 		setInputs(inputs);
 		
 		if(occupation == OccupationEnum.PICKING_UP){

@@ -38,7 +38,9 @@ public class PackageHandler {
 	 */
 	public void update(HashMap<Integer, Besturing> drones) {
 		for(Delivery d : getFreePackages()){
-			assign(getClosestDrone(d,drones),d);
+			if(getClosestDrone(d,drones) != -1){
+				assign(getClosestDrone(d,drones),d);
+			}
 		}
 	}
 	
@@ -55,19 +57,33 @@ public class PackageHandler {
 	 * Gets the closest drone to a delivery.
 	 */
 	private int getClosestDrone(Delivery d, HashMap<Integer, Besturing> drones){
-		
 		float[] deliveryGeneralPos = getStartingPosition(d);
-		int closestDrone = 0;
-		float closest = distance(deliveryGeneralPos,drones.get(0).getPosition());
-		for(int drone : drones.keySet()){
+		HashMap<Integer, Besturing> freeDrones = getFreeDrones(drones);
+		int closestDrone = -1;
+		float closest = 999999999999f;
+		for(int drone : freeDrones.keySet()){
+			float[] dronePos = freeDrones.get(drone).getPosition();
+			System.out.println("DPOS: " + dronePos[0]+" "+dronePos[1]+" "+dronePos[2]);
+			float[] droneGeneralPos = new float[]{dronePos[0],dronePos[2]};
 			System.out.println("CHECK DRONE " + drone);
-			System.out.println("DISTANCE " + distance(deliveryGeneralPos,drones.get(drone).getPosition()));
-			if(distance(deliveryGeneralPos,drones.get(drone).getPosition()) < closest){
-				closest = distance(deliveryGeneralPos,drones.get(drone).getPosition());
+			System.out.println("DISTANCE " + distance(droneGeneralPos,deliveryGeneralPos));
+			if(distance(droneGeneralPos,deliveryGeneralPos) < closest){
+				closest = distance(droneGeneralPos,deliveryGeneralPos);
 				closestDrone = drone;
 			}
 		}
+		System.out.println("CLOSEST DRONE " + closestDrone);
 		return closestDrone;
+	}
+	
+	private HashMap<Integer, Besturing> getFreeDrones(HashMap<Integer, Besturing> drones){
+		HashMap<Integer, Besturing> free = new HashMap<Integer, Besturing>();
+		for(int drone : drones.keySet()){
+			if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
+				free.put(drone, drones.get(drone));
+			}
+		}
+		return free;
 	}
 	
 	/**
@@ -112,6 +128,7 @@ public class PackageHandler {
 	 * Returns the distance between a drone and a delivery.
 	 */
 	private float distance(float[] dronePos, float[] deliveryPos){
+		System.out.println("D: DRONE: " +dronePos[0]+" "+dronePos[1]+" DELIV: " + deliveryPos[0]+" "+deliveryPos[1]);
 		 return (float) Math.sqrt(Math.pow((dronePos[0] - deliveryPos[0]), 2) + Math.pow((dronePos[1] - deliveryPos[1]), 2));
 	}
 	

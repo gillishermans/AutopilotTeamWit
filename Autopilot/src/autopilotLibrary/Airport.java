@@ -86,6 +86,8 @@ public class Airport {
 	 * Calculates rotated position of a position according to the orientation.
 	 */
 	public float[] getRotatedPoint(float x, float z){
+		System.out.println("ANGLE: " + getOrientation());
+		System.out.println("X: " + getX() + " Z: " + getZ());
 		float angle = getOrientation();
 		
 		float rotatedX = (float) (getX() + (x  * Math.cos(angle)) - (z * Math.sin(angle)));
@@ -138,6 +140,8 @@ public class Airport {
 	 * Gets the middle position of gate 0.
 	 */
 	public float[] getMiddleGate0(){
+		System.out.println();
+		System.out.println("MIDDLEGATE0 " + getRotatedPoint(0,-getW()/2)[0] + " " + getRotatedPoint(0,-getW()/2)[1]);
 		return getRotatedPoint(0,-getW()/2);
 	}
 	
@@ -207,9 +211,16 @@ public class Airport {
 	}
 	
 	public float getRadians (float L, float W, float centerToRunway0x, float centerToRunway0z){
+		System.out.println("centerx: " + centerToRunway0x + " centerz: " + centerToRunway0z);
+		System.out.println("L: " + L + " W: " + W);
 		Vector vector1 = new Vector(L + (W/2),0,W); 
 		Vector vector2 = new Vector (centerToRunway0x,0,centerToRunway0z);
-		float radian = (float) Math.acos(Vector.scalairProd(vector1, vector2)/(Vector.norm(vector1)*Vector.norm(vector2)));
+		System.out.println("norm1: " + Vector.norm(vector1) + " 2: " + Vector.norm(vector2));
+		System.out.println("vectorprod: " + Vector.scalairProd(vector1, vector2));
+		System.out.println(Vector.scalairProd(vector1, vector2)/(Vector.norm(vector1)*Vector.norm(vector2)));
+		System.out.println( Math.acos(Vector.scalairProd(vector1, vector2)/(Vector.norm(vector1)*Vector.norm(vector2))));
+		float radian = (float) Math.acos(Math.round(Vector.scalairProd(vector1, vector2)/(Vector.norm(vector1)*Vector.norm(vector2))));
+		System.out.println("rad: " + radian);
 		return radian;
 	}
 	
