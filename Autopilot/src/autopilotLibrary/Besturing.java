@@ -96,20 +96,26 @@ public class Besturing implements Runnable {
 		
 		if(occupation == OccupationEnum.PICKING_UP){
 			System.out.println("PCIKING UP ");
-			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getY())){
+			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getZ())){
 				//At airport -> TAXI to gate
 				state = PhaseEnum.TAXIEN;
 				outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery));
 				System.out.println("TAXI!!!! ");
 			} else {
 				//Wrong airport -> VLIEG to other airport
-				state = PhaseEnum.VLIEGEN;
-				outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector);
-				System.out.println("VLIEGEN!!!! ");
+				
+				if(!airports.get(delivery.toAirport).onEndRunway0(inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST)){
+					state = PhaseEnum.TEST;
+					outputs = taxi.taxi(inputs,airports.get(delivery.fromAirport).getStartRunway0Middle());
+				} else {
+					state = PhaseEnum.VLIEGEN;
+					outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector);
+					System.out.println("VLIEGEN!!!! ");
+				}
 			}
 			
 		} else if (occupation == OccupationEnum.DELIVERING){
-			if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getY())){
+			if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getZ())){
 				//At airport -> TAXI to gate
 				state = PhaseEnum.TAXIEN;
 				outputs = taxi.taxi(inputs,packageHandler.getEndPosition(delivery));
@@ -169,7 +175,7 @@ public class Besturing implements Runnable {
 	}
 
 	public PhaseEnum getState() {
-		if (state == PhaseEnum.TAXIEN) {
+		if (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST) {
 			return state;
 		}
 		else {
