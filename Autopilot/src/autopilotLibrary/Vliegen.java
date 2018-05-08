@@ -1,6 +1,7 @@
 package autopilotLibrary;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import enums.PhaseEnum;
 import interfaces.AutopilotInputs;
@@ -9,7 +10,7 @@ import interfaces.Outputs;
 import interfaces.Path;
 
 public class Vliegen {
-	
+	private HashMap<Integer,Airport> airports ;
 	private ArrayList<Vector> path = new ArrayList<Vector>();
 	private boolean firstCube = true;
 	
@@ -88,6 +89,7 @@ public class Vliegen {
 	
 	
 	public Vliegen(Besturing besturing) {
+
 		this.besturing = besturing;
 	}
 	
@@ -136,6 +138,7 @@ public class Vliegen {
 		outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
 		horStabInclination = -outputPitch;
 		verStabInclination = 0;
+		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 	
@@ -268,7 +271,7 @@ public class Vliegen {
 	/**
 	 * Hoofdfunctie: bepaalt welke stap van het vliegprocess moet gebeuren.
 	 */
-	public AutopilotOutputs vliegen(AutopilotInputs inputs, float[] doel,Vector speedVector) {
+	public AutopilotOutputs vliegen(AutopilotInputs inputs, float[] doel,Vector speedVector, HashMap<Integer,Airport> airports ){
 		
 		setTime(inputs);
 		float horizontalAngle = 0;	
@@ -304,6 +307,7 @@ public class Vliegen {
 			
 		case OPSTIJGEN:
 			this.opstijgen(inputs);
+			System.out.print("hier" + this.airports.get(1).getX());
 			if (inputs.getY() > 40) {
 				System.out.println("STABILISEREN");
 				phase = PhaseEnum.STABILISEREN;
@@ -339,7 +343,8 @@ public class Vliegen {
 			
 		case STABILISEREN1:
 			this.Stabiliseren1(inputs, speed, speedVector);
-			if (inputs.getZ() < -2200){
+			System.out.print("hier" + this.airports.get(1).getX());
+			if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
 				System.out.println("LANDEN");
 				phase = PhaseEnum.LANDEN;
 			}

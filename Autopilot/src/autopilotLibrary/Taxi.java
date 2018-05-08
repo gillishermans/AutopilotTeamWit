@@ -1,11 +1,12 @@
 package autopilotLibrary;
 
+import enums.OccupationEnum;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
 
 public class Taxi {
-
+	private OccupationEnum occupation;
 	private Besturing besturing;
 	
 	private PIDController pidlefttwheel= new PIDController(1f,1f,1f,2486f,0f,1f);
@@ -28,16 +29,60 @@ public class Taxi {
 	public Taxi(Besturing besturing) {
 		this.besturing = besturing;
 	}
+	public AutopilotOutputs turn (AutopilotInputs inputs, float [] doel){
+		float hoek =(float) Math.atan((doel[1]-inputs.getZ())/(doel[0]-inputs.getX()));
+		leftBrakeForce=0;
+		rightBrakeForce=300000;
+		frontBrakeForce=0;
+		thrust=200000;
+		if (inputs.getHeading() == hoek + Math.PI){
+			leftBrakeForce=0;
+			rightBrakeForce=0;
+			frontBrakeForce=0;
+			thrust=0;
+		}
+		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
+	}
+		
+	public AutopilotOutputs drive (AutopilotInputs inputs, float [] doel){
+		float distance =(float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
+		leftBrakeForce=0;
+		rightBrakeForce=0;
+		frontBrakeForce=0;
+		thrust=200;
+		if (distance<2){
+			leftBrakeForce=3000;
+			rightBrakeForce=3000;
+			frontBrakeForce=3000;
+			thrust=0;
+		}
+		
+		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
+	}
 	
-	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel) {		
+	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel,Besturing besturing) {		
 		
 		float afstand;
 		afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
-		leftBrakeForce=0;
-		rightBrakeForce=2000;
-		frontBrakeForce=0;
-		thrust=0;
 		
+		if(occupation == OccupationEnum.PICKING_UP){
+			
+		}
+		// draai functie => willekeurige hoek naar doelfunctie 
+		//rijfunctie tot vliegtuig op doelfunctie is beland
+		//alinieerfunctie => GO enum terug geven
+		
+		
+		leftBrakeForce=
+		rightBrakeForce=0;
+		frontBrakeForce=0;
+		thrust=2000;
+		if (Math.abs(inputs.getHeading()) >= Math.PI/2){
+			rightBrakeForce=0000;
+			leftBrakeForce=0000;
+			frontBrakeForce=0000;
+			thrust=0;
+		}
 		
 		
 ////		if (getTime() == 0) {
