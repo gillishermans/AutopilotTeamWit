@@ -1,12 +1,17 @@
 package autopilotLibrary;
 
+
 public class Airport {
 
+	private int id;
 	private float L,W;
 	private float centerX,centerZ;
 	private float orientation;
+	private Delivery packageGate0;
+	private Delivery packageGate1;
 	
-	public Airport(float L, float W, float centerX, float centerZ,float centerToRunway0X, float centerToRunway0Z) {
+	public Airport(int id, float L, float W, float centerX, float centerZ,float centerToRunway0X, float centerToRunway0Z) {
+		this.id = id;
 		this.L = L;
 		this.W = W;
 		this.centerX = centerX;
@@ -231,6 +236,47 @@ public class Airport {
 	public float[] getMiddleGate(int gate) {
 		if(gate == 0) return getMiddleGate0();
 		else return getMiddleGate1();
+	}
+	
+
+	public boolean isPackageGate1() {
+		return packageGate1!=null;
+	}
+
+	public void setPackageGate1(Delivery Delivery) {
+		this.packageGate1 = Delivery;
+	}
+	
+	public Delivery getPackageGate1() {
+		return this.packageGate1;
+	}
+	
+	public boolean isPackageGate0() {
+		return packageGate0!=null;
+	}
+
+	public void setPackageGate0(Delivery Delivery) {
+		this.packageGate0 = Delivery;
+	}
+	
+	public Delivery getPackageGate0() {
+		return this.packageGate0;
+	}
+	
+	public void setPackageGate(Delivery packageGate, int id){
+		if(id == 0) setPackageGate0(packageGate);
+		if(id == 1) setPackageGate1(packageGate);
+		System.out.println("DELIVER PACKAGE AT GATE " + id);
+	}
+	
+	public boolean isPackageGate(int id){
+		if(id == 0) return isPackageGate0();
+		if(id == 1) return isPackageGate1();
+		else return true;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 }

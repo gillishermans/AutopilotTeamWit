@@ -233,4 +233,9 @@ public class GUIAutopilot {
 		pnlPackageProc.add(l, id);
 	}
 	
+	public void removePackageProc(int id){
+		JPanel l = ((JPanel) pnlPackageProc.getComponent(id));
+		pnlPackageProc.remove(l);
+	}
+	
 }

@@ -5,9 +5,11 @@ import enums.DeliveryEnum;
 public class Delivery {
 	int fromAirport, fromGate, toAirport, toGate;
 	int droneId;
+	int id;
 	DeliveryEnum state; 
 	
-	public Delivery(int fromAirport, int fromGate, int toAirport, int toGate){
+	public Delivery(int id, int fromAirport, int fromGate, int toAirport, int toGate){
+		this.id = id;
 		this.fromAirport = fromAirport;
 		this.fromGate= fromGate;
 		this.toAirport = toAirport;
@@ -29,5 +31,9 @@ public class Delivery {
 	public boolean isOpen() {
 		if(state == DeliveryEnum.OPEN) return true;
 		else return false;
+	}
+	
+	public int getId(){
+		return id;
 	}
 }

@@ -168,4 +168,17 @@ public class Besturing implements Runnable {
 		occupation = OccupationEnum.PICKING_UP;
 	}
 	
+	public void pickup(){
+		occupation = OccupationEnum.DELIVERING;
+	}
+	
+	public void deliver(){
+		occupation = OccupationEnum.FREE;
+		delivery = null;
+	}
+	
+	public Delivery getDelivery(){
+		return delivery;
+	}
+	
 }
