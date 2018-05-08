@@ -307,7 +307,7 @@ public class Vliegen {
 			
 		case OPSTIJGEN:
 			this.opstijgen(inputs);
-			System.out.print("hier" + this.airports.get(1).getX());
+			
 			if (inputs.getY() > 40) {
 				System.out.println("STABILISEREN");
 				phase = PhaseEnum.STABILISEREN;

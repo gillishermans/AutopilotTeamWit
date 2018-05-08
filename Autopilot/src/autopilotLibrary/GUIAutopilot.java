@@ -183,6 +183,10 @@ public class GUIAutopilot {
 	public void changeStateDrone(PhaseEnum s, Integer index) {
 		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(2);
 		switch(s) {
+		case TEST: {
+			l.setText("     " + "TEST" + " ");
+			break;
+		}
 		case INIT: {
 			l.setText("            " + "INIT" + "    ");
 			break;
