@@ -42,7 +42,7 @@ public class AutopilotHandler {
 //		}
 //		System.out.println("Autopilot created " + numberOfThreads +  " threads");
 		
-		packageHandler = new PackageHandler(drones, airports);
+		packageHandler = new PackageHandler(this, drones, airports);
 	}
 	
 	
@@ -80,7 +80,7 @@ public class AutopilotHandler {
 	 */
 	public void addAirport(float centerX, float centerZ, float centerToRunway0X, float centerToRunway0Z) {
 		int key = airports.size(); 
-		airports.put(key, new Airport(airportLength,airportWidth,centerX,centerZ,centerToRunway0X,centerToRunway0Z));
+		airports.put(key, new Airport(key,airportLength,airportWidth,centerX,centerZ,centerToRunway0X,centerToRunway0Z));
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class AutopilotHandler {
 	 * Starts a new package delivery request from an airport to gate to another.
 	 */
 	public void deliverPackage(int fromAirport, int fromGate, int toAirport, int toGate) {
-		packageHandler.deliverPackage(fromAirport, fromGate, toAirport, toGate);
+		packageHandler.deliverPackage(packageIndex,fromAirport, fromGate, toAirport, toGate);
 		gui.addToDo(packageIndex, fromAirport, fromGate, toAirport, toGate);
 		packageIndex++;
 	}
@@ -113,7 +113,11 @@ public class AutopilotHandler {
 	}
 	
 	public void assignJob(Integer indexPackage, Integer indexDrone) {
-		
+		gui.addPackageProc(indexPackage);
+	}
+	
+	public void completeJob(Integer indexPackage){
+		gui.removePackageProc(indexPackage);
 	}
 
 }

@@ -43,6 +43,10 @@ public class Vector {
 		return new Vector(a.x + b.x, a.y + b.y, a.z + b.y);
 	}
 	
+	public static float length(Vector a) {
+		return a.x + a.y + a.z;
+	}
+	
 	public float lengthSquared(Vector a) {
 		return a.x*a.x + a.y*a.y + a.z*a.z;
 	}

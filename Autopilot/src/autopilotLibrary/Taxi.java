@@ -23,12 +23,14 @@ public class Taxi {
 	
 	private float lastLoopTime = 0;
 	private final float draaing90 = 9.776f;
+	private Vector prevSpeedVector;
 	
 	public Taxi(Besturing besturing) {
 		this.besturing = besturing;
 	}
 	
-	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel) {
+	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel) {		
+		
 		float afstand;
 		afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
 		leftBrakeForce=0;

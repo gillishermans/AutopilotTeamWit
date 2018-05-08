@@ -52,6 +52,8 @@ public class Besturing implements Runnable {
 	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
 	private PackageHandler packageHandler;
 	private int id;
+	private ArrayList<Vector> posList = new ArrayList<Vector>();
+	private Vector prevSpeedVector;
 	
 
 	public Besturing(int id, int airport, int gate, int pointingToRunway, AutopilotConfig config, HashMap<Integer,Airport> airports, PackageHandler pH) {
@@ -77,6 +79,21 @@ public class Besturing implements Runnable {
 		System.out.println("inputs pos: " + inputs.getX() +" "+ inputs.getY() +" "+ inputs.getZ());
 		setInputs(inputs);
 		
+		getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
+		
+		int index = getPosList().size() -1;
+		Vector speedVector = new Vector(0,0,-10);
+		float speed = 10f;
+		if(getPosList().size() <= 1) {speedVector = new Vector(0,0,0); speed = 10f;}
+		else{
+			speedVector = Vector.min(getPosList().get(index),getPosList().get(index -1));
+			speedVector = Vector.scalarProd(speedVector, 1/getTime());
+			speed = Vector.norm(speedVector);
+		}
+		prevSpeedVector = speedVector;
+		
+		if(occupation == OccupationEnum.FREE) outputs = new Outputs(0, 0, 0, 0, 0, 0, 0, 0);
+		
 		if(occupation == OccupationEnum.PICKING_UP){
 			System.out.println("PCIKING UP ");
 			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getY())){
@@ -87,7 +104,7 @@ public class Besturing implements Runnable {
 			} else {
 				//Wrong airport -> VLIEG to other airport
 				state = PhaseEnum.VLIEGEN;
-				outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery));
+				outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector);
 				System.out.println("VLIEGEN!!!! ");
 			}
 			
@@ -99,9 +116,10 @@ public class Besturing implements Runnable {
 			} else {
 				//Wrong airport -> VLIEG to other airport
 				state = PhaseEnum.VLIEGEN;
-				outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery));
+				outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector);
 			}
 		}
+		
 		
 
 //		switch(state) {
@@ -166,6 +184,27 @@ public class Besturing implements Runnable {
 	public void assign(Delivery deliv) {
 		this.delivery = deliv;
 		occupation = OccupationEnum.PICKING_UP;
+	}
+	
+	public void pickup(){
+		occupation = OccupationEnum.DELIVERING;
+	}
+	
+	public void deliver(){
+		occupation = OccupationEnum.FREE;
+		delivery = null;
+	}
+	
+	public Delivery getDelivery(){
+		return delivery;
+	}
+	
+	public ArrayList<Vector> getPosList(){
+		return this.posList;
+	}
+	
+	public Vector getSpeedVector(){
+		return prevSpeedVector;
 	}
 	
 }

@@ -3,7 +3,6 @@ package autopilotLibrary;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import enums.OccupationEnum;
 
 public class PackageHandler {
@@ -11,8 +10,10 @@ public class PackageHandler {
 	private HashMap<Integer,Besturing> drones = new HashMap<Integer,Besturing>();
 	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
 	private ArrayList<Delivery> packages = new ArrayList<Delivery>();
+	private AutopilotHandler autopilotHandler;
 	
-	public PackageHandler(HashMap<Integer,Besturing> drones, HashMap<Integer,Airport> airports) {
+	public PackageHandler(AutopilotHandler autopilotHandler, HashMap<Integer,Besturing> drones, HashMap<Integer,Airport> airports) {
+		this.autopilotHandler = autopilotHandler;
 		this.drones = drones;
 		this.airports = airports;
 	}
@@ -20,19 +21,12 @@ public class PackageHandler {
 	/**
 	 * Add new package.
 	 */
-	public void deliverPackage(int fromAirport, int fromGate, int toAirport, int toGate){
-		packages.add(new Delivery(fromAirport, fromGate, toAirport, toGate));
+	public void deliverPackage(int id, int fromAirport, int fromGate, int toAirport, int toGate){
+		Delivery newPackage = new Delivery(id, fromAirport, fromGate, toAirport, toGate);
+		packages.add(newPackage);
+		airports.get(fromAirport).setPackageGate(newPackage, fromGate);
 	}
-	
-	/**
-	 * Updates a drone's package delivery status.
-	 */
-	public void update(int drone){
-		if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
-			if(getClosestPackage(drone) != null) assign(drone, getClosestPackage(drone));
-		}
-	}
-	
+		
 	/**
 	 * Updates all drones package delivery status.
 	 */
@@ -42,6 +36,77 @@ public class PackageHandler {
 				assign(getClosestDrone(d,drones),d);
 			}
 		}
+		checkPickup();
+		checkDelivery();
+	}
+	
+	/**
+	 * Check for pickup of any packages.
+	 */
+	public void checkPickup() {
+		 for(Besturing d : drones.values()){
+			 for(Airport ap : airports.values()){
+				if(ap.isPackageGate0() && ap.onGate0(d.getPosition()[0], d.getPosition()[2])){
+					System.out.println("ON GATE 0 + PACKAGE AVAILABLE");
+					if(ap.getPackageGate0() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
+						pickup(d, ap, 0, ap.getPackageGate0());
+						return;
+					}
+				}
+				if(ap.isPackageGate1() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
+					System.out.println("ON GATE 1 + PACKAGE AVAILABLE");
+					if(ap.getPackageGate1() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
+						pickup(d, ap, 1, ap.getPackageGate1());
+						return;
+					}
+				}
+			 }
+		 }
+	}
+	
+	/**
+	 * The given drone picks up the given delivery at the given airport and gate.
+	 */
+	private void pickup(Besturing drone, Airport ap, int gate, Delivery deliv){
+		drone.pickup();
+		ap.setPackageGate(null, gate);
+	}
+	
+	/**
+	 * Check for pickup of any deliveries.
+	 */
+	public boolean checkDelivery() {
+		 for(Besturing d : drones.values()){
+			 if (d.getOccupation() == OccupationEnum.DELIVERING) {
+				 for(Airport ap : airports.values()){
+					if(d.getDelivery().toAirport == ap.getId() && ap.onGate0(d.getPosition()[0], d.getPosition()[2])){
+						if(Vector.length(d.getSpeedVector()) < 1.0) {
+							System.out.println("PACKAGE DELIVERED ON GATE 0");
+							deliver(d, d.getDelivery());
+							return true;
+						}
+					}
+					if(d.getDelivery().toAirport == ap.getId() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
+						if(Vector.length(d.getSpeedVector()) < 1.0) {
+							System.out.println("PACKAGE DELIVERED ON GATE 1");
+							deliver(d, d.getDelivery());
+							return true;
+						}
+					}
+				 }
+			 }
+		 }
+		 return false;
+	}
+	
+	/**
+	 * The given drone delivers the given delivery.
+	 */
+	private void deliver(Besturing drone, Delivery deliv){
+		System.out.println("DELIVERED");
+		packages.remove(deliv);
+		drone.deliver();
+		autopilotHandler.completeJob(deliv.getId());
 	}
 	
 	/**
@@ -51,6 +116,7 @@ public class PackageHandler {
 		deliv.assign(drone);
 		drones.get(drone).assign(deliv);
 		System.out.println("ASSIGN PACKAGE DRONE " + drone + " APGATE" + deliv.fromAirport + "." + deliv.fromGate);
+		autopilotHandler.assignJob(deliv.getId(),drone);
 	}
 	
 	/**
@@ -75,39 +141,7 @@ public class PackageHandler {
 		System.out.println("CLOSEST DRONE " + closestDrone);
 		return closestDrone;
 	}
-	
-	private HashMap<Integer, Besturing> getFreeDrones(HashMap<Integer, Besturing> drones){
-		HashMap<Integer, Besturing> free = new HashMap<Integer, Besturing>();
-		for(int drone : drones.keySet()){
-			if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
-				free.put(drone, drones.get(drone));
-			}
-		}
-		return free;
-	}
-	
-	/**
-	 * Gets the closest delivery to a drone.
-	 */
-	private Delivery getClosestPackage(int drone){
 		
-		if(getFreePackages().size() == 0) return null;
-		
-		Besturing d = drones.get(drone);
-		float[] dronePos = d.getPosition();
-		float[] droneGeneralPos = new float[]{dronePos[0],dronePos[2]};
-		Delivery closestDelivery = getFreePackages().get(0);
-		float closest = distance(droneGeneralPos,getStartingPosition(closestDelivery));
-		System.out.println("PACKAGE AMOUNT/ " + getFreePackages().size());
-		for(Delivery delivery : getFreePackages()){
-			if(distance(droneGeneralPos,getStartingPosition(delivery)) < closest){
-				closest = distance(droneGeneralPos,getStartingPosition(delivery));
-				closestDelivery = delivery;
-			}
-		}
-		return closestDelivery;
-	}
-	
 	/**
 	 * Gets the starting  position of a delivery.
 	 */
@@ -139,6 +173,19 @@ public class PackageHandler {
 		List<Delivery> free = new ArrayList<Delivery>();
 		for(Delivery d : packages){
 			if(d.isOpen()) free.add(d);
+		}
+		return free;
+	}
+	
+	/**
+	 * Returns a list of all free drones with no task.
+	 */
+	private HashMap<Integer, Besturing> getFreeDrones(HashMap<Integer, Besturing> drones){
+		HashMap<Integer, Besturing> free = new HashMap<Integer, Besturing>();
+		for(int drone : drones.keySet()){
+			if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
+				free.put(drone, drones.get(drone));
+			}
 		}
 		return free;
 	}

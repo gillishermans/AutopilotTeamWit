@@ -2,6 +2,7 @@ package autopilotLibrary;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Label;
@@ -175,6 +176,10 @@ public class GUIAutopilot {
 		}
 	}
 	
+	public void changeLocationDrone(Integer index){
+		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(0);
+	}
+	
 	public void changeStateDrone(PhaseEnum s, Integer index) {
 		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(2);
 		switch(s) {
@@ -224,13 +229,23 @@ public class GUIAutopilot {
 		
 		
 		toDo.setLayout(new BoxLayout(toDo, BoxLayout.X_AXIS));
+		toDo.setName(Integer.toString(id));
 		pnlPackageTodo.add(toDo, id);
 	}
 	
 	public void addPackageProc(int id) {
-		JPanel l = ((JPanel) pnlPackageTodo.getComponent(id));
-		pnlPackageTodo.remove(l);
-		pnlPackageProc.add(l, id);
+		for(Component c : pnlPackageTodo.getComponents()){
+			if(c.getName() == Integer.toString(id)){
+				JPanel l = ((JPanel) pnlPackageTodo.getComponent(id));
+				pnlPackageTodo.remove(l);
+				pnlPackageProc.add(l, id);
+			}
+		}
+	}
+	
+	public void removePackageProc(int id){
+		JPanel l = ((JPanel) pnlPackageProc.getComponent(id));
+		pnlPackageProc.remove(l);
 	}
 	
 }
