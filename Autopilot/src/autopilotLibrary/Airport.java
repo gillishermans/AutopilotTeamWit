@@ -16,7 +16,7 @@ public class Airport {
 		this.W = W;
 		this.centerX = centerX;
 		this.centerZ = centerZ;
-		this.orientation = this.getRadians(L, W, centerToRunway0X, centerToRunway0Z);
+		this.orientation = this.getRadians(centerToRunway0X, centerToRunway0Z);
 	}
 	
 	public boolean onStartRunway0(float x, float z){
@@ -336,17 +336,10 @@ public class Airport {
 		return this.centerZ;
 	}
 	
-	public float getRadians (float L, float W, float centerToRunway0x, float centerToRunway0z){
-		System.out.println("centerx: " + centerToRunway0x + " centerz: " + centerToRunway0z);
-		System.out.println("L: " + L + " W: " + W);
-		Vector vector1 = new Vector(L + (W/2),0,W); 
+	public float getRadians (float centerToRunway0x, float centerToRunway0z){
+		Vector vector1 = new Vector(getL() + (getW()/2),0,getW()); 
 		Vector vector2 = new Vector (centerToRunway0x,0,centerToRunway0z);
-		System.out.println("norm1: " + Vector.norm(vector1) + " 2: " + Vector.norm(vector2));
-		System.out.println("vectorprod: " + Vector.scalairProd(vector1, vector2));
-		System.out.println(Vector.scalairProd(vector1, vector2)/(Vector.norm(vector1)*Vector.norm(vector2)));
-		System.out.println( Math.acos(Vector.scalairProd(vector1, vector2)/(Vector.norm(vector1)*Vector.norm(vector2))));
 		float radian = (float) Math.acos(Math.round(Vector.scalairProd(vector1, vector2)/(Vector.norm(vector1)*Vector.norm(vector2))));
-		System.out.println("rad: " + radian);
 		return radian;
 	}
 	
