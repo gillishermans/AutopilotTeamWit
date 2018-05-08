@@ -57,21 +57,17 @@ public class PackageHandler {
 			 for(Airport ap : airports.values()){
 				if(ap.isPackageGate0() && ap.onGate0(d.getPosition()[0], d.getPosition()[2])){
 					System.out.println("ON GATE 0 + PACKAGE AVAILABLE");
-					//if(d.getgetVelocity().length() < 1.0) {
-					if(ap.getPackageGate0() == d.getDelivery()){
+					if(ap.getPackageGate0() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
 						pickup(d, ap, 0, ap.getPackageGate0());
 						return;
 					}
-					//}
 				}
 				if(ap.isPackageGate1() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
 					System.out.println("ON GATE 1 + PACKAGE AVAILABLE");
-					//if(d.getState().getVelocity().length() < 1.0) {
-					if(ap.getPackageGate1() == d.getDelivery()){
+					if(ap.getPackageGate1() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
 						pickup(d, ap, 1, ap.getPackageGate1());
 						return;
 					}
-					//}
 				}
 			 }
 		 }
@@ -90,18 +86,18 @@ public class PackageHandler {
 			 if (d.getOccupation() == OccupationEnum.DELIVERING) {
 				 for(Airport ap : airports.values()){
 					if(d.getDelivery().toAirport == ap.getId() && ap.onGate0(d.getPosition()[0], d.getPosition()[2])){
-						//if(d.getState().getVelocity().length() < 1.0) {
+						if(Vector.length(d.getSpeedVector()) < 1.0) {
 							System.out.println("PACKAGE DELIVERED ON GATE 0");
 							deliver(d, d.getDelivery());
 							return true;
-						//}
+						}
 					}
 					if(d.getDelivery().toAirport == ap.getId() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
-						//if(d.getState().getVelocity().length() < 1.0) {
+						if(Vector.length(d.getSpeedVector()) < 1.0) {
 							System.out.println("PACKAGE DELIVERED ON GATE 1");
 							deliver(d, d.getDelivery());
 							return true;
-						//}
+						}
 					}
 				 }
 			 }

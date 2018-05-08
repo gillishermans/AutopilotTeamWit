@@ -268,7 +268,7 @@ public class Vliegen {
 	/**
 	 * Hoofdfunctie: bepaalt welke stap van het vliegprocess moet gebeuren.
 	 */
-	public AutopilotOutputs vliegen(AutopilotInputs inputs, float[] doel) {
+	public AutopilotOutputs vliegen(AutopilotInputs inputs, float[] doel,Vector speedVector) {
 		
 		setTime(inputs);
 		float horizontalAngle = 0;	
@@ -276,18 +276,8 @@ public class Vliegen {
 		
 		int j = 0;
 		
-		getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
-		//time += inputs.getTime();
-		
-		int index = getPosList().size() -1;
-		Vector speedVector = new Vector(0,0,-10);
-		float speed = 10f;
-		if(getPosList().size() <= 1) {speedVector = new Vector(0,0,0); speed = 10f;}
-		else{
-			speedVector = Vector.min(getPosList().get(index),getPosList().get(index -1));
-			speedVector = Vector.scalarProd(speedVector, 1/getTime());
-			speed = Vector.norm(speedVector);
-		}
+		float speed = Vector.norm(speedVector);
+
 		//Geen kubus gevonden -> vlieg rechtdoor
 		//System.out.println(distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z)));
 		
