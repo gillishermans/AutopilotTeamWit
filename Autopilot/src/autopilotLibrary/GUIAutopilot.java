@@ -176,6 +176,10 @@ public class GUIAutopilot {
 		}
 	}
 	
+	public void changeLocationDrone(Integer index){
+		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(0);
+	}
+	
 	public void changeStateDrone(PhaseEnum s, Integer index) {
 		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(2);
 		switch(s) {

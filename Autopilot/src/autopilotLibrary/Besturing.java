@@ -92,6 +92,8 @@ public class Besturing implements Runnable {
 		}
 		prevSpeedVector = speedVector;
 		
+		if(occupation == OccupationEnum.FREE) outputs = new Outputs(0, 0, 0, 0, 0, 0, 0, 0);
+		
 		if(occupation == OccupationEnum.PICKING_UP){
 			System.out.println("PCIKING UP ");
 			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getY())){
@@ -117,6 +119,7 @@ public class Besturing implements Runnable {
 				outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector);
 			}
 		}
+		
 		
 
 //		switch(state) {

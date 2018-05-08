@@ -26,16 +26,7 @@ public class PackageHandler {
 		packages.add(newPackage);
 		airports.get(fromAirport).setPackageGate(newPackage, fromGate);
 	}
-	
-	/**
-	 * Updates a drone's package delivery status.
-	 */
-	public void update(int drone){
-		if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
-			if(getClosestPackage(drone) != null) assign(drone, getClosestPackage(drone));
-		}
-	}
-	
+		
 	/**
 	 * Updates all drones package delivery status.
 	 */
@@ -73,6 +64,9 @@ public class PackageHandler {
 		 }
 	}
 	
+	/**
+	 * The given drone picks up the given delivery at the given airport and gate.
+	 */
 	private void pickup(Besturing drone, Airport ap, int gate, Delivery deliv){
 		drone.pickup();
 		ap.setPackageGate(null, gate);
@@ -105,6 +99,9 @@ public class PackageHandler {
 		 return false;
 	}
 	
+	/**
+	 * The given drone delivers the given delivery.
+	 */
 	private void deliver(Besturing drone, Delivery deliv){
 		System.out.println("DELIVERED");
 		packages.remove(deliv);
@@ -144,39 +141,7 @@ public class PackageHandler {
 		System.out.println("CLOSEST DRONE " + closestDrone);
 		return closestDrone;
 	}
-	
-	private HashMap<Integer, Besturing> getFreeDrones(HashMap<Integer, Besturing> drones){
-		HashMap<Integer, Besturing> free = new HashMap<Integer, Besturing>();
-		for(int drone : drones.keySet()){
-			if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
-				free.put(drone, drones.get(drone));
-			}
-		}
-		return free;
-	}
-	
-	/**
-	 * Gets the closest delivery to a drone.
-	 */
-	private Delivery getClosestPackage(int drone){
 		
-		if(getFreePackages().size() == 0) return null;
-		
-		Besturing d = drones.get(drone);
-		float[] dronePos = d.getPosition();
-		float[] droneGeneralPos = new float[]{dronePos[0],dronePos[2]};
-		Delivery closestDelivery = getFreePackages().get(0);
-		float closest = distance(droneGeneralPos,getStartingPosition(closestDelivery));
-		System.out.println("PACKAGE AMOUNT/ " + getFreePackages().size());
-		for(Delivery delivery : getFreePackages()){
-			if(distance(droneGeneralPos,getStartingPosition(delivery)) < closest){
-				closest = distance(droneGeneralPos,getStartingPosition(delivery));
-				closestDelivery = delivery;
-			}
-		}
-		return closestDelivery;
-	}
-	
 	/**
 	 * Gets the starting  position of a delivery.
 	 */
@@ -208,6 +173,19 @@ public class PackageHandler {
 		List<Delivery> free = new ArrayList<Delivery>();
 		for(Delivery d : packages){
 			if(d.isOpen()) free.add(d);
+		}
+		return free;
+	}
+	
+	/**
+	 * Returns a list of all free drones with no task.
+	 */
+	private HashMap<Integer, Besturing> getFreeDrones(HashMap<Integer, Besturing> drones){
+		HashMap<Integer, Besturing> free = new HashMap<Integer, Besturing>();
+		for(int drone : drones.keySet()){
+			if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
+				free.put(drone, drones.get(drone));
+			}
 		}
 		return free;
 	}
