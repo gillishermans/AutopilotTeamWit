@@ -142,10 +142,13 @@ public class Besturing implements Runnable {
 			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING)){
 				state = PhaseEnum.TEST;
 				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this);
-				
-			} else go = true;
 			
-			//TODO TURN IN RIGHT DIRECTION
+			//On runway start -> turn to given angle	
+			} else {
+				state = PhaseEnum.DRAAIEN;
+				outputs = taxi.draai(inputs, airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway));
+			}
+			
 		}
 	}
 	

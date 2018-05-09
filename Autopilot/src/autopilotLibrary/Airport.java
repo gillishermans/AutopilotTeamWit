@@ -390,10 +390,23 @@ public class Airport {
 		else return false;
 	}
 	
+	/**
+	 * Get the starting position of the given runway.
+	 */
 	public float[] getMiddleRunwayStart(int runway){
 		if(runway == 0) return this.getStartRunway0Middle();
 		else if(runway == 1) return this.getEndRunway1Middle();
 		else return null;
+	}
+	
+	/**
+	 * Get the angle that a drone should point when taking off from the given runway.
+	 */
+	public float getRunwayTakeOffAngle(int runway){
+		if(runway == 0) return (float) Math.PI;
+		else return 0.0f;
+		//TODO niet enkel links of rechts
+		//Zou +/- orientation moeten zijn
 	}
 
 }
