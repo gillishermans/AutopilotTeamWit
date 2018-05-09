@@ -18,7 +18,7 @@ public class Besturing implements Runnable {
 	private Taxi taxi;
 
 	private OccupationEnum occupation = OccupationEnum.FREE;
-	private PhaseEnum state = PhaseEnum.TAXIEN;
+	private PhaseEnum state = PhaseEnum.WAITING;
 	
 	private Path path;
 	private AutopilotConfig config;
@@ -41,6 +41,7 @@ public class Besturing implements Runnable {
 	private Vector prevSpeedVector;
 
 	private float totalMass;
+	public boolean go = false; 
 	
 
 	public Besturing(int id, int airport, int gate, int pointingToRunway, AutopilotConfig config, HashMap<Integer,Airport> airports, PackageHandler pH) {
@@ -61,10 +62,8 @@ public class Besturing implements Runnable {
 		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
 	}
 	
-	public void startBesturing(AutopilotInputs inputs) {
-		System.out.println("inputs pos: " + inputs.getX() +" "+ inputs.getY() +" "+ inputs.getZ());
-		setInputs(inputs);
-		
+	
+	private Vector updateSpeedVector(AutopilotInputs inputs){
 		getPosList().add(new Vector(inputs.getX(),inputs.getY(),inputs.getZ()));
 		
 		int index = getPosList().size() -1;
@@ -76,55 +75,72 @@ public class Besturing implements Runnable {
 			speedVector = Vector.scalarProd(speedVector, 1/getTime());
 			speed = Vector.norm(speedVector);
 		}
-		
 		prevSpeedVector = speedVector;
+		return speedVector;
+	}
+	
+	private boolean isFlying(){
+		if(state == PhaseEnum.WAITING || state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST ) return false;
+		else return true;	
+	}
+	
+	public void startBesturing(AutopilotInputs inputs) {
+		System.out.println("inputs pos: " + inputs.getX() +" "+ inputs.getY() +" "+ inputs.getZ());
+		setInputs(inputs);
+		
+		Vector speedVector = updateSpeedVector(inputs);
 		
 		if(occupation == OccupationEnum.FREE) outputs = new Outputs(0, 0, 0, 0, 0, 0, 0, 0);
 		
 		if(occupation == OccupationEnum.PICKING_UP){
-			System.out.println("PCIKING UP ");
-			if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getZ())){
-				//At airport -> TAXI to gate
-				state = PhaseEnum.TAXIEN;
-				outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery),this);
-				System.out.println("TAXI!!!! ");
-			} else {
-				//Wrong airport -> VLIEG to other airport
-
-				
-				if(!airports.get(delivery.toAirport).onEndRunway0(inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST)){
-					state = PhaseEnum.TEST;
-					outputs = taxi.taxi(inputs,airports.get(delivery.fromAirport).getStartRunway0Middle(),this);
-				} else if(state == PhaseEnum.GO){
-					state = PhaseEnum.VLIEGEN;
-					outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
-					System.out.println("VLIEGEN!!!! ");
-				}
-
-			}
+			
+			pickingUp(inputs, speedVector);
 			
 		} else if (occupation == OccupationEnum.DELIVERING){
-			if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getZ())){
-				//At airport -> TAXI to gate
-				state = PhaseEnum.TAXIEN;
-				outputs = taxi.taxi(inputs,packageHandler.getEndPosition(delivery),this);
-			} else {
-				//Wrong airport -> VLIEG to other airport
-				state = PhaseEnum.VLIEGEN;
-				outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector, airports);
-			}
+			
+			droppingOff(inputs, speedVector);
+			
+		}
+	}
+	
+	private void pickingUp(AutopilotInputs inputs, Vector speedVector){
+		
+		//Als startsignaal wordt gegeven of al aan het vliegen: vlieg
+		if(go || isFlying()){
+			state = PhaseEnum.INIT;
+			outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
 		}
 		
-		
-
-//		switch(state) {
-//		case VLIEGEN:
-//			outputs = vliegen.vliegen(inputs);
-//			break;
-//		case TAXIEN:
-//			outputs = taxi.taxi(inputs);
-//			break;
-//		}
+		//Als pakket op zelfde luchthaven: taxi naar doelpositie
+		if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getZ())){
+			state = PhaseEnum.TAXIEN;
+			outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery),this);
+			System.out.println("TAXI!!!!");
+		}
+		//Als pakket op andere luchthaven: taxi naar start runway en orienteer drone in correcte richting
+		else {
+			
+			if(!airports.get(delivery.toAirport).onEndRunway1(inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING)){
+				state = PhaseEnum.TEST;
+				outputs = taxi.taxi(inputs,airports.get(delivery.fromAirport).getEndRunway1Middle(),this);
+			} else {
+				state = PhaseEnum.INIT;
+				outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
+				System.out.println("VLIEGEN!!!! ");
+			}
+		}
+	}
+	
+	private void droppingOff(AutopilotInputs inputs, Vector speedVector){
+		if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getZ())){
+			//At airport -> TAXI to gate
+			state = PhaseEnum.TAXIEN;
+			outputs = taxi.taxi(inputs,packageHandler.getEndPosition(delivery),this);
+		} else {
+			//Wrong airport -> VLIEG to other airport
+			state = PhaseEnum.VLIEGEN;
+			outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector, airports);
+		}
 	}
 	
 	public void setTime(AutopilotInputs inputs) {

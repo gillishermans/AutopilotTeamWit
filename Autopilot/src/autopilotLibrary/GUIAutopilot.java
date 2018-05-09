@@ -191,6 +191,10 @@ public class GUIAutopilot {
 			l.setText("            " + "INIT" + "    ");
 			break;
 		}
+		case WAITING: {
+			l.setText("          " + "WAITING" + "    ");
+			break;
+		}
 		case OPSTIJGEN: {
 			l.setText("     " + "TAKEOFF" + " ");
 			break;
