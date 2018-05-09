@@ -79,6 +79,9 @@ public class Besturing implements Runnable {
 		return speedVector;
 	}
 	
+	/**
+	 * Checks if the drone is in a flying state.
+	 */
 	private boolean isFlying(){
 		if(state == PhaseEnum.WAITING || state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST ) return false;
 		else return true;	
@@ -103,12 +106,16 @@ public class Besturing implements Runnable {
 		}
 	}
 	
+	/**
+	 * The pick up autopilot loop.
+	 */
 	private void pickingUp(AutopilotInputs inputs, Vector speedVector){
 		
 		//Als startsignaal wordt gegeven of al aan het vliegen: vlieg
 		if(go || isFlying()){
 			state = PhaseEnum.INIT;
 			outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
+			go = false;
 		}
 		
 		//Als pakket op zelfde luchthaven: taxi naar doelpositie
@@ -120,17 +127,31 @@ public class Besturing implements Runnable {
 		//Als pakket op andere luchthaven: taxi naar start runway en orienteer drone in correcte richting
 		else {
 			
-			if(!airports.get(delivery.toAirport).onEndRunway1(inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING)){
+			//state = PhaseEnum.TAXIEN;
+			
+			//Runway from which to start take-off.
+			int goalRunway = getRunwayStart(packageHandler.getStartingPosition(delivery));
+			//The currentAirport the drone is on.
+			int currentAirport = getOnAirport(inputs.getX(), inputs.getZ());
+			
+			System.out.println("GOAL RUNWAY " + goalRunway);
+			System.out.println("CURRENT AP " + currentAirport);
+			System.out.println("onRunway " + airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()));
+			
+			//Not on runway -> taxi to runway
+			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING)){
 				state = PhaseEnum.TEST;
-				outputs = taxi.taxi(inputs,airports.get(delivery.fromAirport).getEndRunway1Middle(),this);
-			} else {
-				state = PhaseEnum.INIT;
-				outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
-				System.out.println("VLIEGEN!!!! ");
-			}
+				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this);
+				
+			} else go = true;
+			
+			//TODO TURN IN RIGHT DIRECTION
 		}
 	}
 	
+	/**
+	 * The drop off autopilot loop.
+	 */
 	private void droppingOff(AutopilotInputs inputs, Vector speedVector){
 		if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getZ())){
 			//At airport -> TAXI to gate
@@ -141,6 +162,24 @@ public class Besturing implements Runnable {
 			state = PhaseEnum.VLIEGEN;
 			outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector, airports);
 		}
+	}
+	
+	/**
+	 * Gets the runway id that a drone should leave from to pickup/drop off the given delivery.
+	 */
+	private int getRunwayStart(float[] delivPos){
+		if(delivPos[1] < autopilotInputs.getZ()) return 1;
+		else return 0;	
+	}
+	
+	/**
+	 * Gets the airport the given position is at.
+	 */
+	private int getOnAirport(float x, float z){
+		for(Airport ap : airports.values()){
+			if(ap.onAirport(x, z)) return ap.getId();
+		}
+		return -1;
 	}
 	
 	public void setTime(AutopilotInputs inputs) {

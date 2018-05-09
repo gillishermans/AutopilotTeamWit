@@ -50,10 +50,6 @@ public class Airport {
 		
 		boolean onRunwayX = false;
 		boolean onRunwayZ = false;
-		System.out.println("UNROTATEDPOINT: " + x +" "+ z);
-		System.out.println("POINT: " + point[0] +" "+  point[1]);
-		System.out.println("A: " + a[0] +" "+  a[1]);
-		System.out.println("B: " + b[0] +" "+  b[1]);
 		
 		if(a[0] < b[0]){
 			if(point[0] >= a[0] && point[0] <= b[0]) onRunwayX = true;
@@ -182,8 +178,6 @@ public class Airport {
 	 * Calculates rotated position of a position according to the orientation.
 	 */
 	public float[] getRotatedPoint(float x, float z){
-		System.out.println("ANGLE: " + getOrientation());
-		System.out.println("X: " + getX() + " Z: " + getZ());
 		float angle = getOrientation();
 		
 		float rotatedX = (float) (getX() + (x  * Math.cos(angle)) - (z * Math.sin(angle)));
@@ -236,8 +230,6 @@ public class Airport {
 	 * Gets the middle position of gate 0.
 	 */
 	public float[] getMiddleGate0(){
-		System.out.println();
-		System.out.println("MIDDLEGATE0 " + getRotatedPoint(0,-getW()/2)[0] + " " + getRotatedPoint(0,-getW()/2)[1]);
 		return getRotatedPoint(0,-getW()/2);
 	}
 	
@@ -380,7 +372,6 @@ public class Airport {
 	public void setPackageGate(Delivery packageGate, int id){
 		if(id == 0) setPackageGate0(packageGate);
 		if(id == 1) setPackageGate1(packageGate);
-		System.out.println("DELIVER PACKAGE AT GATE " + id);
 	}
 	
 	public boolean isPackageGate(int id){
@@ -392,7 +383,17 @@ public class Airport {
 	public int getId() {
 		return id;
 	}
-
-
+	
+	public boolean onRunway(int runway, float x, float z){
+		if(runway == 0) return this.onStartRunway0(x, z);
+		else if(runway == 1) return this.onEndRunway1(x, z);
+		else return false;
+	}
+	
+	public float[] getMiddleRunwayStart(int runway){
+		if(runway == 0) return this.getStartRunway0Middle();
+		else if(runway == 1) return this.getEndRunway1Middle();
+		else return null;
+	}
 
 }
