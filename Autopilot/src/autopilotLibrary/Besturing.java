@@ -1,15 +1,9 @@
 package autopilotLibrary;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import enums.OccupationEnum;
 import enums.PhaseEnum;
-
-//import org.opencv.core.Point;
-
 import interfaces.AutopilotConfig;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
@@ -30,16 +24,7 @@ public class Besturing implements Runnable {
 	private AutopilotConfig config;
 	private AutopilotInputs autopilotInputs;
 	
-	private float rechtdoorHoek;
 	private float lastLoopTime = 0;
-	private float draaing90 =9.776f;
-	private float totalMass;
-	private float maxAOA = (float) Math.PI/18f; 	
-	private float lastX = 0;
-	private float lastY = 0;
-	private float lastZ = 0;
-	float outputVelY = 0;
-	private float goalYspeed=0;
 	private float time = 0;
 	
 	int k = 5;
@@ -54,12 +39,13 @@ public class Besturing implements Runnable {
 	private int id;
 	private ArrayList<Vector> posList = new ArrayList<Vector>();
 	private Vector prevSpeedVector;
+
+	private float totalMass;
 	
 
 	public Besturing(int id, int airport, int gate, int pointingToRunway, AutopilotConfig config, HashMap<Integer,Airport> airports, PackageHandler pH) {
 		this.vliegen = new Vliegen(this);
 		this.taxi = new Taxi(this);
-		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
 		
 		this.id = id;
 		setConfig(config);
@@ -178,12 +164,11 @@ public class Besturing implements Runnable {
 	}
 
 	public PhaseEnum getState() {
-		if (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST) {
-			return state;
-		}
-		else {
-			return vliegen.getPhase();
-		}
+		return state;
+	}
+	
+	public void setState(PhaseEnum state){
+		this.state = state;
 	}
 	
 	public OccupationEnum getOccupation() {

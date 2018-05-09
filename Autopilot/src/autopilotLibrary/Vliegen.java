@@ -56,9 +56,6 @@ public class Vliegen {
 	private float lastInclRight = 0;
 	private float lastInclLeft = 0;
 	
-	private PhaseEnum phase = PhaseEnum.INIT;
-	
-	
 	private boolean first = true;
 	
 	private int k = 5;
@@ -89,7 +86,6 @@ public class Vliegen {
 	
 	
 	public Vliegen(Besturing besturing) {
-
 		this.besturing = besturing;
 	}
 	
@@ -288,19 +284,19 @@ public class Vliegen {
 		rightBrakeForce = 0;
 		leftBrakeForce = 0;
 		
-		if (getTime() == 0) phase = PhaseEnum.INIT;
+		if (getTime() == 0) besturing.setState(PhaseEnum.INIT);
 		
-		switch(phase) {
+		switch(besturing.getState()) {
 		case INIT: 
 			this.init(inputs);
-			phase = PhaseEnum.RIJDEN;
+			besturing.setState(PhaseEnum.RIJDEN);
 			System.out.println("RIJDEN");
 			break;
 			
 		case RIJDEN:
 			this.rijden(inputs);
 			if (getTime() < 3) { 
-				phase = PhaseEnum.OPSTIJGEN;
+				besturing.setState(PhaseEnum.OPSTIJGEN);
 				System.out.println("OPSTIJGEN");
 			}
 			break;
@@ -310,7 +306,7 @@ public class Vliegen {
 			
 			if (inputs.getY() > 40) {
 				System.out.println("STABILISEREN");
-				phase = PhaseEnum.STABILISEREN;
+				besturing.setState(PhaseEnum.STABILISEREN);
 				pidPitch.reset();
 			}
 			break;
@@ -319,7 +315,7 @@ public class Vliegen {
 			this.stabiliseren(inputs, speed, speedVector);
 			if (inputs.getZ() < -800) {
 				System.out.println("POSITIE");
-				phase = PhaseEnum.RECHTDOOR;
+				besturing.setState(PhaseEnum.RECHTDOOR);
 				t = getTime();
 				//setNextPos();
 			}
@@ -329,14 +325,14 @@ public class Vliegen {
 			this.Landen(inputs, speed, speedVector);
 			if (inputs.getY() < 1.5f) {
 				System.out.println("REMMEN");
-				phase = PhaseEnum.REMMEN;
+				besturing.setState(PhaseEnum.REMMEN);
 			}
 			break;
 			
 		case LINKS:
 			this.draai(inputs, speed, speedVector,1);
 			if (inputs.getZ() < -1000) {
-				phase = PhaseEnum.STABILISEREN1;
+				besturing.setState(PhaseEnum.STABILISEREN1);
 				t = getTime();
 			}
 			break;
@@ -346,7 +342,7 @@ public class Vliegen {
 			System.out.print("hier" + this.airports.get(1).getX());
 			if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
 				System.out.println("LANDEN");
-				phase = PhaseEnum.LANDEN;
+				besturing.setState(PhaseEnum.LANDEN);
 			}
 			break;
 			
@@ -362,7 +358,7 @@ public class Vliegen {
 			}
 			if (inputs.getElapsedTime() - timeLanden > 3.5f) {
 				System.out.println("LANDEN");
-				phase = PhaseEnum.LANDEN;
+				besturing.setState(PhaseEnum.LANDEN);
 			}
 			break;
 			
@@ -384,7 +380,7 @@ public class Vliegen {
 			}
 			
 			if (path.isEmpty()) {
-				phase = PhaseEnum.RECHTDOOR;
+				besturing.setState(PhaseEnum.RECHTDOOR);
 				System.out.println("GEEN KUBUS");
 			} else {
 				x = path.get(0).x;
@@ -394,7 +390,7 @@ public class Vliegen {
 			}
 		}
 		else {
-			phase = PhaseEnum.RECHTDOOR;
+			besturing.setState(PhaseEnum.RECHTDOOR);
 			System.out.println("GEEN KUBUS MEER");
 		}
 	}
@@ -432,10 +428,6 @@ public class Vliegen {
 	
 	public float getTime() {
 		return time;
-	}
-
-	public PhaseEnum getPhase() {
-		return this.phase;
 	}
 	
 }
