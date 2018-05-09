@@ -403,8 +403,8 @@ public class Airport {
 	 * Get the angle that a drone should point when taking off from the given runway.
 	 */
 	public float getRunwayTakeOffAngle(int runway){
-		if(runway == 0) return (float) Math.PI;
-		else return 0.0f;
+		if(runway == 0) return (float) Math.PI + orientation;
+		else return 0.0f + orientation;
 		//TODO niet enkel links of rechts
 		//Zou +/- orientation moeten zijn
 	}
