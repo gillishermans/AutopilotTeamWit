@@ -29,8 +29,8 @@ public class Taxi {
 	public Taxi(Besturing besturing) {
 		this.besturing = besturing;
 	}
-	public AutopilotOutputs turn (AutopilotInputs inputs, float [] doel){
-		float hoek =(float) Math.atan((doel[1]-inputs.getZ())/(doel[0]-inputs.getX()));
+	public AutopilotOutputs turn (AutopilotInputs inputs, float hoek){
+		//float hoek =(float) Math.atan((doel[1]-inputs.getZ())/(doel[0]-inputs.getX()));
 		leftBrakeForce=0;
 		rightBrakeForce=300000;
 		frontBrakeForce=0;

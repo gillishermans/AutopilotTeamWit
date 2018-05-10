@@ -152,7 +152,7 @@ public class Besturing implements Runnable {
 			//On runway start -> turn to given angle	
 			} else {
 				state = PhaseEnum.DRAAIEN;
-				outputs = taxi.draai(inputs, airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway));
+				outputs = taxi.turn(inputs, airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway));
 			}
 			
 		}
@@ -200,7 +200,7 @@ public class Besturing implements Runnable {
 			//On runway start -> turn to given angle	
 			} else {
 				state = PhaseEnum.DRAAIEN;
-				outputs = taxi.draai(inputs, airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway));
+				outputs = taxi.turn(inputs, airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway));
 			}
 			
 		}
