@@ -1,6 +1,7 @@
 package autopilotLibrary;
 
 import enums.OccupationEnum;
+import enums.PhaseEnum;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
 import interfaces.Outputs;
@@ -29,18 +30,35 @@ public class Taxi {
 	public Taxi(Besturing besturing) {
 		this.besturing = besturing;
 	}
-	public AutopilotOutputs turn (AutopilotInputs inputs, float hoek){
+	/**
+	 * 
+	 * @param inputs
+	 * @param new_heading => altijd positief 
+	 * @return
+	 */
+	public AutopilotOutputs turn (AutopilotInputs inputs, float new_heading,Besturing besturing){
 		//float hoek =(float) Math.atan((doel[1]-inputs.getZ())/(doel[0]-inputs.getX()));
+		
+		//we draaien altijd naar rechts => rightbrake force
+		//left left brakeforce
 		leftBrakeForce=0;
 		rightBrakeForce=300000;
 		frontBrakeForce=0;
 		thrust=200000;
-		if (inputs.getHeading() == hoek + Math.PI){
+		
+		//nauwkeurigheid hier aanpassen
+		if ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.999*new_heading && 2*Math.PI+inputs.getHeading() % (2*Math.PI)<1.001*new_heading){
 			leftBrakeForce=0;
 			rightBrakeForce=0;
 			frontBrakeForce=0;
 			thrust=0;
+			
+			if (besturing.getState()==PhaseEnum.DRAAIEN){
+				besturing.go=true;
+			}
 		}
+		
+		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 		
@@ -50,41 +68,65 @@ public class Taxi {
 		rightBrakeForce=0;
 		frontBrakeForce=0;
 		thrust=200;
+		
 		if (distance<2){
-			leftBrakeForce=3000;
-			rightBrakeForce=3000;
-			frontBrakeForce=3000;
+			leftBrakeForce=300000;
+			rightBrakeForce=300000;
+			frontBrakeForce=300000;
 			thrust=0;
 		}
 		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 	
-	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel,Besturing besturing) {		
+	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel, Besturing besturing) {
 		
-		float afstand;
-		afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
+		AutopilotOutputs outputs = null;
 		
-		if(occupation == OccupationEnum.PICKING_UP){
-			
+		float afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
+		
+		// two parts=> op luchthaven zelf 
+		//if (besturing.getState()==PhaseEnum.TAXIEN){
+		
+		float constante = (float) Math.PI/2;
+//		if ((doel[1]-inputs.getZ()>0) && (doel[0]-inputs.getX()>0)){
+//		constante=(float) (Math.PI/2);
+//		System.out.print("1");
+//			}
+//			
+//		if ((doel[1]-inputs.getZ()>0) && (doel[0]-inputs.getX()<0)){
+//			constante=(float) Math.PI;
+//			System.out.print("2");
+//		}
+//		
+//		if ((doel[1]-inputs.getZ()<0) && (doel[0]-inputs.getX()>0)){
+//			constante=0;
+//			System.out.print("3");
+//		}
+//		
+//		if ((doel[1]-inputs.getZ()<0) && (doel[0]-inputs.getX()<0)){
+//			constante=(float) (3*Math.PI/2);
+//			System.out.print("4");
+//		
+//		
+		
+		
+		float hoek =Math.abs((float) Math.atan((doel[0]-inputs.getX())/(doel[1]-inputs.getZ())));
+		float finaal= constante+hoek;
+		outputs= turn(inputs,(float) (finaal),besturing);
+		
+		System.out.print("hoek "+hoek);
+	
+		System.out.print("berekening "+ (finaal));
+		 
+		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
+		if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.99*finaal) && (2*Math.PI+inputs.getHeading())%(2*Math.PI)<1.01*finaal){
+			outputs = drive(inputs,doel);
+					System.out.print("HALLO ");
 		}
-		// draai functie => willekeurige hoek naar doelfunctie 
-		//rijfunctie tot vliegtuig op doelfunctie is beland
-		//alinieerfunctie => GO enum terug geven
-		
-		
-		leftBrakeForce=
-		rightBrakeForce=0;
-		frontBrakeForce=0;
-		thrust=2000;
-		if (Math.abs(inputs.getHeading()) >= Math.PI/2){
-			rightBrakeForce=0000;
-			leftBrakeForce=0000;
-			frontBrakeForce=0000;
-			thrust=0;
+		return outputs;
 		}
-		
-		
+	
 ////		if (getTime() == 0) {
 //		rightWingInclination = (float) (Math.PI/20);
 //		leftWingInclination = (float) (Math.PI/20);
@@ -152,8 +194,8 @@ public class Taxi {
 //		
 //			}
 //		}
-		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
-	}
+//		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
+//	}
 	
 	public AutopilotOutputs draaiFunctie(AutopilotInputs inputs){
 		float goal;
