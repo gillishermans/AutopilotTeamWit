@@ -69,7 +69,7 @@ public class Taxi {
 		frontBrakeForce=0;
 		thrust=200;
 		
-		if (distance<20){
+		if (distance<2){
 			leftBrakeForce=3000000;
 			rightBrakeForce=3000000;
 			frontBrakeForce=3000000;
@@ -80,7 +80,7 @@ public class Taxi {
 	}
 	
 	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel, Besturing besturing) {
-		float komaan []= new float [] {(float) -100,-300};
+		//float komaan []= new float [] {(float) -100,-300};
 		AutopilotOutputs outputs = null;
 		
 		float afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
@@ -123,7 +123,7 @@ public class Taxi {
 //			 System.out.print("waar "+ 3 );
 //		}
 //		
-		hoek= (float) ((Math.atan2(komaan[1]-inputs.getZ(),komaan[0]-inputs.getX())+ Math.PI/2+2*Math.PI) % (2*Math.PI));
+		hoek= (float) ((Math.atan2(doel[1]-inputs.getZ(),doel[0]-inputs.getX())+ Math.PI/2+2*Math.PI) % (2*Math.PI));
 			
 		leftBrakeForce=0;
 		rightBrakeForce=300000;
@@ -135,7 +135,7 @@ public class Taxi {
 		 
 		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
 		if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.999*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<1.001*hoek){
-			outputs = drive(inputs,komaan);
+			outputs = drive(inputs,doel);
 			System.out.print("HALLO ");
 		}
 		return outputs;
