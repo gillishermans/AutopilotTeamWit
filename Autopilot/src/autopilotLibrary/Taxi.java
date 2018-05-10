@@ -67,7 +67,7 @@ public class Taxi {
 		leftBrakeForce=0;
 		rightBrakeForce=0;
 		frontBrakeForce=0;
-		thrust=200;
+		thrust=1000;
 		
 		if (distance<2){
 			leftBrakeForce=3000000;
@@ -78,7 +78,14 @@ public class Taxi {
 		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
-	
+	/**
+	 * 
+	 * 
+	 * @param inputs
+	 * @param doel
+	 * @param besturing
+	 * @return outputs om drone naar een bepaald doel te brengen
+	 */
 	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel, Besturing besturing) {
 		//float komaan []= new float [] {(float) -100,-300};
 		AutopilotOutputs outputs = null;
@@ -134,10 +141,12 @@ public class Taxi {
 		System.out.print("hoek "+hoek);
 		 
 		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
+		
 		if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.999*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<1.001*hoek){
 			outputs = drive(inputs,doel);
 			System.out.print("HALLO ");
-		}
+			}
+		
 		return outputs;
 		}
 	
