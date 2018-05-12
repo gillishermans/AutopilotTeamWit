@@ -47,14 +47,14 @@ public class PackageHandler {
 		 for(Besturing d : drones.values()){
 			 for(Airport ap : airports.values()){
 				if(ap.isPackageGate0() && ap.onGate0(d.getPosition()[0], d.getPosition()[2])){
-					System.out.println("ON GATE 0 + PACKAGE AVAILABLE");
+					//System.out.println("ON GATE 0 + PACKAGE AVAILABLE");
 					if(ap.getPackageGate0() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
 						pickup(d, ap, 0, ap.getPackageGate0());
 						return;
 					}
 				}
 				if(ap.isPackageGate1() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
-					System.out.println("ON GATE 1 + PACKAGE AVAILABLE");
+					//System.out.println("ON GATE 1 + PACKAGE AVAILABLE");
 					if(ap.getPackageGate1() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
 						pickup(d, ap, 1, ap.getPackageGate1());
 						return;
@@ -81,14 +81,14 @@ public class PackageHandler {
 				 for(Airport ap : airports.values()){
 					if(d.getDelivery().toAirport == ap.getId() && ap.onGate0(d.getPosition()[0], d.getPosition()[2])){
 						if(Vector.length(d.getSpeedVector()) < 1.0) {
-							System.out.println("PACKAGE DELIVERED ON GATE 0");
+							//System.out.println("PACKAGE DELIVERED ON GATE 0");
 							deliver(d, d.getDelivery());
 							return true;
 						}
 					}
 					if(d.getDelivery().toAirport == ap.getId() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
 						if(Vector.length(d.getSpeedVector()) < 1.0) {
-							System.out.println("PACKAGE DELIVERED ON GATE 1");
+							//System.out.println("PACKAGE DELIVERED ON GATE 1");
 							deliver(d, d.getDelivery());
 							return true;
 						}
@@ -103,7 +103,6 @@ public class PackageHandler {
 	 * The given drone delivers the given delivery.
 	 */
 	private void deliver(Besturing drone, Delivery deliv){
-		System.out.println("DELIVERED");
 		packages.remove(deliv);
 		drone.deliver();
 		autopilotHandler.completeJob(deliv.getId());
@@ -115,7 +114,6 @@ public class PackageHandler {
 	private void assign(int drone, Delivery deliv){
 		deliv.assign(drone);
 		drones.get(drone).assign(deliv);
-		System.out.println("ASSIGN PACKAGE DRONE " + drone + " APGATE" + deliv.fromAirport + "." + deliv.fromGate);
 		autopilotHandler.assignJob(deliv.getId(),drone);
 	}
 	
@@ -129,16 +127,12 @@ public class PackageHandler {
 		float closest = 999999999999f;
 		for(int drone : freeDrones.keySet()){
 			float[] dronePos = freeDrones.get(drone).getPosition();
-			System.out.println("DPOS: " + dronePos[0]+" "+dronePos[1]+" "+dronePos[2]);
 			float[] droneGeneralPos = new float[]{dronePos[0],dronePos[2]};
-			System.out.println("CHECK DRONE " + drone);
-			System.out.println("DISTANCE " + distance(droneGeneralPos,deliveryGeneralPos));
 			if(distance(droneGeneralPos,deliveryGeneralPos) < closest){
 				closest = distance(droneGeneralPos,deliveryGeneralPos);
 				closestDrone = drone;
 			}
 		}
-		System.out.println("CLOSEST DRONE " + closestDrone);
 		return closestDrone;
 	}
 		
@@ -162,7 +156,6 @@ public class PackageHandler {
 	 * Returns the distance between a drone and a delivery.
 	 */
 	private float distance(float[] dronePos, float[] deliveryPos){
-		System.out.println("D: DRONE: " +dronePos[0]+" "+dronePos[1]+" DELIV: " + deliveryPos[0]+" "+deliveryPos[1]);
 		 return (float) Math.sqrt(Math.pow((dronePos[0] - deliveryPos[0]), 2) + Math.pow((dronePos[1] - deliveryPos[1]), 2));
 	}
 	

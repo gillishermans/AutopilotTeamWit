@@ -88,7 +88,6 @@ public class Besturing implements Runnable {
 	}
 	
 	public void startBesturing(AutopilotInputs inputs) {
-		System.out.println("inputs pos: " + inputs.getX() +" "+ inputs.getY() +" "+ inputs.getZ());
 		setInputs(inputs);
 		
 		Vector speedVector = updateSpeedVector(inputs);
@@ -128,7 +127,6 @@ public class Besturing implements Runnable {
 		else if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getZ())){
 			state = PhaseEnum.TAXIEN;
 			outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery),this);
-			System.out.println("TAXI!!!!");
 		}
 		//Als pakket op andere luchthaven: taxi naar start runway en orienteer drone in correcte richting
 		else {
@@ -140,9 +138,9 @@ public class Besturing implements Runnable {
 			//The currentAirport the drone is on.
 			int currentAirport = getOnAirport(inputs.getX(), inputs.getZ());
 			
-			System.out.println("GOAL RUNWAY " + goalRunway);
-			System.out.println("CURRENT AP " + currentAirport);
-			System.out.println("onRunway " + airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()));
+			//System.out.println("GOAL RUNWAY " + goalRunway);
+			//System.out.println("CURRENT AP " + currentAirport);
+			//System.out.println("onRunway " + airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()));
 			
 			//Not on runway -> taxi to runway
 			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING)){
@@ -181,7 +179,6 @@ public class Besturing implements Runnable {
 		else if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getZ())){
 			state = PhaseEnum.TAXIEN;
 			outputs = taxi.taxi(inputs,packageHandler.getEndPosition(delivery),this);
-			System.out.println("TAXI!!!!");
 		}
 		//Als pakket op andere luchthaven: taxi naar start runway en orienteer drone in correcte richting
 		else {
@@ -257,7 +254,6 @@ public class Besturing implements Runnable {
 	}
 	
 	public AutopilotOutputs getOutputs() {
-		System.out.println(outputs.getThrust());
 		return this.outputs;
 	}
 

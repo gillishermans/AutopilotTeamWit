@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import enums.DeliveryEnum;
 import enums.OccupationEnum;
 import enums.PhaseEnum;
 import interfaces.AutopilotConfig;
@@ -50,7 +51,6 @@ public class AutopilotHandler {
 	 * Starts a time passed for a drone with the given inputs.
 	 */
 	public void startTimeHasPassed(int drone, AutopilotInputs inputs) {
-		System.out.println("DIT IS DRONE: " + drone);
 		drones.get(drone).startBesturing(inputs);
 	}
 	
@@ -58,7 +58,6 @@ public class AutopilotHandler {
 	 * Completes a time passed for a drone and returns outputs.
 	 */
 	public AutopilotOutputs completeTimeHasPassed(int drone) {
-		System.out.println("DIT IS DRONE OUTPUT: " + drone);
 		Besturing b = drones.get(drone);
 		PhaseEnum s = b.getState();
 		packageHandler.update(drones);
@@ -99,7 +98,8 @@ public class AutopilotHandler {
 	 */
 	public void deliverPackage(int fromAirport, int fromGate, int toAirport, int toGate) {
 		packageHandler.deliverPackage(packageIndex,fromAirport, fromGate, toAirport, toGate);
-		gui.addToDo(packageIndex, fromAirport, fromGate, toAirport, toGate);
+		gui.addPackage(packageIndex, fromAirport, fromGate, toAirport, toGate);
+		//gui.addToDo(packageIndex, fromAirport, fromGate, toAirport, toGate);
 		packageIndex++;
 	}
 	
@@ -108,16 +108,15 @@ public class AutopilotHandler {
 	}
 	
 	public void updateOccupationDrone(Integer i) {
-		//packageHandler.update(i); 
 		gui.changeJobDrone(drones.get(i).getOccupation(), i);
 	}
 	
 	public void assignJob(Integer indexPackage, Integer indexDrone) {
-		gui.addPackageProc(indexPackage);
+		gui.changeStatePackage(DeliveryEnum.TAKEN,indexPackage,indexDrone);
 	}
 	
 	public void completeJob(Integer indexPackage){
-		gui.removePackageProc(indexPackage);
+		gui.completeDelivery(indexPackage);
 	}
 
 }

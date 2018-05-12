@@ -2,258 +2,241 @@ package autopilotLibrary;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Label;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import enums.DeliveryEnum;
 import enums.OccupationEnum;
 import enums.PhaseEnum;
 
 public class GUIAutopilot {
-	
-	JPanel mainPanel = new JPanel(new BorderLayout());
-	
-    JPanel pnlDrone = new JPanel(new FlowLayout());
-    JPanel pnlDroneInfo = new JPanel(new BorderLayout());
-    
-    JPanel pnlPackage = new JPanel(new FlowLayout());
-    JPanel pnlPackageProc = new JPanel(new BorderLayout());
-    JPanel pnlPackageTodo = new JPanel(new BorderLayout());
-    
-    JPanel panel4 = new JPanel(new FlowLayout());
-    
-    HashMap<Integer,JLabel> drones = new HashMap<Integer,JLabel>();
-    
-    JFrame frame = new JFrame();
-	
-	public GUIAutopilot() {
-		
-		
-		pnlDrone.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(),"DRONE"));
-		pnlDrone.setLayout(new BoxLayout(pnlDrone, BoxLayout.Y_AXIS));
-		
-		pnlPackage.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(),"PACKAGE"));
-		pnlPackage.setLayout(new BoxLayout(pnlPackage, BoxLayout.Y_AXIS));
-		
-		
+    	
+    	JPanel mainPanel = new JPanel(new BorderLayout());	
+        JPanel dronePanel = new JPanel(new FlowLayout());  
+        JPanel packagePanel = new JPanel(new FlowLayout());
         
-        //HEADER FOR PANELDRONE
-        JPanel pnlDroneHeader = new JPanel(new BorderLayout());
-        pnlDroneHeader.setBorder(BorderFactory.createTitledBorder(""));
+        HashMap<Integer,JLabel> drones = new HashMap<Integer,JLabel>();
         
-        pnlDroneHeader.add( new JLabel(" ID  "));
-        pnlDroneHeader.add( new JLabel(" LOCATION       "));
-        pnlDroneHeader.add( new JLabel(" STATE     "));
+        JFrame frame = new JFrame();
+    	
+    	public GUIAutopilot() {
+    		
+    		dronePanel = new JPanel();
+    		dronePanel.setLayout(new BoxLayout(dronePanel, BoxLayout.Y_AXIS));
+    		dronePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(),"DRONE"));
+    		
+    		packagePanel = new JPanel();
+    		packagePanel.setLayout(new BoxLayout(packagePanel, BoxLayout.Y_AXIS));
+    		packagePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(),"PACKAGE"));
+    		
+            JPanel pnlDroneHeader = new JPanel(new BorderLayout());
+            pnlDroneHeader.setBorder(BorderFactory.createTitledBorder(""));
+            
+            pnlDroneHeader.add( new JLabel(" ID  "));
+            pnlDroneHeader.add( new JLabel(" LOCATION       "));
+            pnlDroneHeader.add( new JLabel(" STATE     "));
+            
+            pnlDroneHeader.setLayout(new BoxLayout(pnlDroneHeader, BoxLayout.X_AXIS));
+            dronePanel.add(pnlDroneHeader);
+            
+            JPanel pnlPackageInfoHeader = new JPanel(new BorderLayout());
+            pnlPackageInfoHeader.setBorder(BorderFactory.createTitledBorder(""));
+            
+            pnlPackageInfoHeader.add( new JLabel(" ID   "));
+            pnlPackageInfoHeader.add( new JLabel(" FROM  "));
+            pnlPackageInfoHeader.add( new JLabel("   TO   "));
+            pnlPackageInfoHeader.add( new JLabel(" DRONE "));
+            
+            pnlPackageInfoHeader.setLayout(new BoxLayout(pnlPackageInfoHeader, BoxLayout.X_AXIS));
+            packagePanel.add(pnlPackageInfoHeader);
+    		
+    		mainPanel.add(dronePanel,BorderLayout.WEST);
+    		mainPanel.add(packagePanel,BorderLayout.EAST);
+    		
+    		frame.setLayout(new BorderLayout());
+    		frame.getContentPane().add(mainPanel);
+            //frame.add(mainPanel); 
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            
+            frame.pack();
+            frame.setSize(350,500); //300
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+            frame.setResizable(true);
         
-        pnlDroneHeader.setLayout(new BoxLayout(pnlDroneHeader, BoxLayout.X_AXIS));
-        pnlDrone.add(pnlDroneHeader, BorderLayout.NORTH);
-        
-        
-       
-        
-        pnlDroneInfo.setLayout(new BoxLayout(pnlDroneInfo, BoxLayout.Y_AXIS));
-        //pnlDroneInfo.add(new JLabel("HELLO WORLD"));
-        
-        pnlDrone.add(pnlDroneInfo, BorderLayout.CENTER);
-        
-        /////////////////////////////////HEADER FOR PANELPACKAGE//////////////////////////////////
-        
-        pnlPackageProc.setBorder(BorderFactory.createTitledBorder("PROCESSING"));
-        pnlPackageProc.setLayout(new BoxLayout(pnlPackageProc, BoxLayout.Y_AXIS));
-        
-        JPanel pnlPackageProcHeader = new JPanel(new BorderLayout());
-        pnlPackageProcHeader.setBorder(BorderFactory.createTitledBorder(""));
-        
-        pnlPackageProcHeader.add( new JLabel(" ID   "));
-        pnlPackageProcHeader.add( new JLabel(" FROM  "));
-        pnlPackageProcHeader.add( new JLabel("   TO   "));
-        
-        //Used to store & display packages
-        JPanel pnlPackageInfo = new JPanel(new BorderLayout());
-        
-        
-        pnlPackage.add(pnlPackageInfo, BorderLayout.CENTER);
-        pnlPackageInfo.setLayout(new BoxLayout(pnlPackageInfo, BoxLayout.X_AXIS));
-       
-        
-        pnlPackageProcHeader.setLayout(new BoxLayout(pnlPackageProcHeader, BoxLayout.X_AXIS));
-        pnlPackageProc.add(pnlPackageProcHeader,BorderLayout.NORTH);
-		
-        
-        //IN TO DO
-        
-        pnlPackageTodo.setBorder(BorderFactory.createTitledBorder("TO DO"));
-        pnlPackageTodo.setLayout(new BoxLayout(pnlPackageTodo, BoxLayout.Y_AXIS));
-        
-        JPanel pnlPackageTodoHeader = new JPanel(new BorderLayout());
-        pnlPackageTodoHeader.setBorder(BorderFactory.createTitledBorder(""));
-        pnlPackageTodoHeader.setLayout(new BoxLayout(pnlPackageTodoHeader, BoxLayout.X_AXIS));
-        
-        pnlPackageTodoHeader.add( new JLabel(" ID   "));
-        pnlPackageTodoHeader.add( new JLabel(" FROM    "));
-        pnlPackageTodoHeader.add( new JLabel(" TO    "));
-        
-        pnlPackageTodo.add(pnlPackageTodoHeader);
-        
-        //ADDEN VAN PANELS AAN PACKAGE
-        pnlPackage.add(pnlPackageProc, BorderLayout.CENTER);
-        pnlPackage.add(pnlPackageTodo, BorderLayout.SOUTH);
-        
-	    
-	    
-        //mainPanel.add(panel4, BorderLayout.SOUTH);
-        
-        
-        
-	    mainPanel.add(pnlDrone,BorderLayout.WEST);
-        mainPanel.add(pnlPackage, BorderLayout.EAST);
-        
-        //panelPackages.setBorder(BorderFactory.createRaisedBevelBorder());      
-        panel4.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        
-        
-        
-        
-        //addDrone(1);
+    	}
 
-        frame.add(mainPanel); 
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.pack();
-        frame.setSize(300,500); //220
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.setResizable(false);
-    
-	}
+    	public static void main(String[] args) { 
+    		
+    		
+    		
+    		GUIAutopilot g = new GUIAutopilot();
+    		
+    		g.addPackage(0, 1, 0, 0, 0);
+    		g.addPackage(1, 1, 0, 0, 0);
+    		
+    		g.addDrone(0);
+    		g.addDrone(1);
+    		g.changeJobDrone(OccupationEnum.PICKING_UP, 0);
+    		g.changeStateDrone(PhaseEnum.KUBUS, 1);
+    		
+    		g.changeStatePackage(DeliveryEnum.TAKEN, 1, 1);
+    		g.completeDelivery(0);
 
-	public static void main(String[] args) { 
-		new GUIAutopilot();
-    }
-	
-	
-	//In panel: 1 -> ID
-	//          2 -> Location
-	//          3 -> State
-	//Wordt opgeslagen volgens i
-	public void addDrone(Integer i) {
-		JPanel drone = new JPanel();
-		JLabel l = new JLabel(" " + i + " ");
-		l.setOpaque(true);
-		l.setBackground(Color.GREEN);
-		drone.add(l,0);
-		drone.add(new JLabel("        " + 1.1 + "         "), 1);
-		drone.add(new JLabel("            " + "INIT" + "    "), 2);
-		
-		drone.setLayout(new BoxLayout(drone, BoxLayout.X_AXIS));
-		pnlDroneInfo.add(drone, i);
-	}
-	
-	public void changeJobDrone(OccupationEnum s, Integer index) {
-		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(0);
-		switch(s) {
-		case FREE: {
-			l.setBackground(Color.GREEN);
-			break;
-		}
-		case PICKING_UP: {
-			l.setBackground(Color.ORANGE);
-			break;
-		}
-		case DELIVERING: {
-			l.setBackground(Color.RED);
-			break;
-		}
-		}
-	}
-	
-	public void changeLocationDrone(Integer index){
-		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(0);
-	}
-	
-	public void changeStateDrone(PhaseEnum s, Integer index) {
-		JLabel l = (JLabel) ((JPanel) pnlDroneInfo.getComponent(index)).getComponent(2);
-		switch(s) {
-		case TEST: {
-			l.setText("     " + "TEST" + " ");
-			break;
-		}
-		case INIT: {
-			l.setText("            " + "INIT" + "    ");
-			break;
-		}
-		case WAITING: {
-			l.setText("      " + "WAITING" + "    ");
-			break;
-		}
-		case OPSTIJGEN: {
-			l.setText("     " + "TAKEOFF" + " ");
-			break;
-		}
-		case RIJDEN :{
-			l.setText("       " + "DRIVING" + " ");
-			break;
-		}
-		case STABILISEREN: {
-			l.setText("  " + "STABELIZE" + " ");
-			break;
-		}
-		case STABILISEREN1: {
-			l.setText("  " + "STABELIZE" + " ");
-			break;
-		}
-		case LANDEN: {
-			l.setText("      " + "LANDING" + " ");
-			break;
-		}
-		case TAXIEN: {
-			l.setText("        " + "TAXIING" + " ");
-			break;
-		}
-		case VLIEGEN: {
-			l.setText("        " + "FLYING" + " ");
-			break;
-		}
-		default: {
-			l.setText("         " + "FLYING" + " ");
-		}
-		}
-	}
-	
-	public void addToDo(int id, int fromA, int fromG, int toA, int toG) {
-		JPanel toDo = new JPanel();
-		toDo.add(new JLabel(id + "     "),0);
-		toDo.add(new JLabel("" + fromA + "."+ fromG + "       "),1);
-		toDo.add(new JLabel("   " + toA + "."+ toG +     "   "),2);
-		
-		
-		toDo.setLayout(new BoxLayout(toDo, BoxLayout.X_AXIS));
-		toDo.setName(Integer.toString(id));
-		pnlPackageTodo.add(toDo, id);
-	}
-	
-	public void addPackageProc(int id) {
-		for(Component c : pnlPackageTodo.getComponents()){
-			if(c.getName() == Integer.toString(id)){
-				JPanel l = ((JPanel) pnlPackageTodo.getComponent(id));
-				pnlPackageTodo.remove(l);
-				pnlPackageProc.add(l, id);
-			}
-		}
-	}
-	
-	public void removePackageProc(int id){
-		JPanel l = ((JPanel) pnlPackageProc.getComponent(id));
-		pnlPackageProc.remove(l);
+    		g.mainPanel.revalidate();
+    	    g.mainPanel.repaint();
+
+
+        }
+    	
+    	
+    	//In panel: 1 -> ID
+    	//          2 -> Location
+    	//          3 -> State
+    	//Wordt opgeslagen volgens i
+    	public void addDrone(Integer i) {
+    		JPanel drone = new JPanel();
+    		JLabel l = new JLabel(" " + i + " ");
+    		l.setOpaque(true);
+    		l.setBackground(Color.GREEN);
+    		drone.add(l,0);
+    		drone.add(new JLabel("        " + 1.1 + "         "), 1);
+    		drone.add(new JLabel("            " + "INIT" + "    "), 2);
+    		
+    		drone.setLayout(new BoxLayout(drone, BoxLayout.X_AXIS));
+    		dronePanel.add(drone);
+    	}
+    	
+    	public void changeJobDrone(OccupationEnum s, Integer index) {
+    		JLabel l = (JLabel) ((JPanel) dronePanel.getComponent(index+1)).getComponent(0);
+    		switch(s) {
+    		case FREE: {
+    			l.setBackground(Color.GREEN);
+    			break;
+    		}
+    		case PICKING_UP: {
+    			l.setBackground(Color.ORANGE);
+    			break;
+    		}
+    		case DELIVERING: {
+    			l.setBackground(Color.RED);
+    			break;
+    		}
+    		}
+    	}
+    	
+    	public void changeLocationDrone(Integer index){
+    		JLabel l = (JLabel) ((JPanel) dronePanel.getComponent(index+1)).getComponent(0);
+    	}
+    	
+    	public void changeStateDrone(PhaseEnum s, Integer index) {
+    		JLabel l = (JLabel) ((JPanel) dronePanel.getComponent(index+1)).getComponent(2);
+    		switch(s) {
+    		case TEST: {
+    			l.setText("     " + "TEST" + " ");
+    			break;
+    		}
+    		case INIT: {
+    			l.setText("            " + "INIT" + "    ");
+    			break;
+    		}
+    		case WAITING: {
+    			l.setText("      " + "WAITING" + "    ");
+    			break;
+    		}
+    		case OPSTIJGEN: {
+    			l.setText("     " + "TAKEOFF" + " ");
+    			break;
+    		}
+    		case RIJDEN :{
+    			l.setText("       " + "DRIVING" + " ");
+    			break;
+    		}
+    		case STABILISEREN: {
+    			l.setText("  " + "STABELIZE" + " ");
+    			break;
+    		}
+    		case STABILISEREN1: {
+    			l.setText("  " + "STABELIZE" + " ");
+    			break;
+    		}
+    		case LANDEN: {
+    			l.setText("      " + "LANDING" + " ");
+    			break;
+    		}
+    		case TAXIEN: {
+    			l.setText("        " + "TAXIING" + " ");
+    			break;
+    		}
+    		case VLIEGEN: {
+    			l.setText("        " + "FLYING" + " ");
+    			break;
+    		}
+    		default: {
+    			l.setText("         " + "FLYING" + " ");
+    		}
+    		}
+    	}
+    	
+    	public void addPackage(int id, int fromA, int fromG, int toA, int toG){
+    		System.out.println("ADD PACKAGE");
+    		System.out.println("ID " + id);
+    		JPanel pack = new JPanel();
+    		
+    		JLabel l = new JLabel(" " + id + " ");
+    		l.setOpaque(true);
+    		l.setBackground(Color.GREEN);
+    		pack.add(l,0);
+    		pack.add(new JLabel("    " + fromA + "."+ fromG + "       "),1);
+    		pack.add(new JLabel("   " + toA + "."+ toG +     "   "),2);
+    		pack.add(new JLabel("      /        "),3);
+    		
+    		pack.setLayout(new BoxLayout(pack, BoxLayout.X_AXIS));
+
+    		//pack.setName(Integer.toString(id));
+    		packagePanel.add(pack);
+    		packagePanel.revalidate();
+    		packagePanel.repaint();
+    		mainPanel.revalidate();
+    		mainPanel.repaint();
+
+    	}
+    	
+    	public void changeStatePackage(DeliveryEnum s, Integer index, Integer drone) {
+    		JLabel l = (JLabel) ((JPanel) packagePanel.getComponent(index+1)).getComponent(0);
+    		switch(s) {
+    		case OPEN: {
+    			l.setBackground(Color.GREEN);
+    			break;
+    		}
+    		case TAKEN: {
+    			l.setBackground(Color.ORANGE);
+    			break;
+    		}
+    		}
+    		
+    		JLabel l2 = (JLabel) ((JPanel) packagePanel.getComponent(index+1)).getComponent(3);
+    		l2.setText("      " + drone + "       ");
+    	}
+
+	public void completeDelivery(Integer indexPackage) {
+		JLabel l = (JLabel) ((JPanel) packagePanel.getComponent(indexPackage+1)).getComponent(0);
+		l.setBackground(Color.RED);
+//		l.setText("<html><strike>" + l.getText() + "</strike></html>");
+//		
+//		JLabel l1 = (JLabel) ((JPanel) packagePanel.getComponent(indexPackage+1)).getComponent(1);
+//		l1.setText("<html><strike>" + l1.getText() + "</strike></html>");
+//		
+//		JLabel l2 = (JLabel) ((JPanel) packagePanel.getComponent(indexPackage+1)).getComponent(2);
+//		l2.setText("<html><strike>" + l2.getText() + "</strike></html>");
+//		
+//		JLabel l3 = (JLabel) ((JPanel) packagePanel.getComponent(indexPackage+1)).getComponent(3);
+//		l3.setText("<html><strike>" + l3.getText() + "</strike></html>");
 	}
 	
 }

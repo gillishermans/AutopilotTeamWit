@@ -29,7 +29,7 @@ public class GUI extends Frame {
 	public GUI(){  
 		setHeader();
 		//addDrone(1);
-		frame.setSize(500,700);//frame size 300 width and 300 height  
+		frame.setSize(800,700);//frame size 300 width and 300 height  
 		frame.setLayout(null);//no layout manager  
 		frame.setVisible(true);//now frame will be visible, by default not visible  
 		frame.addWindowListener( new WindowAdapter() {
