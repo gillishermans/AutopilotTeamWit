@@ -364,6 +364,8 @@ public class Vliegen {
 			
 		case REMMEN:
 			this.Remmen(inputs);
+		default:
+			break;
 		}
 		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
