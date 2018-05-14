@@ -342,7 +342,7 @@ public class Vliegen {
 			System.out.print("hier" + this.airports.get(1).getX());
 			if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
 				System.out.println("LANDEN");
-				besturing.setState(PhaseEnum.LANDEN);
+				besturing.setState(PhaseEnum.LINKS);
 			}
 			break;
 			

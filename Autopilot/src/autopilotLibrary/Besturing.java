@@ -115,10 +115,10 @@ public class Besturing implements Runnable {
 //			state = PhaseEnum.TAXIEN;
 //			outputs = taxi.taxi(inputs, airports.get(delivery.fromAirport).getMiddleGate(delivery.fromGate), this);
 //		}
-		
+		//go=true;
 		//Als startsignaal wordt gegeven of al aan het vliegen: vlieg
 		if(go || isFlying()){
-			state = PhaseEnum.INIT;
+			this.setState(PhaseEnum.INIT);
 			outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
 			go = false;
 		}

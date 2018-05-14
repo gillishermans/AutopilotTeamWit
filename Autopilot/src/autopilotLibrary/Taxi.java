@@ -69,10 +69,10 @@ public class Taxi {
 		frontBrakeForce=0;
 		thrust=1000;
 		
-		if (distance<2){
-			leftBrakeForce=3000000;
-			rightBrakeForce=3000000;
-			frontBrakeForce=3000000;
+		if (distance<50){
+			leftBrakeForce=300;
+			rightBrakeForce=300;
+			frontBrakeForce=300;
 			thrust=0;
 		}
 		
@@ -87,7 +87,7 @@ public class Taxi {
 	 * @return outputs om drone naar een bepaald doel te brengen
 	 */
 	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel, Besturing besturing) {
-		//float komaan []= new float [] {(float) -100,-300};
+		//doel= new float [] {(float) -162.5,-200};
 		AutopilotOutputs outputs = null;
 		
 		float afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
