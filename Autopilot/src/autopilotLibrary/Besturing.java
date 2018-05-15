@@ -36,7 +36,7 @@ public class Besturing implements Runnable {
 	private Delivery delivery;
 	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
 	private PackageHandler packageHandler;
-	private int id;
+	int id;
 	private ArrayList<Vector> posList = new ArrayList<Vector>();
 	private Vector prevSpeedVector;
 
@@ -121,7 +121,7 @@ public class Besturing implements Runnable {
 			if (state==PhaseEnum.DRAAIEN||state==PhaseEnum.WAITING|| state==PhaseEnum.TEST){
 			state = PhaseEnum.INIT;
 			}
-			outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
+			outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports,this);
 			go = false;
 		}
 		
@@ -175,7 +175,7 @@ public class Besturing implements Runnable {
 			if (state==PhaseEnum.DRAAIEN||state==PhaseEnum.WAITING|| state==PhaseEnum.TEST){
 				state = PhaseEnum.INIT;
 			}
-			outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector,airports);
+			outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector,airports,this);
 			go = false;
 		}
 		

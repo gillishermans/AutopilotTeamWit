@@ -267,12 +267,12 @@ public class Vliegen {
 	/**
 	 * Hoofdfunctie: bepaalt welke stap van het vliegprocess moet gebeuren.
 	 */
-	public AutopilotOutputs vliegen(AutopilotInputs inputs, float[] doel,Vector speedVector, HashMap<Integer,Airport> airports ){
+	public AutopilotOutputs vliegen(AutopilotInputs inputs, float[] doel,Vector speedVector, HashMap<Integer,Airport> airports, Besturing besturing  ){
 		
 		setTime(inputs);
 		float horizontalAngle = 0;	
 		float verticalAngle = 0;
-		
+		int i=besturing.id;
 		int j = 0;
 		
 		float speed = Vector.norm(speedVector);
@@ -304,7 +304,7 @@ public class Vliegen {
 		case OPSTIJGEN:
 			this.opstijgen(inputs);
 			
-			if (inputs.getY() > 40) {
+			if (inputs.getY() > 10*(i +3)) {
 				System.out.println("STABILISEREN");
 				besturing.setState(PhaseEnum.STABILISEREN);
 				pidPitch.reset();
