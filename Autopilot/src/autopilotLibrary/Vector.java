@@ -44,10 +44,10 @@ public class Vector {
 	}
 	
 	public static float length(Vector a) {
-		return a.x + a.y + a.z;
+		return (float) Math.sqrt(lengthSquared(a));
 	}
 	
-	public float lengthSquared(Vector a) {
+	public static float lengthSquared(Vector a) {
 		return a.x*a.x + a.y*a.y + a.z*a.z;
 	}
 

@@ -100,7 +100,7 @@ public class Vliegen {
 	 */
 	public AutopilotOutputs init(AutopilotInputs inputs ){
 		
-		System.out.println("INIT");
+		//System.out.println("INIT");
 		rightWingInclination = (float) (Math.PI/20);
 		leftWingInclination = (float) (Math.PI/20);
 		thrust = 80f;
@@ -174,7 +174,7 @@ public class Vliegen {
 			outputRoll = pidStab.getOutput(0,inputs.getRoll(),getTime());
 			if (first) {
 				first = false;
-				System.out.println("Stab");
+				//System.out.println("Stab");
 			}
 		} 
 		else {
@@ -290,21 +290,21 @@ public class Vliegen {
 		case INIT: 
 			this.init(inputs);
 			besturing.setState(PhaseEnum.RIJDEN);
-			System.out.println("RIJDEN");
+			//System.out.println("RIJDEN");
 			break;
 			
 		case RIJDEN:
 			this.rijden(inputs);
 			if (getTime() < 3) { 
 				besturing.setState(PhaseEnum.OPSTIJGEN);
-				System.out.println("OPSTIJGEN");
+				//System.out.println("OPSTIJGEN");
 			}
 			break;
 			
 		case OPSTIJGEN:
 			this.opstijgen(inputs);
 			
-			if (inputs.getY() > 10*(i +3)) {
+			if (inputs.getY() > 10*(1 +3)) {
 				System.out.println("STABILISEREN");
 				besturing.setState(PhaseEnum.STABILISEREN);
 				pidPitch.reset();
@@ -314,7 +314,7 @@ public class Vliegen {
 		case STABILISEREN:
 			this.stabiliseren(inputs, speed, speedVector);
 			if (inputs.getZ() < -800) {
-				System.out.println("POSITIE");
+				//System.out.println("POSITIE");
 				besturing.setState(PhaseEnum.RECHTDOOR);
 				t = getTime();
 				//setNextPos();
@@ -324,7 +324,7 @@ public class Vliegen {
 		case LANDEN:
 			this.Landen(inputs, speed, speedVector);
 			if (inputs.getY() < 1.5f) {
-				System.out.println("REMMEN");
+				//System.out.println("REMMEN");
 				besturing.setState(PhaseEnum.REMMEN);
 			}
 			break;
@@ -339,9 +339,9 @@ public class Vliegen {
 			
 		case STABILISEREN1:
 			this.Stabiliseren1(inputs, speed, speedVector);
-			System.out.print("hier" + this.airports.get(1).getX());
+			//System.out.print("hier" + this.airports.get(1).getX());
 			if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
-				System.out.println("LANDEN");
+				//System.out.println("LANDEN");
 				besturing.setState(PhaseEnum.LANDEN);
 			}
 			break;
@@ -357,7 +357,7 @@ public class Vliegen {
 				landen = true;
 			}
 			if (inputs.getElapsedTime() - timeLanden > 3.5f) {
-				System.out.println("LANDEN");
+				//System.out.println("LANDEN");
 				besturing.setState(PhaseEnum.LANDEN);
 			}
 			break;
@@ -383,17 +383,17 @@ public class Vliegen {
 			
 			if (path.isEmpty()) {
 				besturing.setState(PhaseEnum.RECHTDOOR);
-				System.out.println("GEEN KUBUS");
+				//System.out.println("GEEN KUBUS");
 			} else {
 				x = path.get(0).x;
 				y = path.get(0).y;
 				z = path.get(0).z;
-				System.out.println("VOLGENDE KUBUS OP: " + x + " " + y + " " + z + " " + index);
+				//System.out.println("VOLGENDE KUBUS OP: " + x + " " + y + " " + z + " " + index);
 			}
 		}
 		else {
 			besturing.setState(PhaseEnum.RECHTDOOR);
-			System.out.println("GEEN KUBUS MEER");
+			//System.out.println("GEEN KUBUS MEER");
 		}
 	}
 	

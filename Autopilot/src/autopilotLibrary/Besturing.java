@@ -83,7 +83,7 @@ public class Besturing implements Runnable {
 	 * Checks if the drone is in a flying state.
 	 */
 	private boolean isFlying(){
-		if(state == PhaseEnum.WAITING || state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST ) return false;
+		if(state == PhaseEnum.WAITING || state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.DRAAIEN) return false;
 		else return true;	
 	}
 	
@@ -123,6 +123,10 @@ public class Besturing implements Runnable {
 			}
 			outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports,this);
 			go = false;
+			if(Vector.length(speedVector) < 1.0 && state == PhaseEnum.REMMEN){
+				state = PhaseEnum.TAXIEN;
+				System.out.println("REM GEDAAN");
+			}
 		}
 		
 		//Als pakket op zelfde luchthaven: taxi naar doelpositie
@@ -145,8 +149,8 @@ public class Besturing implements Runnable {
 			//System.out.println("onRunway " + airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()));
 			
 			//Not on runway -> taxi to runway
-			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING)){
-				state = PhaseEnum.TEST;
+			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING || state == PhaseEnum.DRAAIEN)){
+				state = PhaseEnum.TAXIEN;
 				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this);
 			
 			//On runway start -> turn to given angle	
@@ -177,6 +181,10 @@ public class Besturing implements Runnable {
 			}
 			outputs = vliegen.vliegen(inputs,packageHandler.getEndPosition(delivery),speedVector,airports,this);
 			go = false;
+			if(Vector.length(speedVector) < 1.0 && state == PhaseEnum.REMMEN){
+				state = PhaseEnum.TAXIEN;
+				System.out.println("REM GEDAAN");
+			}
 		}
 		
 		//Als pakket op zelfde luchthaven: taxi naar doelpositie
@@ -194,13 +202,16 @@ public class Besturing implements Runnable {
 			//The currentAirport the drone is on.
 			int currentAirport = getOnAirport(inputs.getX(), inputs.getZ());
 			
+			
+			System.out.println("on runway: " + airports.get(currentAirport).onRunway(goalRunway,inputs.getX(),inputs.getZ()));
 			//Not on runway -> taxi to runway
-			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING)){
-				state = PhaseEnum.TEST;
+			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING || state == PhaseEnum.DRAAIEN)){
+				state = PhaseEnum.TAXIEN;
 				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this);
 			
 			//On runway start -> turn to given angle	
 			} else {
+				System.out.println("DRAAI");
 				state = PhaseEnum.DRAAIEN;
 				outputs = taxi.turn(inputs, airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway),this);
 			}
