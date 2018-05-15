@@ -67,12 +67,12 @@ public class Taxi {
 		leftBrakeForce=0;
 		rightBrakeForce=0;
 		frontBrakeForce=0;
-		thrust=1000;
+		thrust=700;
 		
-		if (distance<50){
-			leftBrakeForce=300;
-			rightBrakeForce=300;
-			frontBrakeForce=300;
+		if (distance<120){
+			leftBrakeForce=3000;
+			rightBrakeForce=3000;
+			frontBrakeForce=3000;
 			thrust=0;
 		}
 		
