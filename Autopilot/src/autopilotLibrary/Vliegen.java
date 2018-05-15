@@ -3,6 +3,7 @@ package autopilotLibrary;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import enums.OccupationEnum;
 import enums.PhaseEnum;
 import interfaces.AutopilotInputs;
 import interfaces.AutopilotOutputs;
@@ -306,7 +307,7 @@ public class Vliegen {
 			
 			if (inputs.getY() > 10*(i +3)) {
 				System.out.println("STABILISEREN");
-				besturing.setState(PhaseEnum.STABILISEREN);
+				besturing.setState(PhaseEnum.STABILISEREN1);
 				pidPitch.reset();
 			}
 			break;
@@ -338,10 +339,14 @@ public class Vliegen {
 			break;
 			
 		case STABILISEREN1:
-			this.Stabiliseren1(inputs, speed, speedVector);
-			System.out.print("hier" + this.airports.get(1).getX());
-			if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
-				System.out.println("LANDEN");
+			this.stabiliseren(inputs, speed, speedVector);
+			//:System.out.print("hier" + besturing.packageHandler.airports.get(besturing.getDelivery().).getX());
+			System.out.println("GETAL"+  besturing.getDelivery().fromAirport);
+			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <(i+3)*10/1.9*65 ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
+				
+				besturing.setState(PhaseEnum.LANDEN);
+			}
+			else if ((Math.abs(inputs.getZ() -besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())<(i+3)*10/1.9*65) && (besturing.getOccupation()==OccupationEnum.DELIVERING)){
 				besturing.setState(PhaseEnum.LANDEN);
 			}
 			break;

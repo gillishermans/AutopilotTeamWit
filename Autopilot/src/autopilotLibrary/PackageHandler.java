@@ -8,7 +8,7 @@ import enums.OccupationEnum;
 public class PackageHandler {
 
 	private HashMap<Integer,Besturing> drones = new HashMap<Integer,Besturing>();
-	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
+	HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
 	private ArrayList<Delivery> packages = new ArrayList<Delivery>();
 	private AutopilotHandler autopilotHandler;
 	
