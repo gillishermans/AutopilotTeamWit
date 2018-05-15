@@ -35,7 +35,7 @@ public class Besturing implements Runnable {
 	
 	private Delivery delivery;
 	private HashMap<Integer,Airport> airports = new HashMap<Integer,Airport>();
-	private PackageHandler packageHandler;
+	public PackageHandler packageHandler;
 	int id;
 	private ArrayList<Vector> posList = new ArrayList<Vector>();
 	private Vector prevSpeedVector;
