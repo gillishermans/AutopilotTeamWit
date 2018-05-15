@@ -315,7 +315,7 @@ public class Vliegen {
 			this.stabiliseren(inputs, speed, speedVector);
 			if (inputs.getZ() < -800) {
 				System.out.println("POSITIE");
-				besturing.setState(PhaseEnum.RECHTDOOR);
+				besturing.setState(PhaseEnum.LINKS);
 				t = getTime();
 				//setNextPos();
 			}
@@ -331,10 +331,10 @@ public class Vliegen {
 			
 		case LINKS:
 			this.draai(inputs, speed, speedVector,1);
-			if (inputs.getZ() < -1000) {
-				besturing.setState(PhaseEnum.STABILISEREN1);
-				t = getTime();
-			}
+			//if (inputs.getZ() < -1000) {
+				//besturing.setState(PhaseEnum.STABILISEREN1);
+			//	t = getTime();
+			//}
 			break;
 			
 		case STABILISEREN1:
@@ -364,6 +364,8 @@ public class Vliegen {
 			
 		case REMMEN:
 			this.Remmen(inputs);
+		default:
+			break;
 		}
 		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);

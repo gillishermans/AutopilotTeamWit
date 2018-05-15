@@ -118,7 +118,9 @@ public class Besturing implements Runnable {
 		//go=true;
 		//Als startsignaal wordt gegeven of al aan het vliegen: vlieg
 		if(go || isFlying()){
-			this.setState(PhaseEnum.INIT);
+			if (state==PhaseEnum.DRAAIEN||state==PhaseEnum.WAITING|| state==PhaseEnum.TEST){
+				state = PhaseEnum.INIT;
+				}
 			outputs = vliegen.vliegen(inputs,packageHandler.getStartingPosition(delivery),speedVector,airports);
 			go = false;
 		}
