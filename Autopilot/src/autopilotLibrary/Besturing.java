@@ -132,7 +132,7 @@ public class Besturing implements Runnable {
 		//Als pakket op zelfde luchthaven: taxi naar doelpositie
 		else if(airports.get(delivery.fromAirport).onAirport(inputs.getX(), inputs.getZ())){
 			state = PhaseEnum.TAXIEN;
-			outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery),this);
+			outputs = taxi.taxi(inputs,packageHandler.getStartingPosition(delivery),this,speedVector);
 		}
 		//Als pakket op andere luchthaven: taxi naar start runway en orienteer drone in correcte richting
 		else {
@@ -151,7 +151,7 @@ public class Besturing implements Runnable {
 			//Not on runway -> taxi to runway
 			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING || state == PhaseEnum.DRAAIEN)){
 				state = PhaseEnum.TAXIEN;
-				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this);
+				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this,speedVector);
 			
 			//On runway start -> turn to given angle	
 			} else {
@@ -190,7 +190,7 @@ public class Besturing implements Runnable {
 		//Als pakket op zelfde luchthaven: taxi naar doelpositie
 		else if(airports.get(delivery.toAirport).onAirport(inputs.getX(), inputs.getZ())){
 			state = PhaseEnum.TAXIEN;
-			outputs = taxi.taxi(inputs,packageHandler.getEndPosition(delivery),this);
+			outputs = taxi.taxi(inputs,packageHandler.getEndPosition(delivery),this,speedVector);
 		}
 		//Als pakket op andere luchthaven: taxi naar start runway en orienteer drone in correcte richting
 		else {
@@ -207,11 +207,11 @@ public class Besturing implements Runnable {
 			//Not on runway -> taxi to runway
 			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING || state == PhaseEnum.DRAAIEN)){
 				state = PhaseEnum.TAXIEN;
-				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this);
+				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this,speedVector);
 			
 			//On runway start -> turn to given angle	
 			} else {
-				System.out.println("DRAAI");
+				System.out.println("HOEK "+ airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway));
 				state = PhaseEnum.DRAAIEN;
 				outputs = taxi.turn(inputs, airports.get(currentAirport).getRunwayTakeOffAngle(goalRunway),this);
 			}
