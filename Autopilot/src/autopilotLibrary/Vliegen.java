@@ -305,7 +305,7 @@ public class Vliegen {
 		case OPSTIJGEN:
 			this.opstijgen(inputs);
 			
-			if (inputs.getY() > 10*(1 +3)) {
+			if (inputs.getY() > 10*(i +3)) {
 				System.out.println("STABILISEREN");
 				besturing.setState(PhaseEnum.STABILISEREN1);
 				pidPitch.reset();
@@ -342,11 +342,11 @@ public class Vliegen {
 			this.stabiliseren(inputs, speed, speedVector);
 			//:System.out.print("hier" + besturing.packageHandler.airports.get(besturing.getDelivery().).getX());
 			System.out.println("GETAL"+  besturing.getDelivery().fromAirport);
-			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <(i+3)*10/1.9*65 ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
+			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <(i+3)*10/1.8*65 ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
 				
 				besturing.setState(PhaseEnum.LANDEN);
 			}
-			else if ((Math.abs(inputs.getZ() -besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())<(i+3)*10/1.9*65) && (besturing.getOccupation()==OccupationEnum.DELIVERING)){
+			else if ((Math.abs(inputs.getZ() -besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())<(i+3)*10/1.8*65) && (besturing.getOccupation()==OccupationEnum.DELIVERING)){
 				besturing.setState(PhaseEnum.LANDEN);
 			}
 			break;
