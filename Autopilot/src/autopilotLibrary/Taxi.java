@@ -51,11 +51,11 @@ public class Taxi {
 		System.out.println("MOD: " + (2*Math.PI+inputs.getHeading()) % (2*Math.PI));
 		System.out.println("newH: " +new_heading );
 		System.out.println("ALIGNEER: " + ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.9999*new_heading && (2*Math.PI+inputs.getHeading() )% (2*Math.PI)<1.001*new_heading));
-		if ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*(new_heading-0.0083) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) < 1.1*(new_heading+0.0083)){
-			leftBrakeForce=1;
-			rightBrakeForce=1;
-			frontBrakeForce=1;
-			thrust=1;
+		if ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.9*(new_heading+0.005) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.1*(new_heading+0.003)){
+			leftBrakeForce=0;
+			rightBrakeForce=0;
+			frontBrakeForce=0;
+			thrust=0;
 			System.out.println("STOP BOI");
 			
 			if (besturing.getState()==PhaseEnum.DRAAIEN){
@@ -70,17 +70,24 @@ public class Taxi {
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 	}
 		
-	public AutopilotOutputs drive (AutopilotInputs inputs, float [] doel){
+	public AutopilotOutputs drive (AutopilotInputs inputs, float [] doel, Vector speed){
 		float distance =(float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
+		
 		leftBrakeForce=0;
 		rightBrakeForce=0;
 		frontBrakeForce=0;
-		thrust=distance/0.4f;
+		thrust=0;
+		if (Vector.norm(speed)<25){
+			leftBrakeForce=0;
+			rightBrakeForce=0;
+			frontBrakeForce=0;
+			thrust=distance/0.1f;
+		}
 		
-		if (distance<100){
-			leftBrakeForce=300;
-			rightBrakeForce=300;
-			frontBrakeForce=300;
+		if (distance<60){
+			leftBrakeForce=800;
+			rightBrakeForce=800;
+			frontBrakeForce=800;
 			thrust=0;
 		}
 		
@@ -94,7 +101,7 @@ public class Taxi {
 	 * @param besturing
 	 * @return outputs om drone naar een bepaald doel te brengen
 	 */
-	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel, Besturing besturing) {
+	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel, Besturing besturing, Vector speed) {
 		//float komaan []= new float [] {(float) -100,-300};
 		AutopilotOutputs outputs = null;
 		
@@ -151,7 +158,7 @@ public class Taxi {
 		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
 		
 		if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.001*hoek){
-			outputs = drive(inputs,doel);
+			outputs = drive(inputs,doel,speed);
 			System.out.print("HALLO ");
 			}
 		
