@@ -51,19 +51,28 @@ public class Taxi {
 		System.out.println("MOD: " + (2*Math.PI+inputs.getHeading()) % (2*Math.PI));
 		System.out.println("newH: " +new_heading );
 		System.out.println("ALIGNEER: " + ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.9999*new_heading && (2*Math.PI+inputs.getHeading() )% (2*Math.PI)<1.001*new_heading));
-		if ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*(new_heading-0.0083) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) < 1.1*(new_heading+0.0083)){
-			leftBrakeForce=1;
-			rightBrakeForce=1;
-			frontBrakeForce=1;
-			thrust=1;
-			System.out.println("STOP BOI");
+		
+		if (new_heading == 0.0 && (2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.9*(new_heading-0.005) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.1*(new_heading+0.005)){
+			leftBrakeForce=0;
+			rightBrakeForce=0;
+			frontBrakeForce=0;
+			thrust=0;
 			
 			if (besturing.getState()==PhaseEnum.DRAAIEN){
 				besturing.go=true;
 				System.out.println("GO BOI");
 			}
+		}
+		else if ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*(new_heading) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.001*(new_heading)){
+			leftBrakeForce=0;
+			rightBrakeForce=0;
+			frontBrakeForce=0;
+			thrust=0;
 			
-			
+			if (besturing.getState()==PhaseEnum.DRAAIEN){
+				besturing.go=true;
+				System.out.println("GO BOI");
+			}
 		}
 		
 		
@@ -75,9 +84,9 @@ public class Taxi {
 		leftBrakeForce=0;
 		rightBrakeForce=0;
 		frontBrakeForce=0;
-		thrust=distance/0.4f;
+		thrust=distance/0.3f;
 		
-		if (distance<100){
+		if (distance<75){
 			leftBrakeForce=300;
 			rightBrakeForce=300;
 			frontBrakeForce=300;
