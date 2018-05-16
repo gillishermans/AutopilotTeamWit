@@ -94,9 +94,9 @@ public class Taxi {
 		}
 		
 		if (distance<60){
-			leftBrakeForce=800;
-			rightBrakeForce=800;
-			frontBrakeForce=800;
+			leftBrakeForce=700;
+			rightBrakeForce=700;
+			frontBrakeForce=700;
 			thrust=0;
 		}
 		
