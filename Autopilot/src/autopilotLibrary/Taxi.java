@@ -133,7 +133,7 @@ public class Taxi {
 		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
 		
 		if ( (Math.abs(hoek) <=0.00001) && ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*(hoek-0.005)) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.01*(0.005+hoek)){
-			overgang = true;
+		//	overgang = true;
 			outputs = drive(inputs,doel,speed);
 			
 			System.out.print("HALLO ");
