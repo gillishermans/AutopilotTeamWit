@@ -10,6 +10,8 @@ public class Taxi {
 	private OccupationEnum occupation;
 	private Besturing besturing;
 	
+	boolean overgang = false;
+	
 	private PIDController pidlefttwheel= new PIDController(1f,1f,1f,2486f,0f,1f);
 	private PIDController pidrightwheel= new PIDController(1f,1f,1f,2486f,0f,1f);
 	private PIDController pidVertax = new PIDController(10,10,0,(float) Math.PI/10, (float) -Math.PI/10, 2);
@@ -52,7 +54,7 @@ public class Taxi {
 		System.out.println("newH: " +new_heading );
 		System.out.println("ALIGNEER: " + ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.9999*new_heading && (2*Math.PI+inputs.getHeading() )% (2*Math.PI)<1.001*new_heading));
 		
-		if (new_heading == 0.0 && (2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.9*(new_heading-0.005) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.1*(new_heading+0.005)){
+		if (((new_heading /2*Math.PI) % (2*Math.PI)) == 0.0 && (2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*(new_heading-0.005) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.001*(new_heading+0.005)){
 			leftBrakeForce=0;
 			rightBrakeForce=0;
 			frontBrakeForce=0;
@@ -82,22 +84,23 @@ public class Taxi {
 	public AutopilotOutputs drive (AutopilotInputs inputs, float [] doel, Vector speed){
 		float distance =(float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
 		
-		leftBrakeForce=0;
-		rightBrakeForce=0;
-		frontBrakeForce=0;
-		thrust=0;
+		leftBrakeForce=0f;
+		rightBrakeForce=0f;
+		frontBrakeForce=0f;
+		thrust=0f;
+		
 		if (Vector.norm(speed)<25){
-			leftBrakeForce=0;
-			rightBrakeForce=0;
-			frontBrakeForce=0;
-			thrust=distance/0.1f;
+			leftBrakeForce=0f;
+			rightBrakeForce=0f;
+			frontBrakeForce=0f;
+			thrust=2000f;
 		}
 		
-		if (distance<60){
-			leftBrakeForce=700;
-			rightBrakeForce=700;
-			frontBrakeForce=700;
-			thrust=0;
+		if (distance<50f){
+			leftBrakeForce=10000f/distance;
+			rightBrakeForce=10000f/distance;
+			frontBrakeForce=10000f/distance;
+			thrust=0f;
 		}
 		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
@@ -116,60 +119,33 @@ public class Taxi {
 		
 		float afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
 		
-		// two parts=> op luchthaven zelf 
-		//if (besturing.getState()==PhaseEnum.TAXIEN){
-		
-		//float constante = (float) Math.PI/2;
-//		if ((doel[1]-inputs.getZ()>0) && (doel[0]-inputs.getX()>0)){
-//		constante=(float) (Math.PI/2);
-//		System.out.print("1");
-//			}
-//			
-//		if ((doel[1]-inputs.getZ()>0) && (doel[0]-inputs.getX()<0)){
-//			constante=(float) Math.PI;
-//			System.out.print("2");
-//		}
-//		
-//		if ((doel[1]-inputs.getZ()<0) && (doel[0]-inputs.getX()>0)){
-//			constante=0;
-//			System.out.print("3");
-//		}
-//		
-//		if ((doel[1]-inputs.getZ()<0) && (doel[0]-inputs.getX()<0)){
-//			constante=(float) (3*Math.PI/2);
-//			System.out.print("4");
-
-		float hoek = 0 ;
-//		if (komaan[1]-inputs.getZ()>0){
-//			 hoek =Math.abs((float) Math.atan((komaan[0]-inputs.getX())/(komaan[1]-inputs.getZ())));
-//			 System.out.print("waar "+ 1 );
-//		}
-//		else if (komaan[1]-inputs.getZ()<0 && komaan[0]-inputs.getX() >0){
-//			 hoek =Math.abs((float) Math.atan((komaan[0]-inputs.getX())/(komaan[1]-inputs.getZ())))+(float)Math.PI;
-//			 System.out.print("waar "+ 2 );
-//		}
-//		
-//		else if (komaan[1]-inputs.getZ() < 0 && komaan[0]-inputs.getX() <0){
-//			 hoek =Math.abs((float) Math.atan((komaan[0]-inputs.getX())/(komaan[1]-inputs.getZ())))-(float) Math.PI;
-//			 System.out.print("waar "+ 3 );
-//		}
-//		
-		hoek= (float) ((Math.atan2(doel[1]-inputs.getZ(),doel[0]-inputs.getX())+ Math.PI/2+2*Math.PI) % (2*Math.PI));
+		float hoek= (float) ((Math.atan2(doel[1]-inputs.getZ(),doel[0]-inputs.getX())+ Math.PI/2+2*Math.PI) % (2*Math.PI));
 			
 		leftBrakeForce=0;
 		rightBrakeForce=300000;
 		frontBrakeForce=0;
 		thrust=200000;
+		
 		outputs=  new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 		
 		System.out.print("hoek "+hoek);
 		 
 		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
 		
-		if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.001*hoek){
+		if ( (Math.abs(hoek) <=0.00001) && ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*(hoek-0.005)) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.01*(0.005+hoek)){
+			overgang = true;
 			outputs = drive(inputs,doel,speed);
+			
 			System.out.print("HALLO ");
-			}
+		}
+		else if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.01*hoek){
+			outputs = drive(inputs,doel,speed);
+		//	overgang =true;
+		}
+		else if( overgang)  {
+			outputs=drive(inputs,doel,speed);
+		}
+		
 		
 		return outputs;
 		}

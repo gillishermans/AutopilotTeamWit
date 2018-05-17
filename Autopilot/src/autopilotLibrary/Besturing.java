@@ -149,6 +149,7 @@ public class Besturing implements Runnable {
 			//System.out.println("onRunway " + airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()));
 			
 			//Not on runway -> taxi to runway
+			this.taxi.overgang=false;
 			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING || state == PhaseEnum.DRAAIEN)){
 				state = PhaseEnum.TAXIEN;
 				outputs = taxi.taxi(inputs,airports.get(currentAirport).getMiddleRunwayStart(goalRunway),this,speedVector);
