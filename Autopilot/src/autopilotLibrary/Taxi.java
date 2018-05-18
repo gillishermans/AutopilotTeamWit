@@ -54,7 +54,7 @@ public class Taxi {
 		System.out.println("newH: " +new_heading );
 		System.out.println("ALIGNEER: " + ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.9999*new_heading && (2*Math.PI+inputs.getHeading() )% (2*Math.PI)<1.001*new_heading));
 		
-		if (((new_heading /2*Math.PI) % (2*Math.PI)) == 0.0 && (2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*(new_heading-0.005) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.001*(new_heading+0.005)){
+		if (((new_heading /2*Math.PI) % (2*Math.PI)) == 0.0 && (2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.9*(new_heading-0.005) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.1*(new_heading+0.005)){
 			leftBrakeForce=0;
 			rightBrakeForce=0;
 			frontBrakeForce=0;
