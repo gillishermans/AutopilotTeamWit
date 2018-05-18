@@ -89,17 +89,17 @@ public class Taxi {
 		frontBrakeForce=0f;
 		thrust=0f;
 		
-		if (Vector.norm(speed)<25){
+		if (Vector.norm(speed)<20f){
 			leftBrakeForce=0f;
 			rightBrakeForce=0f;
 			frontBrakeForce=0f;
-			thrust=2000f;
+			thrust=700f;
 		}
 		
-		if (distance<5f){
-			leftBrakeForce=10000f/distance;
-			rightBrakeForce=10000f/distance;
-			frontBrakeForce=10000f/distance;
+		if (distance<20f){
+			leftBrakeForce=(float) Math.exp(20-distance);
+			rightBrakeForce=(float) Math.exp(20-distance);
+			frontBrakeForce=(float) Math.exp(20-distance);
 //			leftBrakeForce=700f;
 //			rightBrakeForce=700f;
 //			frontBrakeForce=700f;
@@ -129,8 +129,6 @@ public class Taxi {
 		frontBrakeForce=0;
 		thrust=200000;
 		
-		outputs=  new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
-		
 		System.out.print("hoek "+hoek);
 		 
 		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
@@ -141,7 +139,7 @@ public class Taxi {
 			
 			System.out.print("HALLO ");
 		}
-		else if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.01*hoek){
+		else if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.001*hoek){
 			outputs = drive(inputs,doel,speed);
 		//	overgang =true;
 		}
@@ -150,7 +148,7 @@ public class Taxi {
 		}
 		
 		
-		return outputs;
+		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 		}
 	
 ////		if (getTime() == 0) {
