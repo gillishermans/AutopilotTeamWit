@@ -329,13 +329,13 @@ public class Vliegen {
 			}
 			break;
 			
-		case LINKS:
-			this.draai(inputs, speed, speedVector,1);
-			//if (inputs.getZ() < -1000) {
-				//besturing.setState(PhaseEnum.STABILISEREN1);
-			//	t = getTime();
-			//}
-			break;
+//		case LINKS1:
+//			this.draai(inputs, speed, speedVector,1);
+//			//if (inputs.getZ() < -1000) {
+//				//besturing.setState(PhaseEnum.STABILISEREN1);
+//			//	t = getTime();
+//			//}
+//			break;
 			
 		case STABILISEREN1:
 			this.Stabiliseren1(inputs, speed, speedVector);
@@ -348,6 +348,113 @@ public class Vliegen {
 			
 		case RECHTS:
 			this.draai(inputs, speed, speedVector, -1);
+			break;
+		
+		case LINKS:
+			float distance = distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z));
+//			if (distance - lastDistance > 0) {
+//				setNextPos();
+//				pos = true;
+//				if (phase != PhaseEnum.GEENKUBUS) {
+//					System.out.println("POSITIE");
+//					phase = PhaseEnum.POSITIE;
+//				}
+//				//pidVerImage.reset();
+//				//pidHorImage.reset();
+//				//pidRollImage.reset();
+//				//pidHeadingImage.reset();
+				pidRoll.reset();
+				pidStab.reset();
+				pidHeading.reset();
+//				interval = 90;
+//				lastDistance = distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z));
+//			}
+//			else lastDistance = distance;
+//			//lastDistance = distance(new Vector(inputs.getX(), inputs.getY(), inputs.getZ()), new Vector(x,y,z));
+//			if (pos) {
+//				if (z < inputs.getZ()) forward = true;
+//				else				   forward = false;
+//				if (x > inputs.getX()) left = false;
+//				else                   left = true;
+//				pos = false;
+//				System.out.println(forward);
+//			}
+			thrust = pidTrust.getOutput(65,speed,getTime());
+			float heading = calculateHeading(inputs);
+			heading = (float) Math.PI;
+			//System.out.println(toDegrees(heading));
+			//heading = (float) (Math.PI/9.5);
+			//System.out.println("HEADING: " + toDegrees(inputs.getHeading()) + " Required: " + toDegrees(heading));
+			//System.out.println("HEADING: " + toDegrees(heading));
+			outputVelY = -pidVelY.getOutput(0,speedVector.y, getTime());
+			outputVelY = aoaController.aoaController(outputVelY, (float) Math.PI/20);
+			//System.out.println("MIN: " + toDegrees(heading - inputs.getHeading()));
+			float outputRoll;
+			float outputPitch;
+			if (Math.abs(heading - inputs.getHeading()) < (float) Math.PI/interval) {
+				//System.out.println("DEGREE: " + toDegrees((float) (Math.PI/20 - inputs.getHeading())));
+				if (interval < 360) {
+					interval = interval + 1;
+					//System.out.println(interval);
+				}
+//				if (Math.abs(inputs.getRoll()) > maxRoll) {
+//					System.out.print("  Yoooowwww");
+//					if (inputs.getRoll() > 0) outputRoll = pidRoll.getOutput(maxRoll, inputs.getRoll(), getTime());
+//					else                      outputRoll = pidRoll.getOutput(-maxRoll, inputs.getRoll(), getTime());
+//				}
+				outputRoll = pidStab.getOutput(0,inputs.getRoll(),getTime());
+				str = "INTERVAL";
+//				if (inputs.getRoll() > 0) System.out.print("GROTER ");
+//				else System.out.print("KLEINER ");
+//				System.out.println(toDegrees(inputs.getRoll()));
+				if (first) {
+					first = false;
+					System.out.println("Stab");
+				}
+			} else {
+				if (!first) {
+					first = true;
+					//System.out.println("Verder");
+					pidHeading.reset();
+				}
+				if (Math.abs(inputs.getRoll()) > maxRoll) {
+					str = "MAXROLL";
+					if (inputs.getRoll() > 0) outputRoll = pidRoll.getOutput(maxRoll, inputs.getRoll(), getTime());
+					else                      outputRoll = pidRoll.getOutput(-maxRoll, inputs.getRoll(), getTime());
+				} else {
+					str = "NINTERVAL";
+					if (inputs.getHeading() - heading < 0) {
+						//System.out.println("Erover");
+						outputRoll = pidHeading.getOutput(heading, inputs.getHeading(), getTime());
+					}
+					else {
+						//System.out.println("Eronder");
+						outputRoll = pidHeading.getOutput(heading, inputs.getHeading(), getTime());
+					}
+				}
+			}
+			//System.out.println(toDegrees(heading - inputs.getHeading()));
+			outputRoll = aoaController.aoaRollController(-outputVelY, outputRoll, maxRollAOA);
+			leftWingInclination = -outputVelY - outputRoll;
+			rightWingInclination = -outputVelY + outputRoll;
+			if (!poscube) {
+				str = "POSKUBUS";
+				leftWingInclination = (leftWingInclination + lastInclLeft) / 2;
+				rightWingInclination = (rightWingInclination + lastInclRight) / 2;
+				poscube = true;
+			}
+			
+			lastInclLeft = leftWingInclination;
+			lastInclRight = rightWingInclination;
+			//System.out.println("Incl: " + toDegrees(leftWingInclination) + " outputVel: " + toDegrees(-outputVelY) + " Roll: "  + toDegrees(outputRoll));
+			//System.out.println(inputs.getHeading()*360/(2*Math.PI));
+			//System.out.println("left: " + leftWingInclination + " right: " + rightWingInclination);
+			outputPitch = pidPitch.getOutput(0, inputs.getPitch(), getTime());
+			outputPitch = aoaController.aoaController(outputPitch, (float) Math.PI/20);
+			horStabInclination = -outputPitch;
+			verStabInclination = 0;
+			//System.out.println(leftWingInclination + " " + rightWingInclination + " " + horStabInclination + " " + thrust);
+			//return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 			break;
 			
 		case RECHTDOOR:
