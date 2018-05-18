@@ -203,7 +203,7 @@ public class Besturing implements Runnable {
 			//The currentAirport the drone is on.
 			int currentAirport = getOnAirport(inputs.getX(), inputs.getZ());
 			
-			
+			this.taxi.overgang=false;
 			System.out.println("on runway: " + airports.get(currentAirport).onRunway(goalRunway,inputs.getX(),inputs.getZ()));
 			//Not on runway -> taxi to runway
 			if(!airports.get(currentAirport).onRunway(goalRunway,inputs.getX(), inputs.getZ()) && (state == PhaseEnum.TAXIEN || state == PhaseEnum.TEST || state == PhaseEnum.WAITING || state == PhaseEnum.DRAAIEN)){
