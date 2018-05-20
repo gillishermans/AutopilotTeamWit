@@ -79,7 +79,7 @@ public class Besturing implements Runnable {
 	
 	private boolean noodRemMogelijk(){
 		if(state == PhaseEnum.WAITING || state == PhaseEnum.TAXIEN 
-				||state == PhaseEnum.NOODREM || state == PhaseEnum.DRAAIEN
+				||state == PhaseEnum.NOODREM 
 				||state == PhaseEnum.REMMEN) return true;
 		else return false;
 	}
