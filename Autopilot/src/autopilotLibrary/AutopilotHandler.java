@@ -51,7 +51,7 @@ public class AutopilotHandler {
 	 * Starts a time passed for a drone with the given inputs.
 	 */
 	public void startTimeHasPassed(int drone, AutopilotInputs inputs) {
-		drones.get(drone).startBesturing(inputs);
+		drones.get(drone).startBesturing(inputs,drones);
 	}
 	
 	/**

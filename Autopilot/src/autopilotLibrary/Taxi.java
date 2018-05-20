@@ -49,10 +49,6 @@ public class Taxi {
 		thrust=200000;
 		
 		//nauwkeurigheid hier aanpassen
-		System.out.println("heading: " + inputs.getHeading());
-		System.out.println("MOD: " + (2*Math.PI+inputs.getHeading()) % (2*Math.PI));
-		System.out.println("newH: " +new_heading );
-		System.out.println("ALIGNEER: " + ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) > 0.9999*new_heading && (2*Math.PI+inputs.getHeading() )% (2*Math.PI)<1.001*new_heading));
 		
 		if (((new_heading /2*Math.PI) % (2*Math.PI)) == 0.0 && (2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.9*(new_heading-0.005) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.1*(new_heading+0.005)){
 			leftBrakeForce=0;
@@ -62,7 +58,7 @@ public class Taxi {
 			
 			if (besturing.getState()==PhaseEnum.DRAAIEN){
 				besturing.go=true;
-				System.out.println("GO BOI");
+				System.out.println("GO");
 			}
 		}
 		else if ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*(new_heading) && (2*Math.PI+inputs.getHeading() )% (2*Math.PI) <= 1.001*(new_heading)){
@@ -73,7 +69,7 @@ public class Taxi {
 			
 			if (besturing.getState()==PhaseEnum.DRAAIEN){
 				besturing.go=true;
-				System.out.println("GO BOI");
+				System.out.println("GO");
 			}
 		}
 		
@@ -100,9 +96,6 @@ public class Taxi {
 			leftBrakeForce=(float) Math.exp(20-distance);
 			rightBrakeForce=(float) Math.exp(20-distance);
 			frontBrakeForce=(float) Math.exp(20-distance);
-//			leftBrakeForce=700f;
-//			rightBrakeForce=700f;
-//			frontBrakeForce=700f;
 			thrust=0f;
 		}
 		
@@ -117,39 +110,42 @@ public class Taxi {
 	 * @return outputs om drone naar een bepaald doel te brengen
 	 */
 	public AutopilotOutputs taxi(AutopilotInputs inputs, float[] doel, Besturing besturing, Vector speed) {
-		//float komaan []= new float [] {(float) -100,-300};
 		AutopilotOutputs outputs = null;
 		
 		float afstand = (float) Math.sqrt(Math.pow((doel[0]-inputs.getX()),2)+Math.pow((doel[1]-inputs.getZ()), 2));
 		
-		float hoek= (float) ((Math.atan2(doel[1]-inputs.getZ(),doel[0]-inputs.getX())+ Math.PI/2+2*Math.PI) % (2*Math.PI));
+		float hoek = (float) ((Math.atan2(doel[1]-inputs.getZ(),doel[0]-inputs.getX())+ Math.PI/2+2*Math.PI) % (2*Math.PI));
 			
 		leftBrakeForce=0;
 		rightBrakeForce=300000;
 		frontBrakeForce=0;
 		thrust=200000;
 		
-		System.out.print("hoek "+hoek);
-		 
-		System.out.print("Heading" +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
+		System.out.println("hoek "+hoek);	 
+		System.out.println("Heading " +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
 		
-		if ( (Math.abs(hoek) <=0.00001) && ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*(hoek-0.005)) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.01*(0.005+hoek)){
-		//	overgang = true;
+		if ( (Math.abs(hoek) <= 0.00005) && ((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.9*(hoek-0.005)) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.1*(0.005+hoek)){
+			overgang = true;
+			System.out.println("DRIVE1");
 			outputs = drive(inputs,doel,speed);
+			return outputs;
 			
-			System.out.print("HALLO ");
 		}
 		else if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.001*hoek){
+			overgang = true;
+			System.out.println("DRIVE2");
 			outputs = drive(inputs,doel,speed);
-		//	overgang =true;
+			return outputs;
 		}
-		else if( overgang)  {
-			outputs=drive(inputs,doel,speed);
+		else if (overgang){
+			System.out.println("DRIVE3");
+			outputs = drive(inputs,doel,speed);
+			return outputs;
 		}
 		
 		
 		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
-		}
+	}
 	
 ////		if (getTime() == 0) {
 //		rightWingInclination = (float) (Math.PI/20);
@@ -221,7 +217,7 @@ public class Taxi {
 //		return new Outputs(thrust,leftWingInclination , rightWingInclination, horStabInclination, verStabInclination, frontBrakeForce, rightBrakeForce, leftBrakeForce);
 //	}
 	
-	public AutopilotOutputs draaiFunctie(AutopilotInputs inputs){
+	private AutopilotOutputs draaiFunctie(AutopilotInputs inputs){
 		float goal;
 		goal=(float) Math.atan(bestemmingX/bestemmingZ);
 		float goalgraad;

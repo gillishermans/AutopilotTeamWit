@@ -38,7 +38,7 @@ public class GUIAutopilot {
             pnlDroneHeader.setBorder(BorderFactory.createTitledBorder(""));
             
             pnlDroneHeader.add( new JLabel(" ID  "));
-            pnlDroneHeader.add( new JLabel(" LOCATION       "));
+            //pnlDroneHeader.add( new JLabel(" LOCATION       "));
             pnlDroneHeader.add( new JLabel(" STATE     "));
             
             pnlDroneHeader.setLayout(new BoxLayout(pnlDroneHeader, BoxLayout.X_AXIS));
@@ -64,7 +64,7 @@ public class GUIAutopilot {
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             
             frame.pack();
-            frame.setSize(350,500); //300
+            frame.setSize(275,500); //300
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
             frame.setResizable(true);
@@ -105,8 +105,8 @@ public class GUIAutopilot {
     		l.setOpaque(true);
     		l.setBackground(Color.GREEN);
     		drone.add(l,0);
-    		drone.add(new JLabel("        " + 1.1 + "         "), 1);
-    		drone.add(new JLabel("            " + "INIT" + "    "), 2);
+    		//drone.add(new JLabel("        " + 1.1 + "         "), 1);
+    		drone.add(new JLabel("            " + "INIT" + "    "), 1);
     		
     		drone.setLayout(new BoxLayout(drone, BoxLayout.X_AXIS));
     		dronePanel.add(drone);
@@ -135,7 +135,7 @@ public class GUIAutopilot {
     	}
     	
     	public void changeStateDrone(PhaseEnum s, Integer index) {
-    		JLabel l = (JLabel) ((JPanel) dronePanel.getComponent(index+1)).getComponent(2);
+    		JLabel l = (JLabel) ((JPanel) dronePanel.getComponent(index+1)).getComponent(1);
     		switch(s) {
     		case TEST: {
     			l.setText("     " + "TEST" + " ");
@@ -147,6 +147,18 @@ public class GUIAutopilot {
     		}
     		case WAITING: {
     			l.setText("      " + "WAITING" + "    ");
+    			break;
+    		}
+    		case NOODREM: {
+    			l.setText("      " + "NOODREM" + "    ");
+    			break;
+    		}
+    		case DRAAIEN: {
+    			l.setText("      " + "TURNING" + "    ");
+    			break;
+    		}
+    		case REMMEN: {
+    			l.setText("      " + "BRAKING" + "    ");
     			break;
     		}
     		case OPSTIJGEN: {
@@ -162,7 +174,7 @@ public class GUIAutopilot {
     			break;
     		}
     		case STABILISEREN1: {
-    			l.setText("  " + "STABELIZE" + " ");
+    			l.setText("  " + "STABILIZE" + " ");
     			break;
     		}
     		case LANDEN: {
