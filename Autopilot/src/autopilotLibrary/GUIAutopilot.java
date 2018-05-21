@@ -231,9 +231,10 @@ public class GUIAutopilot {
     			break;
     		}
     		}
-    		
     		JLabel l2 = (JLabel) ((JPanel) packagePanel.getComponent(index+1)).getComponent(3);
-    		l2.setText("      " + (drone+1) + "       ");
+    		if(drone == -1){
+    			l2.setText("      /        ");
+    		}else l2.setText("      " + (drone+1) + "       ");
     	}
 
 	public void completeDelivery(Integer indexPackage) {

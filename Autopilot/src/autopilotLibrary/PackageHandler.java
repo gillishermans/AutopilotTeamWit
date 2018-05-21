@@ -51,11 +51,24 @@ public class PackageHandler {
 					if(ap.getPackageGate0() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
 						pickup(d, ap, 0, ap.getPackageGate0());
 						return;
+					} else if(ap.getPackageGate0() != d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
+						d.getDelivery().unassign();
+						autopilotHandler.unassignJob(d.getDelivery().getId());
+						assign(d.id,ap.getPackageGate0());
+						pickup(d, ap, 0, ap.getPackageGate0());
+						return;
 					}
-				}
+					
+				} 
 				if(ap.isPackageGate1() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
 					//System.out.println("ON GATE 1 + PACKAGE AVAILABLE");
 					if(ap.getPackageGate1() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
+						pickup(d, ap, 1, ap.getPackageGate1());
+						return;
+					} else if(ap.getPackageGate1() != d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
+						d.getDelivery().unassign();
+						autopilotHandler.unassignJob(d.getDelivery().getId());
+						assign(d.id,ap.getPackageGate1());
 						pickup(d, ap, 1, ap.getPackageGate1());
 						return;
 					}
