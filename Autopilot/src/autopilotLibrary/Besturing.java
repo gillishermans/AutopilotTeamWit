@@ -94,7 +94,7 @@ public class Besturing implements Runnable {
 		
 		if(occupation == OccupationEnum.FREE){
 			state = PhaseEnum.WAITING;
-			outputs = new Outputs(0, 0, 0, 0, 0, 0, 0, 0);
+			outputs= vliegen.Remmen(inputs);
 		}
 		
 		if(occupation == OccupationEnum.PICKING_UP){
@@ -185,6 +185,7 @@ public class Besturing implements Runnable {
 	private void droppingOff(AutopilotInputs inputs, Vector speedVector){
 		
 		//Als startsignaal wordt gegeven of al aan het vliegen: vlieg
+		
 		if(go || isFlying()){
 			if (state==PhaseEnum.DRAAIEN||state==PhaseEnum.WAITING|| state==PhaseEnum.TEST){
 				state = PhaseEnum.INIT;
