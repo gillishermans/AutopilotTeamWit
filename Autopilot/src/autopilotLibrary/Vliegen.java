@@ -404,7 +404,7 @@ public class Vliegen {
 			break;
 			
 		case STABILISEREN1:
-			this.stabiliseren(inputs, speed, speedVector);
+			this.Stabiliseren1(inputs, speed, speedVector);
 			System.out.print("hier" + this.airports.get(1).getX());
 			//if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
 			//	System.out.println("LANDEN");
