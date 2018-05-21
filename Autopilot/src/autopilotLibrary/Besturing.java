@@ -94,6 +94,7 @@ public class Besturing implements Runnable {
 		
 		if(occupation == OccupationEnum.FREE){
 			state = PhaseEnum.WAITING;
+			taxi.overgang = false;
 			outputs= vliegen.Remmen(inputs);
 		}
 		
@@ -298,11 +299,18 @@ public class Besturing implements Runnable {
 		occupation = OccupationEnum.PICKING_UP;
 	}
 	
+	public void unassign(){
+		state = PhaseEnum.WAITING;
+		occupation = OccupationEnum.FREE;
+		delivery = null;
+	}
+	
 	public void pickup(){
 		occupation = OccupationEnum.DELIVERING;
 	}
 	
 	public void deliver(){
+		state = PhaseEnum.WAITING;
 		occupation = OccupationEnum.FREE;
 		delivery = null;
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import enums.OccupationEnum;
+import enums.PhaseEnum;
 
 public class PackageHandler {
 
@@ -31,13 +32,20 @@ public class PackageHandler {
 	 * Updates all drones package delivery status.
 	 */
 	public void update(HashMap<Integer, Besturing> drones) {
+		
 		for(Delivery d : getFreePackages()){
 			if(getClosestDrone(d,drones) != -1){
 				assign(getClosestDrone(d,drones),d);
 			}
 		}
-		checkPickup();
 		checkDelivery();
+		checkPickup();
+		
+		for(Besturing d : drones.values()){
+			if(d.getDelivery() == null){
+				d.unassign();
+			}
+		}
 	}
 	
 	/**
@@ -52,8 +60,7 @@ public class PackageHandler {
 						pickup(d, ap, 0, ap.getPackageGate0());
 						return;
 					} else if(ap.getPackageGate0() != d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
-						d.getDelivery().unassign();
-						autopilotHandler.unassignJob(d.getDelivery().getId());
+						unassign(d,ap.getPackageGate0());
 						assign(d.id,ap.getPackageGate0());
 						pickup(d, ap, 0, ap.getPackageGate0());
 						return;
@@ -66,8 +73,7 @@ public class PackageHandler {
 						pickup(d, ap, 1, ap.getPackageGate1());
 						return;
 					} else if(ap.getPackageGate1() != d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
-						d.getDelivery().unassign();
-						autopilotHandler.unassignJob(d.getDelivery().getId());
+						unassign(d,ap.getPackageGate1());
 						assign(d.id,ap.getPackageGate1());
 						pickup(d, ap, 1, ap.getPackageGate1());
 						return;
@@ -94,14 +100,12 @@ public class PackageHandler {
 				 for(Airport ap : airports.values()){
 					if(d.getDelivery().toAirport == ap.getId() && ap.onGate0(d.getPosition()[0], d.getPosition()[2])){
 						if(Vector.length(d.getSpeedVector()) < 1.0) {
-							//System.out.println("PACKAGE DELIVERED ON GATE 0");
 							deliver(d, d.getDelivery());
 							return true;
 						}
 					}
 					if(d.getDelivery().toAirport == ap.getId() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
 						if(Vector.length(d.getSpeedVector()) < 1.0) {
-							//System.out.println("PACKAGE DELIVERED ON GATE 1");
 							deliver(d, d.getDelivery());
 							return true;
 						}
@@ -128,6 +132,18 @@ public class PackageHandler {
 		deliv.assign(drone);
 		drones.get(drone).assign(deliv);
 		autopilotHandler.assignJob(deliv.getId(),drone);
+	}
+	
+	private void unassign(Besturing d, Delivery deliv){
+		if(d.getDelivery() != null){
+			d.getDelivery().unassign();
+			autopilotHandler.unassignJob(d.getDelivery().getId());
+		}
+		for(Besturing drone : drones.values()){
+			if(drone.getDelivery() == deliv){
+				drone.unassign();
+			}
+		}
 	}
 	
 	/**
@@ -189,7 +205,7 @@ public class PackageHandler {
 	private HashMap<Integer, Besturing> getFreeDrones(HashMap<Integer, Besturing> drones){
 		HashMap<Integer, Besturing> free = new HashMap<Integer, Besturing>();
 		for(int drone : drones.keySet()){
-			if(drones.get(drone).getOccupation() == OccupationEnum.FREE){
+			if(drones.get(drone).getOccupation() == OccupationEnum.FREE && drones.get(drone).getState() == PhaseEnum.WAITING){
 				free.put(drone, drones.get(drone));
 			}
 		}
