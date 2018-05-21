@@ -101,7 +101,7 @@ public class GUIAutopilot {
     	//Wordt opgeslagen volgens i
     	public void addDrone(Integer i) {
     		JPanel drone = new JPanel();
-    		JLabel l = new JLabel(" " + i + " ");
+    		JLabel l = new JLabel(" " + (i+1) + " ");
     		l.setOpaque(true);
     		l.setBackground(Color.GREEN);
     		drone.add(l,0);
@@ -233,7 +233,7 @@ public class GUIAutopilot {
     		}
     		
     		JLabel l2 = (JLabel) ((JPanel) packagePanel.getComponent(index+1)).getComponent(3);
-    		l2.setText("      " + drone + "       ");
+    		l2.setText("      " + (drone+1) + "       ");
     	}
 
 	public void completeDelivery(Integer indexPackage) {
