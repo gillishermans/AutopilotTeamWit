@@ -25,6 +25,9 @@ public class Delivery {
 		droneId = drone;
 	}
 	
+	/**
+	 * Unassigns a drone to a delivery.
+	 */
 	public void unassign(){
 		state = DeliveryEnum.OPEN;
 		droneId = -1;

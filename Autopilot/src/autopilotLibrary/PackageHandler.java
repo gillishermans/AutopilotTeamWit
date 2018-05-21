@@ -59,7 +59,7 @@ public class PackageHandler {
 						return;
 					}
 					
-				}
+				} 
 				if(ap.isPackageGate1() && ap.onGate1(d.getPosition()[0], d.getPosition()[2])){
 					//System.out.println("ON GATE 1 + PACKAGE AVAILABLE");
 					if(ap.getPackageGate1() == d.getDelivery() && Vector.length(d.getSpeedVector()) < 1.0){
