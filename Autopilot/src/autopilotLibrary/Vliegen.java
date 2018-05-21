@@ -305,15 +305,18 @@ public class Vliegen {
 		case OPSTIJGEN:
 			this.opstijgen(inputs);
 			float height = inputs.getY();
-			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <height/1.8*60 ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
+			float landingDistance;
+			if(height>50) landingDistance = (float) ((height/(1.8 + height*0.004))*65);
+			else landingDistance = (float) ((height/1.8)*65);
+			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <landingDistance ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
 				System.out.println("LANDEN PICKUP" + (Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ())));
-				System.out.println(height/1.8*65);
+				System.out.println(landingDistance);
 				System.out.println("Z; " + inputs.getZ() + " apZ: " + besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ());
 				besturing.setState(PhaseEnum.LANDEN);
 			}
-			else if ((Math.abs(inputs.getZ() -besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())<height/1.8*60) && (besturing.getOccupation()==OccupationEnum.DELIVERING)){
+			else if ((Math.abs(inputs.getZ() -besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())<landingDistance) && (besturing.getOccupation()==OccupationEnum.DELIVERING)){
 				System.out.println("LANDEN PICKUP" + (Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())));
-				System.out.println(height/1.8*60);
+				System.out.println(landingDistance);
 				System.out.println("Z; " + inputs.getZ() + " apZ: " + besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ());
 				besturing.setState(PhaseEnum.LANDEN);
 			}
@@ -354,17 +357,19 @@ public class Vliegen {
 		case STABILISEREN1:
 			this.stabiliseren(inputs, speed, speedVector);
 			height = inputs.getY();
+			if(height>50) landingDistance = (float) ((height/(1.8 + height*0.004))*65);
+			else landingDistance = (float) ((height/1.8)*65);
 			//float height = (i+3)*10;
 			//:System.out.print("hier" + besturing.packageHandler.airports.get(besturing.getDelivery().).getX());
-			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <height/1.8*65 ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
+			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <landingDistance ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
 				System.out.println("LANDEN PICKUP" + (Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ())));
-				System.out.println(height/1.8*65);
+				System.out.println(landingDistance);
 				System.out.println("Z; " + inputs.getZ() + " apZ: " + besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ());
 				besturing.setState(PhaseEnum.LANDEN);
 			}
-			else if ((Math.abs(inputs.getZ() -besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())<height/1.8*65) && (besturing.getOccupation()==OccupationEnum.DELIVERING)){
+			else if ((Math.abs(inputs.getZ() -besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())<landingDistance) && (besturing.getOccupation()==OccupationEnum.DELIVERING)){
 				System.out.println("LANDEN PICKUP" + (Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ())));
-				System.out.println(height/1.8*65);
+				System.out.println(landingDistance);
 				System.out.println("Z; " + inputs.getZ() + " apZ: " + besturing.packageHandler.airports.get(besturing.getDelivery().toAirport).getZ());
 				besturing.setState(PhaseEnum.LANDEN);
 			}
