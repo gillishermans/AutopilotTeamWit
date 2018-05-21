@@ -397,19 +397,19 @@ public class Vliegen {
 			
 		case LINKS:
 			this.bocht(inputs, inputs.getElapsedTime(),speed, speedVector);
-			//if (inputs.getZ() < -1000) {
-				//besturing.setState(PhaseEnum.STABILISEREN1);
+			if (inputs.getZ() < -1200) {
+				besturing.setState(PhaseEnum.STABILISEREN1);
 			//	t = getTime();
-			//}
+			}
 			break;
 			
 		case STABILISEREN1:
-			this.Stabiliseren1(inputs, speed, speedVector);
+			this.stabiliseren(inputs, speed, speedVector);
 			System.out.print("hier" + this.airports.get(1).getX());
-			if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
-				System.out.println("LANDEN");
-				besturing.setState(PhaseEnum.LINKS);
-			}
+			//if (Math.abs(inputs.getZ() - this.airports.get(1).getX())<1000){
+			//	System.out.println("LANDEN");
+				//besturing.setState(PhaseEnum.LINKS);
+			//}
 			break;
 			
 		case RECHTS:
