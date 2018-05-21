@@ -25,6 +25,11 @@ public class Delivery {
 		droneId = drone;
 	}
 	
+	public void unassign(){
+		state = DeliveryEnum.OPEN;
+		droneId = -1;
+	}
+	
 	/**
 	 * Checks if a delivery is open.
 	 */

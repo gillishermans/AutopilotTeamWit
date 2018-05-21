@@ -115,6 +115,10 @@ public class AutopilotHandler {
 		gui.changeStatePackage(DeliveryEnum.TAKEN,indexPackage,indexDrone);
 	}
 	
+	public void unassignJob(Integer indexPackage){
+		gui.changeStatePackage(DeliveryEnum.OPEN,indexPackage,-1);
+	}
+	
 	public void completeJob(Integer indexPackage){
 		gui.completeDelivery(indexPackage);
 	}
