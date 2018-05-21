@@ -52,14 +52,14 @@ public class Besturing {
 	int k = 5;
 	
 	
-	public Besturing() {
-		this.vliegen = new Vliegen(this);
+	public Besturing(AutopilotConfig config) {
+		this.config = config;
+		this.vliegen = new Vliegen(this, config);
 		this.taxi = new Taxi(this);
 		System.out.println(vliegen.distance(new Vector(0,40, -1000), new Vector(280, 40,-2000)));
 	}
 	
-	public void setConfig(AutopilotConfig config) {
-		this.config = config;
+	public void setConfig() {
 		this.beeldherkenning = new Beeldherkenning(config);
 		this.totalMass = config.getEngineMass() + config.getTailMass() + (2* config.getWingMass());
 		vliegen.setBeeldherkenning(beeldherkenning);
@@ -96,8 +96,24 @@ public class Besturing {
 		//vliegen.setPath(path);
 	}
 
-	public PhaseEnum getPhase() {
+	public String getPhase() {
 		return vliegen.getPhase();
+	}
+	
+	public String getInfo() {
+		return this.vliegen.getInfo();
+	}
+
+	public void setStab() {
+		vliegen.setStab();
+	}
+	
+	public void setHeading() {
+		vliegen.setHeading();
+	}
+
+	public Vector getCube() {
+		return vliegen.getCube();
 	}
 	
 }

@@ -46,5 +46,9 @@ public class Vector {
 	public float lengthSquared(Vector a) {
 		return a.x*a.x + a.y*a.y + a.z*a.z;
 	}
+	
+	public void print() {
+		System.out.println("Vector[ " + x + ", " + y + ", " + z + "]");
+	}
 
 }

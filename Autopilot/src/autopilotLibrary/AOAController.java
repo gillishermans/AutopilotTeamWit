@@ -40,23 +40,22 @@ public class AOAController {
 	
 	//ROLL < 0 -> ROLL NAAR RECHTS
 	public float aoaRollController(float incl, float roll, float max) {
-		float roll1 = 0;
 		if (incl > 0) {
-			if (roll > 0) {
-				//System.out.println("1: " + (incl + roll));
-				if (incl + roll > max) return max - incl;
-				else return roll;
-			} else {
-				if (incl - roll > max) return max + roll;
-				else return roll;
+			if (incl + roll > max) {
+				return max - incl;
 			}
-		}
-		else
-			//System.out.println("2: " + (incl + roll));
-			if (incl - roll < -max) return -max - incl;
 			else {
 				return roll;
 			}
+		}
+		else {
+			if (incl - roll < -max) {
+				return Math.abs(max - incl);
+			}
+			else {
+				return roll;
+			}
+		}
 	}
 	
 }
