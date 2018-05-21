@@ -64,7 +64,7 @@ public class GUIAutopilot {
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             
             frame.pack();
-            frame.setSize(275,500); //300
+            frame.setSize(300,500); //300
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
             frame.setResizable(true);

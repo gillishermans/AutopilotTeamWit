@@ -92,7 +92,10 @@ public class Besturing implements Runnable {
 		
 		Vector speedVector = updateSpeedVector(inputs);
 		
-		if(occupation == OccupationEnum.FREE) outputs = new Outputs(0, 0, 0, 0, 0, 0, 0, 0);
+		if(occupation == OccupationEnum.FREE){
+			state = PhaseEnum.WAITING;
+			outputs = new Outputs(0, 0, 0, 0, 0, 0, 0, 0);
+		}
 		
 		if(occupation == OccupationEnum.PICKING_UP){
 			

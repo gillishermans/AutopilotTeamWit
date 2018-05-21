@@ -97,8 +97,8 @@ public class AutopilotHandler {
 	 * Starts a new package delivery request from an airport to gate to another.
 	 */
 	public void deliverPackage(int fromAirport, int fromGate, int toAirport, int toGate) {
-		packageHandler.deliverPackage(packageIndex,fromAirport, fromGate, toAirport, toGate);
 		gui.addPackage(packageIndex, fromAirport, fromGate, toAirport, toGate);
+		packageHandler.deliverPackage(packageIndex,fromAirport, fromGate, toAirport, toGate);
 		//gui.addToDo(packageIndex, fromAirport, fromGate, toAirport, toGate);
 		packageIndex++;
 	}

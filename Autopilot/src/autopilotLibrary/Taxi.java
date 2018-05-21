@@ -116,10 +116,17 @@ public class Taxi {
 		
 		float hoek = (float) ((Math.atan2(doel[1]-inputs.getZ(),doel[0]-inputs.getX())+ Math.PI/2+2*Math.PI) % (2*Math.PI));
 			
-		leftBrakeForce=0;
-		rightBrakeForce=300000;
-		frontBrakeForce=0;
-		thrust=200000;
+//		if(hoek < (2*Math.PI+inputs.getHeading()) % (2*Math.PI)){
+//			leftBrakeForce=300000;
+//			rightBrakeForce=0;
+//			frontBrakeForce=0;
+//			thrust=200000;
+//		} else {
+			leftBrakeForce=0;
+			rightBrakeForce=300000;
+			frontBrakeForce=0;
+			thrust=200000;
+//		}
 		
 		System.out.println("hoek "+hoek);	 
 		System.out.println("Heading " +(2*Math.PI+inputs.getHeading()) % (2*Math.PI));
@@ -131,7 +138,7 @@ public class Taxi {
 			return outputs;
 			
 		}
-		else if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.999*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.001*hoek){
+		else if (((2*Math.PI+inputs.getHeading()) % (2*Math.PI) >= 0.99*hoek) && (2*Math.PI+inputs.getHeading()) % (2*Math.PI)<= 1.01*hoek){
 			overgang = true;
 			System.out.println("DRIVE2");
 			outputs = drive(inputs,doel,speed);
