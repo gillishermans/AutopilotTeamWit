@@ -306,7 +306,8 @@ public class Vliegen {
 			this.opstijgen(inputs);
 			float height = inputs.getY();
 			float landingDistance;
-			if(height>50) landingDistance = (float) ((height/(1.8 + height*0.004))*65);
+			if(height>75) landingDistance = (float) ((height/(1.8 + height*0.0005))*65);
+			else if(height>60) landingDistance = (float) ((height/(1.8 + height*0.004))*65);
 			else landingDistance = (float) ((height/1.8)*65);
 			if ((Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ()) <landingDistance ) && (besturing.getOccupation()==OccupationEnum.PICKING_UP)){
 				System.out.println("LANDEN PICKUP" + (Math.abs(inputs.getZ() - besturing.packageHandler.airports.get(besturing.getDelivery().fromAirport).getZ())));
@@ -357,7 +358,8 @@ public class Vliegen {
 		case STABILISEREN1:
 			this.stabiliseren(inputs, speed, speedVector);
 			height = inputs.getY();
-			if(height>50) landingDistance = (float) ((height/(1.8 + height*0.004))*65);
+			if(height>75) landingDistance = (float) ((height/(1.8 + height*0.0005))*65);
+			else if(height>60) landingDistance = (float) ((height/(1.8 + height*0.004))*65);
 			else landingDistance = (float) ((height/1.8)*65);
 			//float height = (i+3)*10;
 			//:System.out.print("hier" + besturing.packageHandler.airports.get(besturing.getDelivery().).getX());
